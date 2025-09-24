@@ -1,5 +1,7 @@
 .community-container{
     width: 100%;
+    /* border-right: 1px solid rgba(189 , 189, 189, 1); */
+    box-shadow: 2px 0px 8px rgba(189 , 189, 189, 1);
   }
 
 @media (max-width:720px){

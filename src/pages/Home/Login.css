@@ -2,14 +2,71 @@
   width: 100%;
   max-width: 360px;
   height: 100vh;
+  padding: 20px;
+  color: black;
+  font-weight: 600;
+}
+
+.login-container h2 {
+  margin-bottom: 60px;
+}
+
+.login-box {
   display: flex;
-  justify-content: center;
+  flex-direction: column;
+  justify-content: space-around;
+  width: 320px;
+  height: 170px;
+}
+
+.login-item {
+  display: flex;
   align-items: center;
-  background-color: lightblue;
+  position: relative;
+  padding: 0 10px;
+  width: 320px;
+  height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: white;
+  cursor: pointer;
+
+  /* 드래그 방지 */
+  user-select: none;
+  -webkit-user-select: none; /* 크롬, 사파리 등 Webkit 기반 브라우저 */
+  -moz-user-select: none; /* 파이어폭스 */
+  -ms-user-select: none; /* 인터넷 익스플로러, 엣지 */
+}
+
+.login-item img {
+  width: 25px;
+  height: 25px;
+}
+
+.login-item p {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  white-space: nowrap;
+}
+
+.login-item:nth-child(1) {
+  background-color: rgba(244, 90, 92, 1);
+}
+
+.login-item:nth-child(2) {
+  background-color: rgba(39, 211, 75, 1);
+}
+
+.login-item:nth-child(3) {
+  background-color: rgba(255, 235, 0, 1);
+  color: rgba(57, 31, 30, 1);
 }
 
 @media (max-width: 720px) {
   .login-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     max-width: 100%;
   }
 }
