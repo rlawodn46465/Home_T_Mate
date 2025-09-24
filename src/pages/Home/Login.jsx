@@ -1,7 +1,7 @@
 import "./Login.css";
-import google from "../../assets/images/google_icon.png";
-import naver from "../../assets/images/naver_icon.png";
-import kakao from "../../assets/images/kakao_icon.png";
+import google from "../../assets/images/google_icon.svg";
+import naver from "../../assets/images/naver_icon.svg";
+import kakao from "../../assets/images/kakao_icon.svg";
 
 function Login() {
   return (
