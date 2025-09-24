@@ -1,6 +1,21 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
-  text-align: center;
+*{
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.main-container{
+  display: flex;
+  width: 100%;
+  height: 100vh;
+}
+
+/* 480px 이하 : 모바일 */
+@media (max-width: 480px){
+
+}
+
+/* 481px 이상 : 태블릿 & PC */
+@media (min-width: 481px){
+
 }

@@ -1,0 +1,15 @@
+.login-container {
+  width: 100%;
+  max-width: 360px;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: lightblue;
+}
+
+@media (max-width: 720px) {
+  .login-container {
+    max-width: 100%;
+  }
+}
