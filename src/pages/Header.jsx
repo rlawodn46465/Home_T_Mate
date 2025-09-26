@@ -4,7 +4,7 @@ import training_icon from "../assets/images/training_icon.svg";
 import routine_icon from "../assets/images/routine_icon.svg";
 import user_icon from "../assets/images/user_icon.svg";
 
-function Header() {
+const Header = () => {
   return (
     <div className="header-container">
       <h1>홈트메이트</h1>

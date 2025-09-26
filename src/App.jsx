@@ -3,7 +3,7 @@ import CommunityPage from "./pages/Community/CommunityPage";
 import Header from "./pages/Header";
 import Login from "./pages/Home/Login";
 
-function App() {
+const App = () => {
   return (
     <div className="main-container">
       <Header />

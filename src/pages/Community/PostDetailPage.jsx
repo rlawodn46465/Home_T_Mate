@@ -1,4 +1,4 @@
-function PostDetailPage(){
+const PostDetailPage = () => {
   return(
     <div>게시판 상세 페이지</div>
   )

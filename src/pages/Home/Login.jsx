@@ -3,7 +3,7 @@ import google from "../../assets/images/google_icon.svg";
 import naver from "../../assets/images/naver_icon.svg";
 import kakao from "../../assets/images/kakao_icon.svg";
 
-function Login() {
+const Login = () => {
   return (
     <div className="login-container">
       <h2>로그인 방법을 선택해주세요.</h2>
