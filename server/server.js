@@ -4,6 +4,7 @@ require("dotenv").config();
 const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/errorMiddleware");
 const userRouter = require("./routes/users");
+const authRouter = require('./routes/auth');
 
 //DB 연결 실행
 connectDB();
@@ -16,7 +17,10 @@ app.use(express.json());
 // URL-encoded 요청 본문을 파싱하기 위한 미들웨어
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/users", userRouter);
+
+//5. API 엔드포인트에 라우트 연결
+app.use("/api/v1/users", userRouter);
+app.use('/api/v1/auth', authRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

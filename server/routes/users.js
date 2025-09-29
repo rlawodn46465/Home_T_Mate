@@ -3,11 +3,18 @@ const asyncHandler = require("express-async-handler");
 const router = express.Router();
 const userService = require("../services/userService");
 const { BadRequestError } = require("../utils/errorHandler");
+const { protect } = require('../middlewares/authMiddleware');
 
 // 사용자 목록 조회 (GET /api/users)
-router.get("/", asyncHandler(async (req, res) => {
+router.get("/", protect ,asyncHandler(async (req, res) => {
+  console.log(`[인증된 사용자] ID: ${req.user._id}, Name: ${req.user.name} 접근 권한 부여.`);
+  
     const users = await userService.getAllUsers();
-    res.status(200).json(users);
+    res.status(200).json({
+      success: true,
+      count: user.length,
+      data: users
+    });
 }));
 
 // 새 사용자 생성 (POST /api/users)

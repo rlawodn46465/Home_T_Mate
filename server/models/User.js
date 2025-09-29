@@ -1,4 +1,6 @@
 const mongoose = require('mongoose');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -12,6 +14,11 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     lowercase: true
   },
+  password: {
+    type: String,
+    required: true,
+    select: false,
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -19,5 +26,27 @@ const UserSchema = new mongoose.Schema({
 }, {
   toJSON: {virtuals: true},
 });
+
+UserSchema.pre('save', async function(next){
+  // 비밀번호가 수정되었을 때만 해싱
+  if(!this.isModified('password')){
+    return next();
+  }
+  const salt = await bcrypt.genSalt(10);
+  this.password = await bcrypt.hash(this.password, salt);
+  next();
+});
+
+UserSchema.method.getSignedJwtToken = function(){
+  return jwt.sign(
+    {id: this._id},
+    process.env.JWT_SECRET,
+    {expiresIn: process.env.JWT_EXPIRE}
+  );
+};
+
+UserSchema.method.matchPassword = async function(enteredPassword){
+  return await bcrypt.compare(enteredPassword, this.password);
+};
 
 module.exports = mongoose.model('User', UserSchema);
