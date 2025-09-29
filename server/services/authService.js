@@ -7,50 +7,6 @@ const {
 const axios = require("axios");
 
 /**
- * @description 새로운 사용자를 등록하는 서비스 로직 (회원가입)
- */
-const registerUser = async ({ name, email, password }) => {
-  try {
-    // const user = await User.create({name, email, password});
-    const newUser = new User({ name, email, password });
-    const user = await newUser.save();
-
-    const token = user.getSignedJwtToken();
-
-    return {
-      user: { id: user._id, name: user.name, email: user.email },
-      token,
-    };
-  } catch (error) {
-    if (error.code === 11000) {
-      throw new ConflictError("이 이메일을 사용하는 사용자가 이미 존재합니다.");
-    }
-    throw error;
-  }
-};
-
-/**
- * @description 사용자 로그인을 처리하는 서비스 로직 (로그인)
- */
-const loginUser = async ({ email, password }) => {
-  // 1. 이메일로 사용자 조회 (password 필드를 명시적으로 포함)
-  const user = await User.findOne({ email }).select("+password");
-
-  // 2. 사용자가 없거나 비밀번호가 일치하지 않는 경우
-  if (!user || !(await user.matchPassword(password))) {
-    throw new NotFoundError("잘못된 인증");
-  }
-
-  // 3. 로그인 성공 시 JWT 토큰 생성
-  const token = user.getSignedJwtToken();
-
-  return {
-    user: { id: user._id, name: user.name, email: user.email },
-    token,
-  };
-};
-
-/**
  * @description 네이버 인증 코드를 받아 JWT 토큰을 발급하는 통합 서비스 로직
  * @param {string} code - 네이버로부터 받은 인증 코드
  * @param {string} state - CSRF 방지용 상태 값
@@ -91,20 +47,16 @@ const naverLogin = async (code, state) => {
       );
     }
 
-    const { email, name, id, age, birthyear } = naverProfile;
+    const { email, name, id: naverId, age, birthyear } = naverProfile;
 
     // 3. DB에서 사용자 조회 또는 신규 생성
-    let user = await User.findOne({ email });
+    let user = await User.findOne({ naverId });
 
     if (!user) {
-      // 신규 사용자 DB에 저장
-      // 임시 비밀번호 생성 후 저장
-      const tempPassword = Math.random().toString(36).slice(-8);
-
       const newUser = new User({
         name: name || "Naver User",
         email: email,
-        password: tempPassword,
+        naverId: naverId,
         age: age,
         birthyear: birthyear
       });
@@ -131,7 +83,5 @@ const naverLogin = async (code, state) => {
 };
 
 module.exports = {
-  registerUser,
-  loginUser,
   naverLogin,
 };
