@@ -19,6 +19,14 @@ const UserSchema = new mongoose.Schema({
     required: true,
     select: false,
   },
+  age: {
+    type: String,
+    required: false
+  },
+  birthyear: {
+    type: String,
+    required: false
+  },
   createdAt: {
     type: Date,
     default: Date.now,
@@ -37,7 +45,7 @@ UserSchema.pre('save', async function(next){
   next();
 });
 
-UserSchema.method.getSignedJwtToken = function(){
+UserSchema.methods.getSignedJwtToken = function(){
   return jwt.sign(
     {id: this._id},
     process.env.JWT_SECRET,
@@ -45,7 +53,7 @@ UserSchema.method.getSignedJwtToken = function(){
   );
 };
 
-UserSchema.method.matchPassword = async function(enteredPassword){
+UserSchema.methods.matchPassword = async function(enteredPassword){
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

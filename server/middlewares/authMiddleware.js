@@ -9,7 +9,7 @@ const { CustomError } = require('../utils/errorHandler');
  * @param {object} res - Express 응답 객체
  * @param {function} next - 다음 미들웨어 함수
  */
-const protext = asyncHandler(async (req, res, next) => {
+const protect = asyncHandler(async (req, res, next) => {
   let token;
 
   // 1. HTTP 헤더에 토큰 확인

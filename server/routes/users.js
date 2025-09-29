@@ -12,7 +12,7 @@ router.get("/", protect ,asyncHandler(async (req, res) => {
     const users = await userService.getAllUsers();
     res.status(200).json({
       success: true,
-      count: user.length,
+      count: users.length,
       data: users
     });
 }));
