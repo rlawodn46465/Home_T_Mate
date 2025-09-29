@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 const UserSchema = new mongoose.Schema({
   name: {
     type: String,
-    require: true,
+    required: true,
     trim: true
   },
   email: {
@@ -27,6 +27,18 @@ const UserSchema = new mongoose.Schema({
     required: false
   },
   naverId: {
+    type: String,
+    unique: true,
+    sparse: true,
+    required: false
+  },
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true,
+    required: false
+  },
+  kakaoId: {
     type: String,
     unique: true,
     sparse: true,
