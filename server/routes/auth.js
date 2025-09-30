@@ -4,6 +4,34 @@ const router = express.Router();
 const authService = require("../services/authService");
 const { BadRequestError, CustomError } = require("../utils/errorHandler");
 
+// 구글 로그인 라우트 (GET /api/v1/auth/google)
+router.get(
+  "/google",
+  asyncHandler(async (req, res) => {
+    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${process.env.GOOGLE_CALLBACK_URL}&response_type=code&scope=profile email`;
+    res.redirect(googleAuthUrl);
+  })
+);
+
+// 구글 콜백 처리 라우트 (GET /api/v1/auth/google/callback)
+router.get(
+  "/google/callback",
+  asyncHandler(async (req, res) => {
+    const { code, error, error_description } = req.query;
+    if (error) {
+      throw new CustomError(error_description, 401);
+    }
+
+    const result = await authService.googleLogin(code);
+    res.status(200).json({
+      success: true,
+      message: "구글 로그인 성공",
+      data: result.user,
+      token: result.token,
+    });
+  })
+);
+
 // 네이버 로그인 라우트 (GET /api/v1/auth/naver)
 router.get(
   "/naver",
@@ -38,34 +66,6 @@ router.get(
       token: result.token,
     });
     // 💡 참고: 실제 운영 환경에서는 res.redirect('프론트엔드_주소?token=' + result.token)와 같이 처리
-  })
-);
-
-// 구글 로그인 라우트 (GET /api/v1/auth/google)
-router.get(
-  "/google",
-  asyncHandler(async (req, res) => {
-    const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.GOOGLE_CLIENT_ID}&redirect_uri=${process.env.GOOGLE_CALLBACK_URL}&response_type=code&scope=profile email`;
-    res.redirect(googleAuthUrl);
-  })
-);
-
-// 구글 콜백 처리 라우트 (GET /api/v1/auth/google/callback)
-router.get(
-  "/google/callback",
-  asyncHandler(async (req, res) => {
-    const { code, error, error_description } = req.query;
-    if (error) {
-      throw new CustomError(error_description, 401);
-    }
-
-    const result = await authService.googleLogin(code);
-    res.status(200).json({
-      success: true,
-      message: "구글 로그인 성공",
-      data: result.user,
-      token: result.token,
-    });
   })
 );
 
