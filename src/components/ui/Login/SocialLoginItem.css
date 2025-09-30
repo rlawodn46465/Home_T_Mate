@@ -1,0 +1,42 @@
+.login-item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0 10px;
+  width: 320px;
+  height: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  color: white;
+  cursor: pointer;
+
+  /* 드래그 방지 */
+  user-select: none;
+  -webkit-user-select: none; /* 크롬, 사파리 등 Webkit 기반 브라우저 */
+  -moz-user-select: none; /* 파이어폭스 */
+  -ms-user-select: none; /* 인터넷 익스플로러, 엣지 */
+}
+
+.login-item.google {
+  background-color: rgba(244, 90, 92, 1);
+}
+
+.login-item.naver {
+  background-color: rgba(39, 211, 75, 1);
+}
+
+.login-item.kakao {
+  background-color: rgba(255, 235, 0, 1);
+  color: rgba(57, 31, 30, 1);
+}
+
+.login-icon {
+  width: 25px;
+  height: 25px;
+}
+
+.login-text {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  white-space: nowrap;
+}
