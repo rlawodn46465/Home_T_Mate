@@ -1,7 +1,8 @@
 import "./App.css";
 import CommunityPage from "./pages/Community/CommunityPage";
 import Header from "./pages/Header";
-import Login from "./pages/Login/LoginPage";
+import LoginPage from "./pages/Login/LoginPage";
+import OnboardingPage from "./pages/Onboarding/OnboardingPage";
 
 const App = () => {
   return (
@@ -12,7 +13,8 @@ const App = () => {
           <CommunityPage />
         </div>
         <div className="right-content">
-          <Login />
+          {/* <LoginPage /> */}
+          <OnboardingPage/>
         </div>
       </div>
     </div>

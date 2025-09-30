@@ -1,0 +1,36 @@
+.nickname-input{
+  margin-bottom: 20px;
+}
+
+.nickname-input h4{
+  margin-bottom: 10px;
+}
+
+.nickname-input-container {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.nickname-input-container input{
+  width: 240px;
+  height: 44px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.nickname-button{
+  width: 80px;
+  height: 44px;
+  border: none;
+  background-color: rgba(81, 85, 163, 1);
+  color: white;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.option-text{
+  font-size: 12px;
+  font-weight: 400;
+  color: rgba(237, 112, 32, 1);
+}

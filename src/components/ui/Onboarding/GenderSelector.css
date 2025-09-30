@@ -1,0 +1,23 @@
+.gender-selector {
+  margin-bottom: 20px;
+  color: rgba(47, 47, 47, 1);
+}
+
+.gender-selector h4 {
+  margin-bottom: 10px;
+}
+
+.gender-container {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.gender-button {
+  width: 150px;
+  height: 44px;
+  border: 2px solid rgba(189, 189, 189, 1);
+  border-radius: 10px;
+  font-size: 16px;
+  font-weight: 600;
+}

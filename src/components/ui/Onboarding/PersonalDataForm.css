@@ -1,0 +1,45 @@
+.personal-data-form {
+}
+
+.personal-data-form h4{
+  margin-bottom: 10px;
+}
+
+.personal-data-input {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+  width: 150px;
+  height: 44px;
+  background-color: rgba(220, 220, 220, 1);
+  padding: 3px;
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.personal-data-input:focus-within {
+  background-color: rgba(202, 202, 202, 1);
+}
+
+.personal-body-info{
+  display: flex;
+  justify-content: space-between;
+}
+
+.personal-data-input input {
+  width: 80px;
+  height: 38px;
+  font-size: 24px;
+  font-weight: 500;
+  text-align: end;
+  line-height: 44px;
+
+  outline: none;
+  background-color: transparent;
+}
+
+.personal-input-text {
+  font-size: 12px;
+  font-weight: 400;
+}
