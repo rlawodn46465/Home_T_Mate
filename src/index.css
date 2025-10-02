@@ -4,6 +4,25 @@
   font-weight: 400;
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  box-sizing: border-box;
+  caret-color: transparent;
+}
+
+input:focus {
+  caret-color: white;
+  outline: none;
+  background-color: rgba(202, 202, 202, 1);
+}
+
+input {
+  border: none;
+  background-color: rgba(220, 220, 220, 1);
+}
+
 @font-face {
   font-family: "Escoredream";
   src: url("/src/assets/fonts/SCDream1.otf");

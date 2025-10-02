@@ -1,0 +1,28 @@
+.main-content {
+  display: flex;
+}
+
+.left-content {
+  width: 100%;
+  padding: 20px;
+  box-shadow: inset -2px 2px 8px rgba(189, 189, 189, 1);
+}
+
+.right-content {
+  width: 100%;
+  max-width: 360px;
+  height: 100vh;
+  padding: 20px;
+}
+
+@media (max-width: 720px) {
+  .left-content {
+    display: none;
+  }
+  .right-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    max-width: 100%;
+  }
+}
