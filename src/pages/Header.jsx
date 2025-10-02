@@ -22,11 +22,11 @@ const Header = () => {
           <img src={training_icon} alt="운동"/>
           <p>운동</p>
         </Link>
-        <Link to={getPanelLink('')} className="menu-item">
+        <Link to={getPanelLink('routine')} className="menu-item">
           <img src={routine_icon} alt="루틴"/>
           <p>루틴</p>
         </Link>
-        <Link to={getPanelLink('')} className="menu-item">
+        <Link to={getPanelLink('mypage')} className="menu-item">
           <img src={user_icon} alt="마이페이지"/>
           <p>마이페이지</p>
         </Link>
