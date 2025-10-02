@@ -12,9 +12,11 @@ const qs = require("qs");
 const handleSocialLogin = async (socialIdField, socialId, profileData) => {
   // 1. 소셜 ID로 사용자 조회
   let user = await User.findOne({ [socialIdField]: socialId });
+  let isNewUser = false;
 
   if (!user) {
     // 2. 신규 사용자면 DB에 저장
+    isNewUser = true;
     const tempPassword = Math.random().toString(36).slice(-8);
 
     const newUser = new User({
@@ -34,6 +36,7 @@ const handleSocialLogin = async (socialIdField, socialId, profileData) => {
   return {
     user: { id: user._id, name: user.name, email: user.email },
     token,
+    isNewUser,
   };
 };
 

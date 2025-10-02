@@ -1,4 +1,5 @@
 const express = require("express");
+const cookieParser = require("cookie-parser");
 
 require("dotenv").config();
 const connectDB = require("./config/db");
@@ -13,6 +14,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 //미들웨어 설정
+app.use(cookieParser());
 app.use(express.json());
 // URL-encoded 요청 본문을 파싱하기 위한 미들웨어
 app.use(express.urlencoded({ extended: true }));

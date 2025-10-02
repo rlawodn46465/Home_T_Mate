@@ -2,7 +2,30 @@ const express = require("express");
 const asyncHandler = require("express-async-handler");
 const router = express.Router();
 const authService = require("../services/authService");
-const { BadRequestError, CustomError } = require("../utils/errorHandler");
+const { CustomError } = require("../utils/errorHandler");
+
+const FRONTEND_LOGIN_REDIRECT_URL = process.env.FRONTEND_LOGIN_REDIRECT_URL;
+
+/**
+ * @description 인증 성공 후 JWT 쿠키 설정 및 프론트엔드로 리다이렉트
+ * @param {object} res - Express 응답 객체
+ * @param {object} result - authService에서 반환된 결과 ({token, isNewUser})
+ */
+const sendAuthResponse = (res, result) => {
+  // 1. JWT 토큰을 HTTP-Only Cookie에 설정
+  res.cookie("accessToken", result.token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    maxAge: 3600000 * 24 * 7, // 7일 유효(ms)
+    sameSite: "Lax",
+  });
+
+  // 2. 신규 가입 여부에 따라 리다이렉트 경로 분리 / 신규 : 기존
+  const redirectPath = result.isNewUser ? '/login/signup-complete' : '/login/success';
+
+  // 3. 프론트엔드 특정 경로로 리다이렉트
+  res.redirect(`${FRONTEND_LOGIN_REDIRECT_URL}${redirectPath}`);
+};
 
 // 구글 로그인 라우트 (GET /api/v1/auth/google)
 router.get(
@@ -19,16 +42,15 @@ router.get(
   asyncHandler(async (req, res) => {
     const { code, error, error_description } = req.query;
     if (error) {
-      throw new CustomError(error_description, 401);
+      return res.redirect(
+        `${FRONTEND_LOGIN_REDIRECT_URL}/login?error=${encodeURIComponent(
+          error_description || error
+        )}`
+      );
     }
 
     const result = await authService.googleLogin(code);
-    res.status(200).json({
-      success: true,
-      message: "구글 로그인 성공",
-      data: result.user,
-      token: result.token,
-    });
+    sendAuthResponse(res, result);
   })
 );
 
@@ -40,7 +62,7 @@ router.get(
       process.env.NAVER_CLIENT_ID
     }&redirect_uri=${process.env.NAVER_CALLBACK_URL}&state=${Math.random()
       .toString(36)
-      .substring(2, 15)}`;
+      .substring(2, 15)}&auth_type=reprompt`;
 
     res.redirect(naverAuthUrl);
   })
@@ -52,20 +74,18 @@ router.get(
   asyncHandler(async (req, res) => {
     const { code, state, error, error_description } = req.query;
     if (error) {
-      throw new CustomError(error_description, 401);
+      return res.redirect(
+        `${FRONTEND_LOGIN_REDIRECT_URL}/login?error=${encodeURIComponent(
+          error_description || error
+        )}`
+      );
     }
 
     // 1. 서비스 로직 호출
     const result = await authService.naverLogin(code, state);
 
-    // 2. 클라이언트에게 JWT 토큰 전달 (실제 환경에서는 프론트엔드로 리다이렉트)
-    res.status(200).json({
-      success: true,
-      message: "네이버 로그인 성공",
-      data: result.user,
-      token: result.token,
-    });
-    // 💡 참고: 실제 운영 환경에서는 res.redirect('프론트엔드_주소?token=' + result.token)와 같이 처리
+    // 2. Cookie 설정 후 리다이렉션
+    sendAuthResponse(res, result);
   })
 );
 
@@ -84,18 +104,15 @@ router.get(
   asyncHandler(async (req, res) => {
     const { code, error, error_description } = req.query;
     if (error) {
-      throw new CustomError(error_description, 401);
+      return res.redirect(
+        `${FRONTEND_LOGIN_REDIRECT_URL}/login?error=${encodeURIComponent(
+          error_description || error
+        )}`
+      );
     }
 
     const result = await authService.kakaoLogin(code);
-    res
-      .status(200)
-      .json({
-        success: true,
-        message: "카카오 로그인 성공",
-        data: result.user,
-        token: result.token,
-      });
+    sendAuthResponse(res, result);
   })
 );
 
