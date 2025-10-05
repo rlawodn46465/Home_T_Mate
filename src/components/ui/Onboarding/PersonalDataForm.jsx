@@ -14,7 +14,7 @@ const PersonalDataForm = () => {
 
   return (
     <div className="personal-data-form">
-      <h4>출생년도를 입력해주세요.</h4>
+      <h4 className="section-title">출생년도를 입력해주세요.</h4>
       <div
         className="personal-data-input"
         onClick={() => focusInput(dateInputRef)}
@@ -24,7 +24,7 @@ const PersonalDataForm = () => {
           년도
         </label>
       </div>
-      <h4>키와 몸무게를 입력해주세요.</h4>
+      <h4 className="section-title">키와 몸무게를 입력해주세요.</h4>
       <div className="personal-body-info">
         <div
           className="personal-data-input"

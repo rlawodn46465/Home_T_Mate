@@ -3,7 +3,7 @@ import "./NicknameInput.css";
 const NicknameInput = () => {
   return (
     <div className="nickname-input">
-      <h4>닉네임을 입력해주세요.</h4>
+      <h4 className="section-title">닉네임을 입력해주세요.</h4>
       <div className="nickname-input-container">
         <input />
         <button className="nickname-button">확인</button>

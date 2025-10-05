@@ -1,10 +1,6 @@
 .personal-data-form {
 }
 
-.personal-data-form h4{
-  margin-bottom: 10px;
-}
-
 .personal-data-input {
   display: flex;
   justify-content: space-between;

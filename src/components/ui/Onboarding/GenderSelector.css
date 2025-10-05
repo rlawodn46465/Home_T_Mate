@@ -3,10 +3,6 @@
   color: rgba(47, 47, 47, 1);
 }
 
-.gender-selector h4 {
-  margin-bottom: 10px;
-}
-
 .gender-container {
   display: flex;
   justify-content: space-between;
