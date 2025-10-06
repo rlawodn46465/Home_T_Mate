@@ -1,0 +1,14 @@
+.muscle-body{
+  stroke: #7c7c7c;
+  stroke-miterlimit: 10;
+  stroke-width: 0.25px;
+  fill: none;
+}
+
+.muscle-active-color{
+  fill: rgba(62, 114, 184, 1);
+}
+
+.muscle-inactive-color{
+  fill: rgba(239, 239, 239, 1);
+}
