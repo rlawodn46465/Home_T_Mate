@@ -25,8 +25,8 @@ const SocialAuthRedirectHandler = () => {
       targetPanel = "onboarding"; // 신규 회원 -> 온보딩 패널
       console.log("🚨 신규 가입자 감지: 'onboarding' 패널로 이동합니다.");
     } else if (currentPath === "/login/success") {
-      targetPanel = "login"; // 기존 회원 -> 로그인 패널 (로그인 성공 대시보드 역할)
-      console.log("✅ 기존 사용자 감지: 'login' 패널로 이동합니다.");
+      targetPanel = "dashboard"; // 기존 회원 -> 로그인 패널 (로그인 성공 대시보드 역할)
+      console.log("✅ 기존 사용자 감지: 'dashboard' 패널로 이동합니다.");
     }
 
     // 2. 원래 경로에 panel 쿼리를 추가하여 최종 리다이렉트 URL을 생성

@@ -1,0 +1,13 @@
+.week-info__date-circle {
+  width: 30px;
+  height: 30px;
+  line-height: 30px; /* 텍스트 수직 중앙 정렬 */
+  border-radius: 50%;
+  text-align: center;
+  font-size: 15px;
+}
+
+.week-info__date-circle--today{
+  color: white;
+  line-height: 26px;
+}

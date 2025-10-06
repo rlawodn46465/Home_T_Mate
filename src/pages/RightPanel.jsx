@@ -1,6 +1,7 @@
 import { useLocation } from "react-router-dom";
 import LoginPage from "./Login/LoginPage";
 import OnboardingPage from "./Onboarding/OnboardingPage";
+import DashboardPage from "./Dashboard/DashboardPage";
 
 const RightPanel = () => {
   const location = useLocation();
@@ -16,6 +17,9 @@ const RightPanel = () => {
       break;
     case "onboarding":
       content = <OnboardingPage />;
+      break;
+    case "dashboard":
+      content = <DashboardPage />;
       break;
     default:
       content = <div>요청하신 페이지를 찾을 수 없습니다.</div>;
