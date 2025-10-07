@@ -1,0 +1,26 @@
+.body-part-filter-scroll {
+  margin-bottom: 20px;
+}
+
+.body-part-filter {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding-bottom: 10px;
+}
+
+.filter-button {
+  padding: 4px 18px;
+  border: none;
+  border-radius: 20px;
+  background-color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.filter-button.active {
+  background-color: rgba(81, 85, 163, 1);
+  color: white;
+}
