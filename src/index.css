@@ -1,15 +1,48 @@
 :root {
   background-color: #242424;
-  font-family: "Escoredream";
-  font-weight: 400;
 }
 
 * {
   margin: 0;
   padding: 0;
+  font-family: "Escoredream";
+  font-weight: 400;
   list-style-type: none;
   box-sizing: border-box;
   caret-color: transparent;
+}
+
+h1 {
+  font-weight: 800;
+}
+
+h2 {
+  font-weight: 700;
+}
+
+h4 {
+  font-weight: 600;
+}
+
+div::-webkit-scrollbar {
+  width: 6px;
+}
+
+/* 스크롤바 배경 색상 */
+div::-webkit-scrollbar-track {
+  background: rgba(220, 220, 220, 1);
+  border-radius: 3px;
+}
+
+/* 스크롤바 핸들(움직이는 부분) 색상 */
+div::-webkit-scrollbar-thumb {
+  background: rgba(112, 115, 181, 1);
+  border-radius: 3px;
+}
+
+/* 마우스 오버 시 핸들 색상 */
+div::-webkit-scrollbar-thumb:hover {
+  background: rgba(81, 85, 163, 1);
 }
 
 input:focus {
