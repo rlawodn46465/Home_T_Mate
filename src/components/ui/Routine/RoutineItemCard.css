@@ -1,5 +1,6 @@
 .routine-card {
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .routine-card__header {

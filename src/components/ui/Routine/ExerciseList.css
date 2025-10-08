@@ -1,0 +1,33 @@
+.exercise-item {
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(189, 189, 189, 0.5);
+  cursor: pointer;
+}
+
+.exercise-item:last-child {
+  border-bottom: none;
+}
+
+.exercise-item-info h4 {
+  margin-bottom: 5px;
+}
+
+.exercise-item-info__top {
+  display: flex;
+  align-items: top;
+  gap: 6px;
+}
+
+.exercise-item-info p {
+  font-size: 14px;
+  color: #777;
+}
+
+.exercise-item-info__bottom {
+  display: flex;
+  gap: 4px;
+}
+
+.exercise-item-info__bottom>p{
+  color: rgba(67, 67, 67, 1);
+}

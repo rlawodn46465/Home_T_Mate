@@ -1,0 +1,14 @@
+.routine-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.routine-detail-header__menu{
+  display: flex;
+  gap: 10px;
+}
+
+.routine-detail__edit-icon{
+  width: 40px;
+  cursor: pointer;
+}
