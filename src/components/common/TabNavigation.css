@@ -22,4 +22,5 @@
 .tab-navigation-detail .tab-item.active {
   border-bottom: 4px solid rgba(81, 85, 163, 1);
   padding-bottom: 10px;
+  color: rgba(47, 47, 47, 1);
 }
