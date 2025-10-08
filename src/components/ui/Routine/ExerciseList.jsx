@@ -8,13 +8,7 @@ const ExerciseList = ({ exercises }) => {
   return (
     <div className="exercise-list">
       {exercises.map((exercise) => (
-        <div
-          key={exercise.id}
-          className="exercise-item"
-          onClick={() => {
-            console.log(exercises);
-          }}
-        >
+        <div key={exercise.id} className="exercise-item">
           <div className="exercise-item-info">
             <div className="exercise-item-info__top">
               <h4>{exercise.name}</h4>
@@ -24,7 +18,7 @@ const ExerciseList = ({ exercises }) => {
             </div>
             <div className="exercise-item-info__bottom">
               {exercise.days.map((day) => (
-                <p>{day}</p>
+                <p key={day}>{day}</p>
               ))}
             </div>
           </div>
