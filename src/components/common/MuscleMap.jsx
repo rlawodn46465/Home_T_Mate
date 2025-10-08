@@ -6,6 +6,7 @@ const MuscleMap = ({ selectedTags }) => {
       ? "muscle-active-color"
       : "muscle-inactive-color";
   };
+  //[복근, 가슴, 어깨, 이두, 삼두, 전완, 대퇴사두, 승모, 종아리]
 
   return (
     <svg className="muscle-body" width="80" height="170" viewBox="0 0 40 115">
