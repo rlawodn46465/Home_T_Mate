@@ -1,0 +1,17 @@
+.exercise-detail-page h2{
+  margin-bottom: 10px;
+}
+
+.exercise-header{
+  display: flex;
+  gap: 15px;
+}
+
+.exercise-header-info{
+  display: flex;
+  flex-direction: column;
+}
+
+.exercise-header-info h4{
+  margin-bottom: 10px;
+}

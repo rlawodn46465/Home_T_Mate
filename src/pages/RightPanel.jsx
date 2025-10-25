@@ -4,6 +4,7 @@ import OnboardingPage from "./Onboarding/OnboardingPage";
 import DashboardPage from "./Dashboard/DashboardPage";
 import RoutineListPage from "./Routine/RoutineListPage";
 import RoutineDetailPage from "./Routine/RoutineDetailPage";
+import ExerciseDetail from "./Exercise/ExerciseDetail";
 
 const RightPanel = () => {
   const location = useLocation();
@@ -26,6 +27,9 @@ const RightPanel = () => {
       break;
     case "routine":
       content = <RoutineListPage />;
+      break;
+    case "record":
+      content = <ExerciseDetail />;
       break;
     case "routine-detail":
       content = <RoutineDetailPage routineId={routineId} />;
