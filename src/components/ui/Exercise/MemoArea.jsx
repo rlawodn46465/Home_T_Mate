@@ -6,14 +6,17 @@ const MemoArea = ({ initialMemo, onSave }) => {
   const [currentMemo, setCurrentMemo] = useState(initialMemo);
   const [isEditing, setIsEditing] = useState(false);
   const [isChanged, setIsChanged] = useState(false);
+  const [editingStartData, setEditingStartData] = useState(initialMemo);
 
   useEffect(() => {
     setCurrentMemo(initialMemo);
+    setEditingStartData(initialMemo);
     setIsChanged(false);
   }, [initialMemo]);
 
   const handleContainerClick = () => {
     if (!isEditing) {
+      setEditingStartData(currentMemo);
       setIsEditing(true);
       if (textareaRef.current) {
         textareaRef.current.focus();
@@ -22,44 +25,39 @@ const MemoArea = ({ initialMemo, onSave }) => {
   };
 
   const handleMemoChange = (e) => {
-    console.log(initialMemo);
-    setCurrentMemo(e.target.value);
-    setIsChanged(e.target.value !== initialMemo);
+    const newValue = e.target.value;
+    setCurrentMemo(newValue);
+    setIsChanged(newValue !== editingStartData);
   };
 
   const handleBlur = () => {
-    console.log('블러됨');
-    setTimeout(() => {
-      if (isEditing) {
-        setIsEditing(false);
-      }
-      if (isChanged && onSave) {
-        onSave(currentMemo);
-      }
-      setIsChanged(false);
-    }, 0);
+    if (isEditing) {
+      setIsEditing(false);
+    }
   };
 
   const handleCancel = () => {
-    console.log('편집 취소 누름');
-    console.log(initialMemo);
-    onSave(initialMemo);
-    setCurrentMemo(initialMemo);
+    setCurrentMemo(editingStartData);
     setIsEditing(false);
     setIsChanged(false);
 
-    // if(textareaRef.current){
-    //   textareaRef.current.blur();
-    // }
-    if (document.activeElement) {
-      document.activeElement.blur();
+    if (textareaRef.current) {
+      textareaRef.current.blur();
+    }
+  };
+
+  const handleSave = () => {
+    if (isChanged && onSave) {
+      onSave(currentMemo);
+      setIsEditing(false);
+      textareaRef.current?.blur();
     }
   };
 
   return (
     <div className="memo-area-secion">
       <h4>메모</h4>
-      <div onClick={handleContainerClick}>
+      <div onMouseDown={handleContainerClick}>
         <textarea
           ref={textareaRef}
           value={currentMemo}
@@ -72,10 +70,11 @@ const MemoArea = ({ initialMemo, onSave }) => {
         />
       </div>
 
-      {(isEditing || isChanged) && (
-        <div>
-          {isEditing && <button onMouseDown={handleCancel}>편집 취소</button>}
-        </div>
+      {isEditing && <button onMouseDown={handleCancel}>편집 취소</button>}
+      {isEditing && (
+        <button onClick={handleSave} disabled={!isChanged}>
+          저장
+        </button>
       )}
     </div>
   );
