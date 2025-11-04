@@ -6,6 +6,7 @@ const connectDB = require("./config/db");
 const errorHandler = require("./middlewares/errorMiddleware");
 const userRouter = require("./routes/users");
 const authRouter = require('./routes/auth');
+const exerciseRouter = require('./routes/exercises'); 
 
 //DB 연결 실행
 connectDB();
@@ -23,6 +24,7 @@ app.use(express.urlencoded({ extended: true }));
 //5. API 엔드포인트에 라우트 연결
 app.use("/api/v1/users", userRouter);
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/exercises', exerciseRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
@@ -32,7 +34,8 @@ app.get("/", (req, res) => {
 });
 
 app.use((req, res, next) => {
-  const error = new Error(`Not Found - ${req.originalUrl}`);
+  const { NotFoundError } = require('./utils/errorHandler');
+  const error = new NotFoundError(`Not Found - ${req.originalUrl}`);
   res.status(404);
   next(error);
 });
