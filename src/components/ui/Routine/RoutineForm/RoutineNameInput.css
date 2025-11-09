@@ -1,0 +1,28 @@
+.routine-name-input {
+  display: flex;
+  gap: 5px;
+}
+
+.routine-name-input__text-input {
+  min-width: 50px;
+  background-color: transparent;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.routine-name-input__text-input:focus {
+  caret-color: rgba(47, 47, 47, 1);
+  background-color: transparent;
+}
+
+.routine-name-input__text {
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.routine-name-input__icon {
+  width: 20px;
+  cursor: pointer;
+}

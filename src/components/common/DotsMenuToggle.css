@@ -1,0 +1,28 @@
+.dots-toggle-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: end;
+  width: 50px;
+  height: 30px;
+  padding: 5px;
+  background-color: transparent;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+
+.dot{
+  width: 5px;
+  height: 5px;
+  background-color: #333;
+  border-radius: 50%;
+}
+
+.dots-toggle-container.active .dot{
+  background-color: #007bff;
+}
+
+.dots-toggle-container:hover .dot{
+  background-color: #007bff;
+}
