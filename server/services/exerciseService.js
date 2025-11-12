@@ -4,6 +4,39 @@ const UserStats = require('../models/UserStats');
 const { NotFoundError } = require('../utils/errorHandler');
 
 /**
+ * @description 운동 목록을 필터링/검색하여 조회합니다. (2번째 이미지 구현)
+ * @param {object} filterOptions - 검색 및 필터링을 위한 객체 (예: { name: '스쿼트', category: '하체' })
+ * @returns {Promise<Array>} 운동 이름, 카테고리, 타겟 근육, 장비만 포함된 운동 목록
+ */
+const getExerciseList = async (filterOptions = {}) => {
+    // 1. 쿼리 객체 생성
+    const query = {};
+    if (filterOptions.search) {
+        // 운동 이름, 카테고리 등에서 검색어 일치 확인 (대소문자 구분 없이)
+        const regex = new RegExp(filterOptions.search, 'i');
+        query.$or = [
+            { name: { $regex: regex } },
+            { category: { $regex: regex } },
+            { targetMuscles: { $regex: regex } },
+            { equipment: { $regex: regex } },
+        ];
+    }
+    
+    if (filterOptions.category) {
+        query.category = filterOptions.category;
+    }
+    // 필요한 다른 필터 옵션도 여기에 추가할 수 있습니다. (예: targetMuscles)
+
+    // 2. 필요한 필드만 선택하여 조회 (name, category, targetMuscles, equipment)
+    const exercises = await Exercise.find(query)
+        .select('name category targetMuscles equipment') // 필요한 4가지 필드만 선택
+        .lean(); // Mongoose Document가 아닌 Plain JavaScript Object로 반환하여 성능 최적화
+    
+    return exercises;
+};
+
+
+/**
  * @description 운동 로그를 DB에 추가하는 서비스 로직 (기존 함수)
  */
 const addExerciseLog = async (userId, exerciseId, logData) => {
@@ -61,6 +94,7 @@ const getExerciseDetail = async (exerciseId, userId) => {
 };
 
 module.exports = {
+  getExerciseList,
   addExerciseLog,
-  getExerciseDetail, // 추가
+  getExerciseDetail,
 };
