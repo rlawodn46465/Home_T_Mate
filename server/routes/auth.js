@@ -3,28 +3,26 @@ const asyncHandler = require("express-async-handler");
 const router = express.Router();
 const authService = require("../services/authService");
 const { CustomError } = require("../utils/errorHandler");
+const {protect} = require("../middlewares/authMiddleware");
 
 const FRONTEND_LOGIN_REDIRECT_URL = process.env.FRONTEND_LOGIN_REDIRECT_URL;
 
-/**
- * @description 인증 성공 후 JWT 쿠키 설정 및 프론트엔드로 리다이렉트
- * @param {object} res - Express 응답 객체
- * @param {object} result - authService에서 반환된 결과 ({token, isNewUser})
- */
+// Refresh Token을 프론트로 리다이렉트
 const sendAuthResponse = (res, result) => {
-  // 1. JWT 토큰을 HTTP-Only Cookie에 설정
-  res.cookie("accessToken", result.token, {
+  // HTTP-Only Cookie 설정
+  res.cookie("refreshToken", result.refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production",
+    secure: process.env.NODE_ENV === "production", // 배포시 변경
+    // secure: process.env.NODE_ENV === "development",
     maxAge: 3600000 * 24 * 7, // 7일 유효(ms)
     sameSite: "Lax",
   });
 
-  // 2. 신규 가입 여부에 따라 리다이렉트 경로 분리 / 신규 : 기존
+  // 신규 가입 여부에 따라 리다이렉트 경로 분리 / 신규 : 기존
   const redirectPath = result.isNewUser ? '/login/signup-complete' : '/login/success';
 
-  // 3. 프론트엔드 특정 경로로 리다이렉트
-  res.redirect(`${FRONTEND_LOGIN_REDIRECT_URL}${redirectPath}`);
+  // 프론트 특정 경로로 리다이렉트
+  res.redirect(`${FRONTEND_LOGIN_REDIRECT_URL}${redirectPath}?token=${result.token}`);
 };
 
 // 구글 로그인 라우트 (GET /api/v1/auth/google)
@@ -115,5 +113,43 @@ router.get(
     sendAuthResponse(res, result);
   })
 );
+
+// 인증/토큰 관리 라우트 (POST /api/v1/auth/refresh)
+router.post('/refresh', asyncHandler(async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+
+  if(!refreshToken){
+    throw new CustomError('리프레시 토큰이 없습니다.', 401);
+  }
+
+  const newAccessToken = await authService.refreshToken(refreshToken);
+
+  res.status(200).json({
+    success: true,
+    accessToken: newAccessToken
+  });
+}));
+
+// 로그인된 사용자 정보 반환 (GET /api/v1/auth/me)
+router.get('/me', protect, asyncHandler(async (req, res) => {
+  res.status(200).json({
+    success: true,
+    user: {
+      id: req.user._id,
+      name: req.user.name,
+      email: req.user.email,
+    }
+  });
+}));
+
+// 로그아웃 (POST /api/v1/auth/logout)
+router.post('/logout', asyncHandler(async (req, res) => {
+  authService.clearAuthCookies(res);
+
+  res.status(200).json({
+    success: true,
+    message: '로그아웃 성공'
+  });
+}));
 
 module.exports = router;

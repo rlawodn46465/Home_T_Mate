@@ -2,20 +2,58 @@ const User = require("../models/User");
 const { CustomError } = require("../utils/errorHandler");
 const axios = require("axios");
 const qs = require("qs");
+const jwt = require("jsonwebtoken");
 
-/**
- * @description 소셜 로그인 통합 처리 (사용자 조회, 생성 및 JWT 발급)
- * @param {string} socialIdField - 사용자 모델에서 해당 소셜 ID를 저장할 필드명 (예: 'naverId')
- * @param {string} socialId - 해당 소셜 프로바이더의 고유 ID
- * @param {object} profileData - 프로필 정보 객체 {email, name, age, birthyear}
- */
+const REFRESH_TOKEN_COOKIE_NAME = "refreshToken";
+
+// ============================
+// JWT 발급 및 쿠키 관리 유틸리티
+// ============================
+
+// 로그아웃시 Refresh Token 쿠키 제거
+const clearAuthCookies = (res) => {
+  res.cookie(REFRESH_TOKEN_COOKIE_NAME, "none", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+  });
+};
+
+// Access Token 재발급
+const refreshToken = async (refreshToken) => {
+  try {
+    // Refresh Token 검증
+    const decoded = jwt.verify(refreshToken, process.env.JWT_SECRET);
+
+    // 사용자 ID로 DB에서 사용자 조회
+    const user = await User.findById(decoded.id);
+
+    if (!user) {
+      throw new CustomErrorI("토큰에 해당하는 사용자를 찾을 수 없습니다.", 401);
+    }
+
+    // 새 Access Token 발급 및 반환
+    return user.getSignedJwtToken();
+  } catch (error) {
+    throw new CustomError(
+      "리프레시 토큰이 유효하지 않거나 만료되었습니다.",
+      401
+    );
+  }
+};
+
+// ====================
+// 소셜 로그인 통합 처리
+// ====================
+
+// 소셜 로그인 통합 처리(사용자 조회, 생성 및 JWT 발급)
 const handleSocialLogin = async (socialIdField, socialId, profileData) => {
-  // 1. 소셜 ID로 사용자 조회
+  // 소셜 ID로 사용자 조회
   let user = await User.findOne({ [socialIdField]: socialId });
   let isNewUser = false;
 
   if (!user) {
-    // 2. 신규 사용자면 DB에 저장
+    // 신규 사용자면 DB에 저장
     isNewUser = true;
     const tempPassword = Math.random().toString(36).slice(-8);
 
@@ -30,22 +68,19 @@ const handleSocialLogin = async (socialIdField, socialId, profileData) => {
     user = await newUser.save();
   }
 
-  // 3. JWT 토큰 생성 및 반환
+  // 토큰 생성
   const token = user.getSignedJwtToken();
+  const refreshToken = user.getSignedRefreshToken();
 
   return {
     user: { id: user._id, name: user.name, email: user.email },
     token,
+    refreshToken,
     isNewUser,
   };
 };
 
-/**
- * @description 네이버 인증 코드를 받아 JWT 토큰을 발급하는 서비스 로직
- * @param {string} code - 네이버로부터 받은 인증 코드
- * @param {string} state - CSRF 방지용 상태 값
- * @returns {Promise<{user: object, token: string}>} 사용자 정보와 JWT
- */
+// 네이버 인증 코드를 받아 JWT 토큰을 발급
 const naverLogin = async (code, state) => {
   try {
     // 1. 네이버 토큰 교환 (GET 요청 사용 - 네이버의 특성)
@@ -96,11 +131,7 @@ const naverLogin = async (code, state) => {
   }
 };
 
-/**
- * @description 구글 인증 코드를 받아 JWT 토큰을 발급하는 서비스 로직
- * @param {string} code - 구글로부터 받은 인증 코드
- * @returns {Promise<{user: object, token: string}>} 사용자 정보와 JWT
- */
+// 구글 인증 코드를 받아 JWT 토큰을 발급
 const googleLogin = async (code) => {
   try {
     // 1. 구글 토큰 교환(Post 요청 사용 - Oauth 표준)
@@ -150,11 +181,7 @@ const googleLogin = async (code) => {
   }
 };
 
-/**
- * @description 카카오 인증 코드를 받아 JWT 토큰을 발급하는 서비스 로직
- * @param {string} code - 카카오로부터 받은 인증 코드
- * @returns {Promise<{user: object, token: string}>} 사용자 정보와 JWT
- */
+// 카카오 인증 코드를 받아 JWT 토큰
 const kakaoLogin = async (code) => {
   try {
     // 1. 카카오 토큰 교환 (POST 요청)
@@ -215,4 +242,6 @@ module.exports = {
   naverLogin,
   googleLogin,
   kakaoLogin,
+  refreshToken,
+  clearAuthCookies,
 };
