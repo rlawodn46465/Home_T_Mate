@@ -1,4 +1,4 @@
-.exercise-select-modal{
+.exercise-select-modal {
   position: fixed;
   top: 0;
   left: 0;
@@ -11,7 +11,7 @@
   z-index: 1000;
 }
 
-.exercise-modal-content{
+.exercise-modal-content {
   background-color: white;
   border-radius: 12px;
   width: 95%;
@@ -72,7 +72,7 @@
   box-sizing: border-box;
 }
 
-.category-container{
+.category-container {
   padding: 0 16px;
   border-bottom: 1px solid #e5e7eb;
 }
@@ -86,12 +86,12 @@
   scrollbar-width: none;
 }
 
-.tab-scroll-container::-webkit-scrollbar{
+.tab-scroll-container::-webkit-scrollbar {
   display: none;
 }
 
 .tab-scroll-container.dragging {
-    cursor: grabbing !important;
+  cursor: grabbing !important;
 }
 
 .category-tab {
@@ -105,7 +105,7 @@
   flex-shrink: 0;
 }
 
-.category-tab.active{
+.category-tab.active {
   background-color: #4f46e5;
   color: white;
   font-weight: 700;
@@ -135,28 +135,30 @@
 
 .exercise-item-row.selected {
   background-color: #eff6ff;
-  border-color: #4f46e5;
+  padding-left: 30px;
 }
 
 .selection-indicator {
+  height: 80px;
   position: absolute;
-  left: 0;
-  top: 0;
+  left: 20px;
+  top: 11px;
   bottom: 0;
   width: 4px;
   background-color: #4f46e5;
-  border-radius: 8px 0 0 8px;
 }
 
 .image-placeholder {
   width: 60px;
   height: 80px;
-  background-color: #e0e7ff;
-  border-radius: 4px;
   margin-right: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.image-placeholder .muscle-body {
+  height: 80px;
 }
 
 .exercise-info {
@@ -172,7 +174,8 @@
   margin: 0;
 }
 
-.loading-state, .no-result {
+.loading-state,
+.no-result {
   text-align: center;
   padding: 48px 0;
   color: #9ca3af;

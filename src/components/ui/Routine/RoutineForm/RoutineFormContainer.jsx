@@ -46,6 +46,7 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
 
   // 운동 추가 핸들러
   const handleAddExercise = useCallback((newExercises) => {
+    // 새로운 운동 항목 배열 생성
     const exercisesToAdd = newExercises.map((ex) => ({
       id: Date.now() + Math.random(),
       name: ex.name + (ex.tool === "맨몸" ? "" : ` (${ex.tool})`),
@@ -55,10 +56,17 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
       musclePart: ex.musclePart,
     }));
 
+    // 루틴 상태 업데이트
     setRoutineForm((prev) => ({
       ...prev,
       exercises: [...prev.exercises, ...exercisesToAdd],
     }));
+    // 모달 닫기
+    setCurrentScreen(SCREEN.FORM);
+  }, []);
+
+  // 모달 닫기
+  const handleCloseSelectModal = useCallback(() => {
     setCurrentScreen(SCREEN.FORM);
   }, []);
 
@@ -73,10 +81,6 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
   // 운동 추가 버튼 핸들러
   const handleOpenSelectModal = useCallback(() => {
     setCurrentScreen(SCREEN.SELECT);
-  }, []);
-
-  const handleCloseSelectModal = useCallback(() => {
-    setCurrentScreen(SCREEN.FORM);
   }, []);
 
   if (currentScreen === SCREEN.SELECT) {
