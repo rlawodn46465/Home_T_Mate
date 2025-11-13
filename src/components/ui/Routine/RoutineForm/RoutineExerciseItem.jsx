@@ -7,8 +7,15 @@ import MuscleMap from "../../../common/MuscleMap";
 
 const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
 
-const RoutineExerciseItem = ({ exercise, onRemove }) => {
-  const { id, name, sets, restTime, days, musclePart } = exercise;
+const RoutineExerciseItem = ({
+  exercise,
+  onRemove,
+  onExerciseUpdate,
+  onSetUpdate,
+  onAddSet,
+  onRemoveSet,
+}) => {
+  const { id, name, sets, restTime, days, targetMuscles } = exercise;
   const [isExpanded, setIsExpanded] = useState(true);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const containerRef = useRef(null);
@@ -29,7 +36,11 @@ const RoutineExerciseItem = ({ exercise, onRemove }) => {
 
   // 세트 간 휴식 시간 업데이트
   const handleRestTimeChange = (e) => {
-    console.log(`휴식 시간 변경: ${e.target.value}초`);
+    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // 숫자 외 제거
+    const numValue = parseInt(rawValue, 10);
+    if (rawValue === "" || !isNaN(numValue)) {
+      onExerciseUpdate(id, "restTime", rawValue === "" ? 0 : numValue);
+    }
   };
 
   const handleToggle = (e) => {
@@ -40,23 +51,39 @@ const RoutineExerciseItem = ({ exercise, onRemove }) => {
   };
 
   const handleMenuItemClick = (action) => {
+    if (action === "삭제") {
+      onRemove(id);
+    }
     console.log(`${action} 버튼이 클릭되었습니다.`);
     setIsMenuOpen(false);
   };
 
   // 요일 토글
   const toggleDay = (day) => {
-    console.log(`요일 토글: ${day}`);
-  };
+    const newDays = days.includes(day)
+      ? days.filter((d) => d !== day) // 제거
+      : [...days, day]; // 추가
+    onExerciseUpdate(id, "days", newDays);
+  };
 
   // 세트 추가
   const handleAddSet = () => {
-    console.log("세트 추가");
+    onAddSet(id);
   };
 
   // 세트 제거
   const handleRemoveSet = (setId) => {
-    console.log(`세트 제거: ${setId}`);
+    onRemoveSet(id, setId);
+  };
+
+  // 무게/횟수 변경 핸들러
+  const handleSetFieldChange = (setId, field, e) => {
+    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // 숫지 외 제거
+    const numValue = parseInt(rawValue, 10);
+
+    if (rawValue === "" || !isNaN(numValue)) {
+      onSetUpdate(id, setId, field, rawValue === "" ? 0 : numValue);
+    }
   };
 
   return (
@@ -98,7 +125,7 @@ const RoutineExerciseItem = ({ exercise, onRemove }) => {
             </div>
           </div>
           <div className="item-info-container">
-            <MuscleMap selectedTags={exercise.musclePart}/>
+            <MuscleMap selectedTags={targetMuscles?.join(", ")} />
             <div className="item-info-sets">
               <div className="rest-time-group">
                 <span className="rest-time-label">세트간 휴식 시간</span>
@@ -120,9 +147,7 @@ const RoutineExerciseItem = ({ exercise, onRemove }) => {
                       inputMode="numeric"
                       className="item-input"
                       value={set.kg}
-                      onChange={() =>
-                        console.log(`Set ${setIndex + 1} 무게 변경`)
-                      }
+                      onChange={(e) => handleSetFieldChange(set.id, "kg", e)}
                     />
                     <span className="unit-label">kg</span>
                     <input
@@ -130,9 +155,7 @@ const RoutineExerciseItem = ({ exercise, onRemove }) => {
                       inputMode="numeric"
                       className="item-input"
                       value={set.reps}
-                      onChange={() =>
-                        console.log(`Set ${setIndex + 1} 횟수 변경`)
-                      }
+                      onChange={(e) => handleSetFieldChange(set.id, "reps", e)}
                     />
                     <span className="unit-label">회</span>
                     {sets.length > 1 && (

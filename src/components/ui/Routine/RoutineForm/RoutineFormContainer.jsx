@@ -18,19 +18,7 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
       routineType: "routine",
       goalWeeks: 4,
     },
-    exercises: [
-      {
-        id: 1,
-        name: "런지",
-        sets: [
-          { id: 1, kg: 10, reps: 100 },
-          { id: 2, kg: 10, reps: 100 },
-        ],
-        restTime: 15,
-        days: ["월", "화", "수", "금"],
-        musclePart: "대퇴사두",
-      },
-    ],
+    exercises: [],
   });
 
   // 루틴 정보 업데이트 핸들러
@@ -49,11 +37,18 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
     // 새로운 운동 항목 배열 생성
     const exercisesToAdd = newExercises.map((ex) => ({
       id: Date.now() + Math.random(),
-      name: ex.name + (ex.tool === "맨몸" ? "" : ` (${ex.tool})`),
-      sets: [{ id: Date.now() + Math.random() + 0.1, kg: 0, reps: 0 }],
+      name: ex.name,
+      targetMuscles: ex.targetMuscles,
+      equipment: ex.equipment || [],
+      sets: [
+        {
+          id: Date.now() + Math.random() + 0.1,
+          kg: 0,
+          reps: 10,
+        },
+      ],
       restTime: 30,
       days: [],
-      musclePart: ex.musclePart,
     }));
 
     // 루틴 상태 업데이트
@@ -75,6 +70,61 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
     setRoutineForm((prev) => ({
       ...prev,
       exercises: prev.exercises.filter((ex) => ex.id !== exerciseId),
+    }));
+  }, []);
+
+  // 운동 항목 내부 값 업데이트
+  const handleExerciseUpdate = useCallback((exerciseId, field, value) => {
+    setRoutineForm((prev) => ({
+      ...prev,
+      exercises: prev.exercises.map((ex) =>
+        ex.id === exerciseId ? { ...ex, [field]: value } : ex
+      ),
+    }));
+  }, []);
+
+  // 세트 정보 업데이트
+  const handleSetUpdate = useCallback((exerciseId, setId, field, value) => {
+    setRoutineForm((prev) => ({
+      ...prev,
+      exercises: prev.exercises.map((ex) =>
+        ex.id === exerciseId
+          ? {
+              ...ex,
+              sets: ex.sets.map((set) =>
+                set.id === setId ? { ...set, [field]: value } : set
+              ),
+            }
+          : ex
+      ),
+    }));
+  }, []);
+
+  const handleAddSet = useCallback((exerciseId) => {
+    setRoutineForm((prev) => ({
+      ...prev,
+      exercises: prev.exercises.map((ex) =>
+      ex.id === exerciseId
+    ? {
+      ...ex,
+      sets: [
+        ...ex.sets,
+        {id: Date.now() + Math.random(), kg: 0, reps: 10},
+      ],
+    } : ex),
+    }));
+  }, []);
+
+  // 세트 제거
+  const handleRemoveSet = useCallback((exerciseId, setId) => {
+    setRoutineForm((prev) => ({
+      ...prev,
+      exercises: prev.exercises.map((ex) =>
+      ex.id === exerciseId && ex.sets.length > 1
+    ? {
+      ...ex,
+      sets: ex.sets.filter((set) => set.id !== setId),
+    } : ex),
     }));
   }, []);
 
@@ -109,8 +159,11 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
         exercises={routineForm.exercises}
         onOpenModal={handleOpenSelectModal}
         onRemoveExercise={handleRemoveExercise}
+        onExerciseUpdate={handleExerciseUpdate} 
+        onSetUpdate={handleSetUpdate} 
+        onAddSet={handleAddSet} 
+        onRemoveSet={handleRemoveSet}
       />
-      {/* <p className="routine-form-container__add-exercise">+운동 추가</p> */}
     </div>
   );
 };

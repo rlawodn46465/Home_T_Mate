@@ -2,8 +2,15 @@ import { useState } from "react";
 import RoutineExerciseItem from "./RoutineExerciseItem";
 import "./RoutineExerciseList.css";
 
-const RoutineExerciseList = ({ exercises, onOpenModal, onRemoveExercise }) => {
-
+const RoutineExerciseList = ({
+  exercises,
+  onOpenModal,
+  onRemoveExercise,
+  onExerciseUpdate,
+  onSetUpdate,
+  onAddSet,
+  onRemoveSet,
+}) => {
   return (
     <div className="routine-exercise-list">
       {exercises.map((exercise, index) => (
@@ -11,6 +18,10 @@ const RoutineExerciseList = ({ exercises, onOpenModal, onRemoveExercise }) => {
           key={exercise.id}
           exercise={exercise}
           onRemove={onRemoveExercise}
+          onExerciseUpdate={onExerciseUpdate}
+          onSetUpdate={onSetUpdate}
+          onAddSet={onAddSet}
+          onRemoveSet={onRemoveSet}
         />
       ))}
       <div className="add-exercise-area">
@@ -18,7 +29,6 @@ const RoutineExerciseList = ({ exercises, onOpenModal, onRemoveExercise }) => {
           + 운동 추가
         </button>
       </div>
-      {/* {isModalOpen && <ExerciseSelectModal onClose={() => setIsModalOpen(false)} onSelect={handleSelectExercise} />} */}
     </div>
   );
 };
