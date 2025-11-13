@@ -3,19 +3,25 @@ import Header from "./pages/Header";
 import MainLayout from "./pages/MainLayout";
 import SocialAuthRedirectHandler from "./pages/Login/SocialAuthRedirectHandler";
 import "./App.css";
+import { AuthProvider } from "./hooks/useAuth";
 
 const App = () => {
   return (
     <div className="main-container">
-      <Header />
-      <Routes>
-        <Route path="/login/success" element={<SocialAuthRedirectHandler />} />
-        <Route
-          path="/login/signup-complete"
-          element={<SocialAuthRedirectHandler />}
-        />
-        <Route path="/*" element={<MainLayout />} />
-      </Routes>
+      <AuthProvider>
+        <Header />
+        <Routes>
+          <Route
+            path="/login/success"
+            element={<SocialAuthRedirectHandler />}
+          />
+          <Route
+            path="/login/signup-complete"
+            element={<SocialAuthRedirectHandler />}
+          />
+          <Route path="/*" element={<MainLayout />} />
+        </Routes>
+      </AuthProvider>
     </div>
   );
 };

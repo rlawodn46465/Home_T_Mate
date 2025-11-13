@@ -16,12 +16,49 @@ const MUSCLE_PARTS = [
 ]; // '등', '하체' 추가
 const TOOLS = ["전체", "맨몸", "덤벨", "바벨", "벤치"];
 
+// 서버 API 호출 함수
+const fetchExercisesApi = async (part, tool, search) => {
+  // API 엔드포인트
+  const API_ENDPOINT = "/api/v1/exercises";
+
+  const queryParams = new URLSearchParams();
+
+  if (part !== "전체") {
+    queryParams.append("targetMuscles", part);
+  }
+  if (tool !== "전체") {
+    queryParams.append("equipment", tool);
+  }
+  if (search) {
+    queryParams.append("search", search);
+  }
+
+  const url = `http://localhost:3000${API_ENDPOINT}?${queryParams.toString()}`;
+
+  try {
+    const response = await fetch(url);
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return data.exercises || data;
+  } catch (error) {
+    throw new Error(
+      "운동 목록을 불러오는 데 실패했습니다. 서버 상태를 확인하세요."
+    );
+  }
+};
+
 const ExerciseSelectModal = ({ onClose, onSelect }) => {
   const [selectedPart, setSelectedPart] = useState("전체");
   const [selectedTool, setSelectedTool] = useState("전체");
   const [searchTerm, setSearchTerm] = useState("");
   const [exercises, setExercises] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null); // 에러 상태 추가
 
   // 드래그 스크롤
   const partScrollRef = useRef(null);
@@ -37,11 +74,17 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
   // API 호출 로직
   const loadExercises = useCallback(async (part, tool, search) => {
     setIsLoading(true);
+    setError(null);
     try {
-      const data = await fetchExercises(part, tool, search);
-      setExercises(data);
-    } catch (error) {
-      console.error("운동 목록을 불러오는데 실패했습니다:", error);
+      const data = await fetchExercisesApi(part, tool, search);
+      const mappedData = data.map((ex) => ({
+        ...ex,
+        id: ex.id || ex._id,
+      }));
+      setExercises(mappedData);
+    } catch (err) {
+      console.error(err.message);
+      setError(err.message);
       setExercises([]);
     } finally {
       setIsLoading(false);
@@ -50,7 +93,12 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
 
   // 필터/검색 조건 변경시 운동 목록 재로드
   useEffect(() => {
-    loadExercises(selectedPart, selectedTool, searchTerm);
+    // 검색어 입력이 멈춘 후 잠시 뒤에 로드하도록 최적화
+    const debounceTimer = setTimeout(() => {
+      loadExercises(selectedPart, selectedTool, searchTerm);
+    }, 300);
+
+    return () => clearTimeout(debounceTimer);
   }, [selectedPart, selectedTool, searchTerm, loadExercises]);
 
   // 운동 선택/해제 핸들러
@@ -65,10 +113,11 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
 
   const handleAddSelectedExercises = () => {
     onSelect(selectedExercises);
-    // onClose();
+    onClose();
   };
 
   const handleMouseDown = (e, ref, setIsDraggingState) => {
+    // 탭 클릭 이벤트가 발생하지 않도록 true 설정
     setIsDraggingState(true);
     setStartX(e.pageX - ref.current.offsetLeft);
     setScrollLeft(ref.current.scrollLeft);
@@ -77,7 +126,10 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
   };
 
   const handleMouseLeaveOrUp = (ref, setIsDraggingState) => {
-    setIsDraggingState(false);
+    setTimeout(() => {
+      setIsDraggingState(false);
+    }, 100);
+
     if (ref.current) {
       ref.current.style.cursor = "grab";
       ref.current.style.userSelect = "auto";
@@ -115,8 +167,11 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
   };
 
   return (
-    <div className="exercise-select-modal">
-      <div className="exercise-modal-content">
+    <div className="exercise-select-modal" onClick={onClose}>
+      <div
+        className="exercise-modal-content"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="modal-header">
           <h2>운동 추가하기</h2>
           <div className="button-group">
@@ -176,7 +231,9 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
                 className={`category-tab ${
                   selectedTool === tool ? "active" : ""
                 }`}
-                onClick={() => handleTabClick(setSelectedTool, tool, isToolDragging)}
+                onClick={() =>
+                  handleTabClick(setSelectedTool, tool, isToolDragging)
+                }
               >
                 {tool}
               </button>
@@ -188,10 +245,14 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
             <p className="loading-state">운동 목록을 불러오는 중...</p>
           ) : exercises.length === 0 ? (
             <p className="no-result">결과가 없습니다.</p>
-          ): (exercises.map((ex) => {
+          ) : (
+            exercises.map((ex) => {
               const isSelected = selectedExercises.some(
                 (sEx) => sEx.id === ex.id
               );
+              // 운동 메타 정보 조합
+              const metaInfo = [ex.targetMuscles, ex.equipment].filter(Boolean).join(', ');
+              
               return (
                 <div
                   key={ex.id}
@@ -204,7 +265,7 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
                   <div className="exercise-info">
                     <p className="exercise-name">{ex.name}</p>
                     <p className="exercise-meta">
-                      {ex.musclePart},{ex.tool}
+                      {metaInfo}
                     </p>
                   </div>
                   {isSelected && <div className="selection-indicator"></div>}

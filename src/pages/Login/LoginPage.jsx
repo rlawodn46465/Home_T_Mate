@@ -1,6 +1,6 @@
 import { useLocation } from "react-router-dom";
 import "./LoginPage.css";
-import { initiateSocialLogin } from "../../services/api/authApi";
+import { initiateSocialLogin } from "../../services/api/authService";
 import google from "../../assets/images/google_icon.svg";
 import naver from "../../assets/images/naver_icon.svg";
 import kakao from "../../assets/images/kakao_icon.svg";
@@ -12,7 +12,7 @@ const LoginPage = () => {
   const location = useLocation();
 
   const handleSocialLogin = (provider) => {
-    const currentPath = location.pathname;
+    const currentPath = location.pathname + location.search;
     sessionStorage.setItem(ORIGINAL_PATH_KEY, currentPath);
     initiateSocialLogin(provider);
   };
