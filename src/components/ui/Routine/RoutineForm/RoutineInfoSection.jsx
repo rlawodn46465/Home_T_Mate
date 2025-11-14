@@ -4,12 +4,6 @@ import RoutineTypeToggle from "./RoutineTypeToggle";
 import "./RoutineInfoSection.css";
 
 const RoutineInfoSection = ({ info, onInfoChange }) => {
-  // 더미
-  const [formState, setFormState] = useState({
-    name: "팔굽혀펴기 100일 챌린지",
-    routineType: "challenge",
-    goalWeeks: 4,
-  });
 
   const { name, routineType, goalWeeks } = info;
 
@@ -57,7 +51,7 @@ const RoutineInfoSection = ({ info, onInfoChange }) => {
               }}
               className="goal-week-input"
             />
-            <span className="goal-week-unit">차</span>?
+            <span className="goal-week-unit">차</span>
           </div>
         )}
       </div>

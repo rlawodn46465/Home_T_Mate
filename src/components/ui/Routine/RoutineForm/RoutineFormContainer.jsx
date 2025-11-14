@@ -3,6 +3,7 @@ import RoutineExerciseList from "./RoutineExerciseList";
 import "./RoutineFormContainer.css";
 import RoutineInfoSection from "./RoutineInfoSection";
 import ExerciseSelectModal from "../../ExerciseSelect/ExerciseSelectModal";
+import { useRoutineSave } from "../../../../hooks/useRoutineSave";
 
 const SCREEN = {
   FORM: "form",
@@ -11,6 +12,11 @@ const SCREEN = {
 
 const RoutineFormContainer = ({ routineId, isEditMode }) => {
   const [currentScreen, setCurrentScreen] = useState(SCREEN.FORM);
+
+  const { isSaving, saveRoutineHandler } = useRoutineSave(
+    isEditMode,
+    routineId
+  );
 
   const [routineForm, setRoutineForm] = useState({
     info: {
@@ -104,14 +110,16 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
     setRoutineForm((prev) => ({
       ...prev,
       exercises: prev.exercises.map((ex) =>
-      ex.id === exerciseId
-    ? {
-      ...ex,
-      sets: [
-        ...ex.sets,
-        {id: Date.now() + Math.random(), kg: 0, reps: 10},
-      ],
-    } : ex),
+        ex.id === exerciseId
+          ? {
+              ...ex,
+              sets: [
+                ...ex.sets,
+                { id: Date.now() + Math.random(), kg: 0, reps: 10 },
+              ],
+            }
+          : ex
+      ),
     }));
   }, []);
 
@@ -120,13 +128,60 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
     setRoutineForm((prev) => ({
       ...prev,
       exercises: prev.exercises.map((ex) =>
-      ex.id === exerciseId && ex.sets.length > 1
-    ? {
-      ...ex,
-      sets: ex.sets.filter((set) => set.id !== setId),
-    } : ex),
+        ex.id === exerciseId && ex.sets.length > 1
+          ? {
+              ...ex,
+              sets: ex.sets.filter((set) => set.id !== setId),
+            }
+          : ex
+      ),
     }));
   }, []);
+
+  // 루틴 저장
+  const handleSaveRoutine = useCallback(async () => {
+    if (isSaving || routineForm.exercises.length === 0) {
+      console.log("저장 중이거나 운동 목록이 비어있어 저장을 취소합니다.");
+      return;
+    }
+
+    // 전송 데이터 정리
+    const routineDataToSave = {
+      name: routineForm.info.name,
+      routineType:
+        routineForm.info.routineType.charAt(0).toUpperCase() +
+        routineForm.info.routineType.slice(1),
+
+      goalWeeks: routineForm.info.goalWeeks,
+
+      exercises: routineForm.exercises.map((ex, exIndex) => ({
+        name: ex.name,
+        targetMuscles: ex.targetMuscles || [],
+        days: ex.days,
+        restTime: ex.restTime,
+
+        sets: ex.sets.map((set, setIndex) => ({
+          setNumber: setIndex + 1, 
+          weight: set.kg, 
+          reps: set.reps,
+        })),
+      })),
+    };
+    // 테스트
+    console.log("--- 전송 직전 루틴 데이터 (routineDataToSave) ---");
+    console.log("전송 데이터:", routineDataToSave);
+    console.log("JSON 문자열:", JSON.stringify(routineDataToSave, null, 2));
+    try {
+      // 저장
+      const response = await saveRoutineHandler(routineDataToSave);
+
+      // UI 피드백 및 라우팅 처리
+      alert(response.message);
+      // 저장 성공 후 루틴 목록 페이지로 이동 로직 추가할 것
+    } catch (error) {
+      alert(error.message);
+    }
+  }, [routineForm, isSaving, saveRoutineHandler]);
 
   // 운동 추가 버튼 핸들러
   const handleOpenSelectModal = useCallback(() => {
@@ -148,7 +203,13 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
         <h2>{isEditMode ? "루틴 수정" : "루틴 추가"}</h2>
         <div className="routine-form-container__button-box">
           <button className="cancel-button">취소</button>
-          <button className="save-button">저장</button>
+          <button
+            className="save-button"
+            onClick={handleSaveRoutine}
+            disabled={isSaving || routineForm.exercises.length === 0}
+          >
+            {isSaving ? "저장 중..." : "저장"}
+          </button>
         </div>
       </div>
       <RoutineInfoSection
@@ -159,9 +220,9 @@ const RoutineFormContainer = ({ routineId, isEditMode }) => {
         exercises={routineForm.exercises}
         onOpenModal={handleOpenSelectModal}
         onRemoveExercise={handleRemoveExercise}
-        onExerciseUpdate={handleExerciseUpdate} 
-        onSetUpdate={handleSetUpdate} 
-        onAddSet={handleAddSet} 
+        onExerciseUpdate={handleExerciseUpdate}
+        onSetUpdate={handleSetUpdate}
+        onAddSet={handleAddSet}
         onRemoveSet={handleRemoveSet}
       />
     </div>
