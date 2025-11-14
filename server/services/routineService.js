@@ -1,3 +1,5 @@
+// services/routineService.js
+
 const Routine = require("../models/Routine");
 const {
   NotFoundError,
@@ -40,32 +42,39 @@ const getRoutineDetailById = async (routineId, userId) => {
 
 // 새로운 루틴/챌린지 생성 및 DB 저장
 const createRoutine = async (userId, routineData) => {
-  const { name, category, exercises, targetWeeks, parts } = routineData;
+  const { name, routineType, exercises, goalWeeks } = routineData;
 
-  // 1. 필수 필드 및 카테고리별 유효성 검사
-  if (!name || !category || !exercises || exercises.length === 0) {
+  // 필수 필드 및 카테고리별 유효성 검사
+  if (!name || !routineType || !exercises || exercises.length === 0) {
     throw new BadRequestError("루틴 이름, 카테고리, 운동 정보는 필수입니다.");
   }
 
-  if (category === "Challenge") {
-    if (!targetWeeks || targetWeeks < 1) {
+  if (routineType === "Challenge") {
+    if (!goalWeeks || goalWeeks < 1) {
       throw new BadRequestError(
-        "챌린지는 목표 주차(targetWeeks)를 1주 이상 설정해야 합니다."
+        "챌린지는 목표 주차(goalWeeks)를 1주 이상 설정해야 합니다."
       );
     }
-  } else if (category !== "Routine") {
+  } else if (routineType !== "Routine") {
     throw new BadRequestError(
       '카테고리는 "Routine" 또는 "Challenge"여야 합니다.'
     );
   }
 
-  // 2. 루틴 데이터 생성 및 저장
+  // 루틴의 전체 활동 요일
+  const activeDays = [...new Set(exercises.flatMap((ex) => ex.days))];
+
+  // 루틴의 전체 부위
+  const parts = [...new Set(exercises.flatMap((ex) => ex.targetMuscles))];
+
+  // 루틴 데이터 생성 및 저장
   const newRoutine = await Routine.create({
     creator: userId,
     name,
-    category,
-    targetWeeks: category === "Challenge" ? targetWeeks : undefined,
-    parts: parts || [], // 프론트에서 넘어온 운동 부위 목록 사용
+    routineType,
+    goalWeeks: routineType === "Challenge" ? goalWeeks : undefined,
+    activeDays: activeDays,
+    parts: parts,
     exercises,
   });
 

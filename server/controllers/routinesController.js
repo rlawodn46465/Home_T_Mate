@@ -1,3 +1,5 @@
+// controllers/routinesController.js
+
 const asyncHandler = require("express-async-handler");
 const Routine = require("../models/Routine"); // 위에서 정의한 Mongoose 모델
 const User = require("../models/User"); // 사용자 정보를 가져오기 위한 모델 (protect 미들웨어에서 확보된 정보 확인용)
@@ -10,6 +12,7 @@ const {
   mapRoutineToListItem,
   mapRoutineToDetail,
 } = require("../utils/routineUtils");
+const routineService = require('../services/routineService');
 
 // 사용자 루틴/챌린지 목록 조회 (GET /api/v1/routines)
 const getRoutines = asyncHandler(async (req, res) => {

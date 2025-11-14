@@ -2,7 +2,6 @@
 const express = require("express");
 const router = express.Router();
 const { protect } = require('../middlewares/authMiddleware');
-// const { createRoutineController } = require('../controllers/exerciseController'); // exerciseController에 같이 정의
 
 const { 
     createRoutine, 
@@ -12,8 +11,6 @@ const {
     deleteRoutine 
 } = require('../controllers/routinesController');
 
-// 루틴/챌린지 생성 (POST /api/v1/routines)
-// router.post("/", protect, createRoutineController);
 
 // 루틴/챌린지 생성 (POST /api/v1/routines)
 router.post("/", protect, createRoutine);
