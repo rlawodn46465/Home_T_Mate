@@ -12,6 +12,7 @@ export const useRoutines = () => {
     setError(null);
     try {
       const data = await fetchRoutines();
+      console.log(data)
       setRoutines(data);
     } catch (err) {
       // 사용자님의 API 인터셉터가 401을 처리하므로, 여기서는 일반적인 에러만 처리

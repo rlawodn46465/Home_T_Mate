@@ -6,9 +6,11 @@ import { useNavigate } from "react-router-dom";
 
 const RoutineItemCard = ({ routine, onAction }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { type, title, week, parts, freq, creator, progress } = routine;
+  const { routineType, name, progress, parts, activeDays} = routine;
 
-  const progressPercent = (progress * 100).toFixed(0);
+  // 진행도 바
+  // const progressPercent = (progress * 100).toFixed(0);
+  const progressPercent = (0.7 * 100).toFixed(0);
 
   const navigate = useNavigate();
   const handleCardClick = () => {
@@ -26,11 +28,11 @@ const RoutineItemCard = ({ routine, onAction }) => {
     <div className="routine-card" onClick={handleCardClick}>
       <div className="routine-card__header">
         <span
-          className={`routine-card__type-tag routine-card__type-tag--${type.toLowerCase()}`}
+          className={`routine-card__type-tag routine-card__type-tag--${routineType.toLowerCase()}`}
         >
-          {type}
+          {routineType}
         </span>
-        <h5 className="routine-card__title">{title}</h5>
+        <h5 className="routine-card__title">{name}</h5>
         <div className="routine-card__options">
           <button
             className="routine-card__options-btn"
@@ -55,24 +57,24 @@ const RoutineItemCard = ({ routine, onAction }) => {
       <div className="routine-card__info">
         <div className="routine-card__info-progress">
           진행도 :
-          {type === "챌린지" ? (
+          {routineType === "Challenge" ? (
             <div className="routine-card__progress-bar-wrapper">
               <div
                 className="routine-card__progress-bar"
                 style={{ width: `${progressPercent}%` }}
               ></div>
               <span className="routine-card__progress-label">
-                {progressPercent}%
+                {0.5}%
               </span>
             </div>
           ) : (
-            <p>{week}주차</p>
+            <p>{progress.value}주차</p>
           )}
         </div>
         <p>부위: {parts.join(", ")}</p>
         <div className="routine-card__progress-bottom">
-          <p>빈도: {freq}</p>
-          <p>제작자: {creator}</p>
+          <p>빈도: {activeDays}</p>
+          <p>제작자: {"나님"}</p>
         </div>
       </div>
     </div>
