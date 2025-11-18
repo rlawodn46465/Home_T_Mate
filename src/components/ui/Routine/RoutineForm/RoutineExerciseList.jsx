@@ -1,4 +1,3 @@
-import { useState } from "react";
 import RoutineExerciseItem from "./RoutineExerciseItem";
 import "./RoutineExerciseList.css";
 
@@ -13,7 +12,7 @@ const RoutineExerciseList = ({
 }) => {
   return (
     <div className="routine-exercise-list">
-      {exercises.map((exercise, index) => (
+      {exercises.map((exercise) => (
         <RoutineExerciseItem
           key={exercise.id}
           exercise={exercise}

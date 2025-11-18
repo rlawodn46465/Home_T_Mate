@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import edit_icon from "../../../../assets/images/edit_icon.svg";
 import "./RoutineNameInput.css";
 
 const RoutineNameInput = ({ initialName, onNameChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(initialName || "새 루틴 이름");
+
+  useEffect(() => {
+    if(initialName){
+      setCurrentName(initialName);
+    }
+  }, [initialName]);
 
   // 아이콘 클릭 시 수정 모드 전환
   const handleEditClick = () => setIsEditing(true);

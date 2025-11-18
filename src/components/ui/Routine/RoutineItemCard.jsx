@@ -4,28 +4,44 @@ import "./RoutineItemCard.css";
 import ContextualMenu from "./ContextualMenu";
 import { useNavigate } from "react-router-dom";
 
-const RoutineItemCard = ({ routine, onAction }) => {
+const RoutineItemCard = ({ routine, onAction, isDeleting }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { routineType, name, progress, parts, activeDays} = routine;
+  const { routineType, name, progress, parts, activeDays, status, creator } =
+    routine;
 
   // 진행도 바
-  // const progressPercent = (progress * 100).toFixed(0);
-  const progressPercent = (0.7 * 100).toFixed(0);
+  const progressPercent = (progress.value * 100).toFixed(0);
 
   const navigate = useNavigate();
+
   const handleCardClick = () => {
-    if (!isMenuOpen) {
+    if (!isMenuOpen && !isDeleting) {
       navigate(`/?panel=routine-detail&routineId=${routine.id}`);
     }
   };
 
   const handleOptionsClick = (event) => {
     event.stopPropagation(); // 카드 클릭 이벤트가 부모로 전파되는 것을 막습니다.
+    if (isDeleting) return;
     setIsMenuOpen(!isMenuOpen);
   };
 
+  const handleMenuSelect = (action) => {
+    setIsMenuOpen(false);
+
+    if (action === "수정") {
+      navigate(`/?panel=routine-form&routineId=${routine.id}&isEditMode=true`);
+    } else {
+      onAction(routine.id, action);
+    }
+  };
+
   return (
-    <div className="routine-card" onClick={handleCardClick}>
+    // 삭제중 스타일링 할지 고민할 것
+    <div
+      className={`routine-card ${isDeleting ? "routine-card--deleting" : ""}`}
+      onClick={handleCardClick}
+    >
       <div className="routine-card__header">
         <span
           className={`routine-card__type-tag routine-card__type-tag--${routineType.toLowerCase()}`}
@@ -38,33 +54,27 @@ const RoutineItemCard = ({ routine, onAction }) => {
             className="routine-card__options-btn"
             // onClick={() => setIsMenuOpen(!isMenuOpen)}
             onClick={handleOptionsClick}
+            disabled={isDeleting}
           >
             <span className="dot"></span>
             <span className="dot"></span>
             <span className="dot"></span>
           </button>
 
-          {isMenuOpen && (
-            <ContextualMenu
-              onSelect={(action) => {
-                onAction(routine.id, action);
-                setIsMenuOpen(false);
-              }}
-            />
-          )}
+          {isMenuOpen && <ContextualMenu onSelect={handleMenuSelect} />}
         </div>
       </div>
       <div className="routine-card__info">
         <div className="routine-card__info-progress">
           진행도 :
-          {routineType === "Challenge" ? (
+          {routineType === "챌린지" ? (
             <div className="routine-card__progress-bar-wrapper">
               <div
                 className="routine-card__progress-bar"
                 style={{ width: `${progressPercent}%` }}
               ></div>
               <span className="routine-card__progress-label">
-                {0.5}%
+                {progressPercent}%
               </span>
             </div>
           ) : (
@@ -74,7 +84,7 @@ const RoutineItemCard = ({ routine, onAction }) => {
         <p>부위: {parts.join(", ")}</p>
         <div className="routine-card__progress-bottom">
           <p>빈도: {activeDays}</p>
-          <p>제작자: {"나님"}</p>
+          <p>제작자: {creator.nickname}</p>
         </div>
       </div>
     </div>

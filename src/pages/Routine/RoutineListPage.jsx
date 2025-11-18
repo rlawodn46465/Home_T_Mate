@@ -2,36 +2,23 @@ import "./RoutineListPage.css";
 import TabNavigation from "../../components/ui/Routine/TabNavigation";
 import RoutineHeader from "../../components/ui/Routine/RoutineHeader";
 import BodyPartFilter from "../../components/ui/Routine/BodyPartFilter";
-import { useEffect, useState } from "react";
+import { useState, useCallback } from "react";
 import RoutineItemCard from "../../components/ui/Routine/RoutineItemCard";
 import { useRoutines } from "../../hooks/useRoutines";
+import { useRoutineDelete } from "../../hooks/useRoutineDelete";
 
-const DUMMY_ROUTINES = [
-  {
-    id: 1,  //ㅇ
-    type: "루틴",
-    title: "푸쉬업 100개 만들기",
-    week: 3,
-    parts: ["팔", "가슴", "코어"],
-    freq: "주 3회",
-    creator: "나님",
-    progress: 0.9,
-    status: "진행중",
-  },
-  {
-    id: 2,
-    type: "챌린지",
-    title: "맨몸 운동 3분할 루틴만들기만들기",
-    week: 1,
-    parts: ["팔", "가슴", "코어"],
-    freq: "주 3회",
-    creator: "나님",
-    progress: 0.7,
-    status: "진행중",
-  }
+const BODY_PARTS = [
+  "전체",
+  "복근",
+  "가슴",
+  "어깨",
+  "이두",
+  "삼두",
+  "전완",
+  "대퇴사두",
+  "승모",
+  "종아리",
 ];
-
-const BODY_PARTS = ["전체", "복근", "가슴", "어깨", "이두", "삼두", "전완", "대퇴사두", "승모", "종아리"];
 
 const RoutineListPage = () => {
   const [activeTab, setActiveTab] = useState("전체");
@@ -39,29 +26,37 @@ const RoutineListPage = () => {
   const [activePart, setActivePart] = useState("전체");
 
   const { routines, refreshRoutines } = useRoutines();
+  const { isDeleting, deleteRoutineHandler } = useRoutineDelete();
 
-  useEffect(()=> {
-    refreshRoutines();
-  },[]);
-
-  
-
-  // 루텐 리스트 불러올 곳
+  // 루틴 리스트 불러올 곳
   const filteredRoutines = routines.filter((routine) => {
-    console.log(routine);
-    const typeMatch = activeTab === "전체" || routine.parts === activeTab;
-    // const statusMatch = routine.status === activeStatus;
+    const typeMatch = activeTab === "전체" || routine.routineType === activeTab;
+    const statusMatch = routine.status === activeStatus;
     const partMatch =
       activePart === "전체" || routine.parts.includes(activePart);
-      console.log("typeMatch : "+typeMatch);
-      console.log("partMatch : "+partMatch);
-    return typeMatch  && partMatch; //&& statusMatch;
+    return typeMatch && partMatch && statusMatch;
   });
 
-  const handleItemAction = (id, action) => {
-    console.log(`Routine ID: ${id}, Action: ${action}`);
-    // 실제 상태 변경, API 호출 등 로직 구현
-  };
+  const handleItemAction = useCallback(
+    async (id, action) => {
+      console.log(`Routine ID: ${id}, Action: ${action}`);
+      // 실제 상태 변경, API 호출 등 로직 구현
+      if (action === "삭제") {
+        const isConfirmed = window.confirm("정말 루틴을 삭제하시겠습니까?");
+
+        if (isConfirmed) {
+          try {
+            await deleteRoutineHandler(id);
+            alert("루틴이 성공적으로 삭제되었습니다.");
+            refreshRoutines();
+          } catch (error) {
+            alert(error.message || "루틴 삭제 중 오류가 발생했습니다.");
+          }
+        }
+      }
+    },
+    [deleteRoutineHandler, refreshRoutines]
+  );
 
   return (
     <div className="routine-list-page">
@@ -98,6 +93,7 @@ const RoutineListPage = () => {
             key={routine.id}
             routine={routine}
             onAction={handleItemAction}
+            isDeleting={isDeleting}
           />
         ))}
         {filteredRoutines.length === 0 && (

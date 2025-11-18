@@ -21,7 +21,6 @@ const RoutineExerciseItem = ({
   const containerRef = useRef(null);
 
   useEffect(() => {
-    console.log(exercise);
     const handleClickOutside = (e) => {
       if (containerRef.current && !containerRef.current.contains(e.target)) {
         setIsMenuOpen(false);
@@ -146,8 +145,8 @@ const RoutineExerciseItem = ({
                       type="text"
                       inputMode="numeric"
                       className="item-input"
-                      value={set.kg}
-                      onChange={(e) => handleSetFieldChange(set.id, "kg", e)}
+                      value={set.weight}
+                      onChange={(e) => handleSetFieldChange(set.id, "weight", e)}
                     />
                     <span className="unit-label">kg</span>
                     <input
