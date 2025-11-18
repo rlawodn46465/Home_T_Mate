@@ -98,10 +98,16 @@ const updateRoutine = async (routineId, userId, updateData) => {
 
   // 2. 데이터 유효성 검사 (업데이트 데이터에 대한 추가 검증)
   if (
-    updateData.category === "Challenge" &&
-    (!updateData.targetWeeks || updateData.targetWeeks < 1)
+    updateData.routineType === "Challenge" &&
+    (!updateData.goalWeeks || updateData.goalWeeks < 1)
   ) {
     throw new BadRequestError("챌린지는 목표 주차를 1주 이상 설정해야 합니다.");
+  }
+
+  // exercises가 포함된 경우 다시 계산하여 업데이트
+  if(updateData.exercises){
+    updateData.activeDays = [...new Set(updateData.exercises.flatMap((ex) => ex.days))];
+    updateData.parts = [...new Set(updateData.exercises.flatMap((ex) => ex.targetMuscles))];
   }
 
   // 3. 데이터 업데이트 및 저장

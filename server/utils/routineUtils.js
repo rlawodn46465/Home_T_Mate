@@ -5,6 +5,7 @@ const calculateProgress = (routine) => {
   // 챌린지 (Challenge) 진행도 계산: 백분율 (%)
   if (routine.routineType === "Challenge") {
     const targetWeeks = routine.goalWeeks || 1;
+    const currentWeek = routine.currentWeek || 0;
 
     // 총 목표 운동 횟수 계산
     // 주당 목표 세션 수
@@ -29,6 +30,7 @@ const calculateProgress = (routine) => {
       type: "Percent",
       value: parseFloat(progressValue.toFixed(1)), // 소수점 첫째 자리까지
       targetWeek: targetWeeks,
+      currentWeek: currentWeek,
     };
 
     // 루틴 (Routine) 진행도 계산: 주차
@@ -133,6 +135,7 @@ const mapRoutineToDetail = (routine) => {
     createdAt: routine.createdAt,
     status: routine.status,
     progress: progress,
+    currentWeek: routine.currentWeek || 1,
     goalWeeks: routine.goalWeeks,
     days: allDays,
     parts: routine.parts || [],
