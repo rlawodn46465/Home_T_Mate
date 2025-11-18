@@ -74,6 +74,13 @@ const RoutineSchema = new mongoose.Schema(
       type: Number,
       default: 0, // 완료된 운동 세션 수 (챌린지 진행도 계산에 사용)
     },
+    // 루틴/챌린지 진행 상태
+    status: {
+      type: String,
+      enum: ["진행중", "완료","완벽 성공", "부분 성공", "실패"],
+      default: "진행중",
+      required: true,
+    },
 
     // 💡 내용
     parts: {

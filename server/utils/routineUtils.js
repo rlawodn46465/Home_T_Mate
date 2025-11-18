@@ -3,15 +3,17 @@
 // 루틴/챌린지의 진행도를 계산하여 프론트엔드 형식에 맞게 반환
 const calculateProgress = (routine) => {
   // 챌린지 (Challenge) 진행도 계산: 백분율 (%)
-  if (routine.category === "Challenge") {
-    const targetWeeks = routine.targetWeeks || 1;
+  if (routine.routineType === "Challenge") {
+    const targetWeeks = routine.goalWeeks || 1;
 
     // 총 목표 운동 횟수 계산
-    // 운동 요일 리스트를 플랫하게 만들어서 총 목표 횟수를 구함.
-    const totalTargetSessions =
-      routine.exercises.reduce((acc, exercise) => {
-        return acc + exercise.targetDays.length;
-      }, 0) * targetWeeks;
+    // 주당 목표 세션 수
+    const weeklyTargetSessions = routine.exercises.reduce((acc, exercise) => {
+      return acc + exercise.days.length;
+    }, 0);
+
+    // 총 목표 횟수 = (주당 목표 세션 합계) * 목표 주차 수
+    const totalTargetSessions = weeklyTargetSessions * targetWeeks;
 
     if (totalTargetSessions === 0) {
       return { type: "Percent", value: 0, targetWeek: targetWeeks };
@@ -67,7 +69,7 @@ const mapActiveDaysToDisplay = (days) => {
 
   // 요일 하나일 경우
   if (count === 1) {
-    return days[0];
+    return `${days[0]}요일`;
   }
 
   // 그 외 (주 n일)
@@ -102,6 +104,7 @@ const mapRoutineToListItem = (routine) => {
           nickname: routine.creator.nickname || "Unknown User",
         }
       : null,
+    status: routine.status,
     category: routine.category,
     parts: allParts,
     progress: progress,
@@ -114,12 +117,13 @@ const mapRoutineToDetail = (routine) => {
 
   // 루틴 전체의 운동 요일 추출 (중복 제거)
   const allDays = Array.from(
-    new Set(routine.exercises.flatMap((ex) => ex.targetDays))
+    new Set(routine.exercises.flatMap((ex) => ex.days))
   );
 
   return {
     id: routine._id,
     name: routine.name,
+    routineType: routine.routineType,
     creator: routine.creator
       ? {
           id: routine.creator._id,
@@ -127,13 +131,16 @@ const mapRoutineToDetail = (routine) => {
         }
       : null,
     createdAt: routine.createdAt,
+    status: routine.status,
     progress: progress,
+    goalWeeks: routine.goalWeeks,
     days: allDays,
     parts: routine.parts || [],
     exercises: routine.exercises.map((ex) => ({
-      exerciseName: ex.exerciseName,
-      targetDays: ex.targetDays,
-      restTimeSeconds: ex.restTimeSeconds,
+      name: ex.name,
+      targetMuscles: ex.targetMuscles,
+      days: ex.days,
+      restTime: ex.restTime,
       sets: ex.sets,
     })),
   };
