@@ -7,18 +7,33 @@ const ExerciseList = ({ exercises }) => {
 
   return (
     <div className="exercise-list">
-      {exercises.map((exercise) => (
-        <div key={exercise.id} className="exercise-item">
+      {exercises.map((exercise, index) => (
+        <div key={`${exercise.name}${index}`} className="exercise-item">
           <div className="exercise-item-info">
             <div className="exercise-item-info__top">
               <h4>{exercise.name}</h4>
-              <p>
-                {exercise.sets} x {exercise.reps}
+              <p className="exercise-set-summary">
+                {exercise.sets && exercise.sets.length > 0
+                  ? `${exercise.sets.length} 세트`
+                  : "세트 정보 없음"}
               </p>
             </div>
+            <div className="exercise-item-sets">
+              {exercise.sets &&
+                Array.isArray(exercise.sets) &&
+                exercise.sets.map((set, index) => (
+                  <p
+                    key={set.setNumber ?? index}
+                    className="exercise-set-detail"
+                  >
+                    {set.weight}kg x {set.reps}회
+                  </p>
+                ))}
+            </div>
+
             <div className="exercise-item-info__bottom">
-              {exercise.days.map((day) => (
-                <p key={day}>{day}</p>
+              {exercise.days.map((day,index) => (
+                <p key={`${day}${index}`}>{day}</p>
               ))}
             </div>
           </div>

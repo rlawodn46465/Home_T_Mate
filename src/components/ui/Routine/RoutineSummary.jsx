@@ -9,14 +9,14 @@ const RoutineSummary = ({ routineDetail, allRoutineDays }) => {
   return (
     <div className="routine-summary">
       <div className="body-part-display">
-        <MuscleMap selectedTags={routineDetail.targetParts} />
+        <MuscleMap selectedTags={routineDetail.parts} />
       </div>
       <div className="summary-text">
         <div className="summary-text__item">
           진행도 : {routineDetail.currentWeek}주차
         </div>
         <div className="summary-text__item">
-          부위 : {routineDetail.targetParts.join(", ")}
+          부위 : {routineDetail.parts.join(", ")}
         </div>
         <div className="summary-text__item week">
           요일 : <WeekDaySelector selectedDays={allRoutineDays} />

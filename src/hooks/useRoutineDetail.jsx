@@ -16,11 +16,13 @@ export const useRoutineDetail = (routineId, shouldFetch = true) => {
       const data = await fetchRoutineDetail(routineId);
       setRoutine(data);
     } catch (err) {
+      const errorMessage =
+        err.response?.data?.message || err.message || "알 수 없는 오류";
       console.error(
         `루틴 상세 정보 로드 실패 (ID: ${routineId}): `,
-        err.response?.data || err.message
+        errorMessage
       );
-      setError("루틴 상세 정보를 불러오는 데 실패했습니다.");
+      setError(`루틴 상세 정보를 불러오는 데 실패했습니다: ${errorMessage}`);
       setRoutine(null);
     } finally {
       setLoading(false);

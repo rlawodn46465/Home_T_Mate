@@ -5,10 +5,10 @@
 
 .routine-detail-header__menu{
   display: flex;
-  gap: 10px;
+  gap: 5px;
 }
 
-.routine-detail__edit-icon{
-  width: 40px;
+.routine-detail__icon{
+  width: 30px;
   cursor: pointer;
 }
