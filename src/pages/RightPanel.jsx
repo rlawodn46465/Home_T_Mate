@@ -6,6 +6,7 @@ import RoutineListPage from "./Routine/RoutineListPage";
 import RoutineDetailPage from "./Routine/RoutineDetailPage";
 import ExerciseDetail from "./Exercise/ExerciseDetail";
 import RoutineFormPage from "./Routine/RoutineFormPage";
+import ExerciseListPage from "./Exercise/ExerciseListPage";
 
 const RightPanel = () => {
   const location = useLocation();
@@ -30,6 +31,9 @@ const RightPanel = () => {
       content = <RoutineListPage />;
       break;
     case "record":
+      content = <ExerciseListPage />;
+      break;
+    case "record-detail":
       content = <ExerciseDetail />;
       break;
     case "routine-detail":

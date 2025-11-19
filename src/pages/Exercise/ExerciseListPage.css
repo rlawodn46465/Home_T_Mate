@@ -1,0 +1,16 @@
+.exercise-list-page{
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.exercise-list-header{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+/* padding 교체해서 겉에 스크롤 만들 것 */
+.exercise-list-container{
+
+}

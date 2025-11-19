@@ -1,0 +1,47 @@
+.exercise-card {
+  color: rgba(47, 47, 47, 1);
+  background-color: rgba(239, 239, 239, 1);
+  border-radius: 5px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-name {
+}
+
+.card-toggle {
+  position: relative;
+}
+
+.card-meta {
+  display: flex;
+  justify-content: space-between;
+}
+
+.card-info-container{
+
+}
+
+.card-category{
+
+}
+
+.card-time-container{
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+}
+
+.card-time{
+  font-size: 24px;
+  font-weight: 500;
+  color: rgba(62, 114, 184, 1);
+}
+
+.card-date-time{
+  font-size: 10px;
+  color: rgba(152, 152, 152, 1);
+}
