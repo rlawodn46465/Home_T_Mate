@@ -12,7 +12,7 @@
   min-width: 120px;
 }
 
-.dropdown-menu::before{
+/* .dropdown-menu::before{
   content: '';
   position: absolute;
   width: 0;
@@ -20,15 +20,15 @@
   border: 10px solid transparent;
   border-bottom-color: #3b5998;
   top: -20px;
-}
+} */
 
 .dropdown-menu.right {
   right: 0;
 }
 
-.dropdown-menu.right::before{
-  right: 5px;
-}
+/* .dropdown-menu.right::before{
+  right: 4px;
+} */
 
 .menu-items div {
   padding: 8px 15px;
