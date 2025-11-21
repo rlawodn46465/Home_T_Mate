@@ -1,5 +1,7 @@
+// routes/users.js
+
 const express = require("express");
-const asyncHandler = require("express-async-handler");
+const asyncHandler = require("../utils/asyncHandler");
 const router = express.Router();
 const userService = require("../services/userService");
 const { BadRequestError } = require("../utils/errorHandler");

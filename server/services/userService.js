@@ -1,3 +1,5 @@
+// services/userService.js
+
 const User = require("../models/User");
 const { ConflictError } = require("../utils/errorHandler");
 

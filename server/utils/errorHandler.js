@@ -1,7 +1,6 @@
-/**
- * @description HTTP 상태 코드를 포함하는 사용자 정의 에러 클래스
- * @extends Error
- */
+// utils/errorHandler.js
+
+// HTTP 상태 코드를 포함하는 사용자 정의 에러 클래스
 class CustomError extends Error {
   constructor(message, statusCode){
     super(message);

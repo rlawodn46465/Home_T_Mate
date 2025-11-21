@@ -1,8 +1,11 @@
+// models/User.js
+
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 
 const UserSchema = new mongoose.Schema(
   {
+    // 기본 계정 정보
     name: {
       type: String,
       required: true,
@@ -10,8 +13,8 @@ const UserSchema = new mongoose.Schema(
     },
     nickname: {
       type: String,
-      required: true,
-      unique: true,
+      required: false, // 생각
+      unique: true, // 생각
       trim: true,
     },
     email: {
@@ -21,43 +24,26 @@ const UserSchema = new mongoose.Schema(
     },
     password: {
       type: String,
-      required: false,
       select: false,
     },
-    age: {
-      type: String,
-      required: false,
+    // 소셜 연동 ID
+    socialIds: {
+      naverId: { type: String, unique: true, sparse: true, required: false },
+      kakaoId: { type: String, unique: true, sparse: true, required: false },
+      googleId: { type: String, unique: true, sparse: true, required: false },
     },
-    birthyear: {
-      type: String,
-      required: false,
+    // 상세 정보 (선택 입력)
+    details: {
+      age: { type: String, default: null },
+      birthyear: { type: Number, default: null },
+      height: { type: Number, default: null },
+      weight: { type: Number, default: null },
     },
-    naverId: {
-      type: String,
-      unique: true,
-      sparse: true,
-      required: false,
-    },
-    googleId: {
-      type: String,
-      unique: true,
-      sparse: true,
-      required: false,
-    },
-    kakaoId: {
-      type: String,
-      unique: true,
-      sparse: true,
-      required: false,
-    },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
+    // 앱 설정 및 상태
+    isDetailed: { type: Boolean, default: false },
+    themMode: { type: String, enum: ["light", "dark"], default: "light" },
   },
-  {
-    toJSON: { virtuals: true },
-  }
+  { timestamps: true }
 );
 
 UserSchema.methods.getSignedJwtToken = function () {

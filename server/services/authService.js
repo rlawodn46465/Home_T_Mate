@@ -1,3 +1,5 @@
+// services/authService.js
+
 const User = require("../models/User");
 const { CustomError } = require("../utils/errorHandler");
 const axios = require("axios");
@@ -49,7 +51,8 @@ const refreshToken = async (refreshToken) => {
 // 소셜 로그인 통합 처리(사용자 조회, 생성 및 JWT 발급)
 const handleSocialLogin = async (socialIdField, socialId, profileData) => {
   // 소셜 ID로 사용자 조회
-  let user = await User.findOne({ [socialIdField]: socialId });
+  let user = await User.findOne({ [`socialIds.${socialIdField}`]: socialId });
+  // let user = await User.findOne({ [socialIdField]: socialId });
   let isNewUser = false;
 
   if (!user) {
@@ -61,9 +64,19 @@ const handleSocialLogin = async (socialIdField, socialId, profileData) => {
       name: profileData.name || "Social User",
       email: profileData.email,
       password: tempPassword,
-      [socialIdField]: socialId, // 네이버, 구글, 카카오 ID 중 하나가 저장됨
-      age: profileData.age,
-      birthyear: profileData.birthyear,
+      nickname:
+        profileData.nickname || `User_${Math.random().toString(36).slice(-6)}`,
+      socialIds: {
+        [socialIdField]: socialId, // 네이버, 구글, 카카오 ID 중 하나가 저장됨
+      },
+      details: {
+        age: profileData.age,
+        birthyear: profileData.birthyear,
+        height: profileData.height,
+        weight: profileData.weight,
+      },
+      isDetailed: profileData.isDetailed,
+      themMode: profileData.themMode,
     });
     user = await newUser.save();
   }

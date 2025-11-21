@@ -1,6 +1,8 @@
+// controllers/exerciseController.js
+
 const asyncHandler = require("../utils/asyncHandler");
 const exerciseService = require("../services/exerciseService");
-const { BadRequestError } = require("../utils/errorHandler");
+// const { BadRequestError } = require("../utils/errorHandler");
 
 // 전체 운동 목록 조회 (GET /api/v1/exercises)
 const getExerciseListController = asyncHandler(async (req, res) => {
@@ -11,36 +13,23 @@ const getExerciseListController = asyncHandler(async (req, res) => {
     tool: req.query.tool,
   }; // 서비스 로직 위임
   const exercises = await exerciseService.getExerciseList(filterOptions);
-  res.status(200).json({
-    success: true,
-    count: exercises.length,
-    data: exercises.map((ex) => ({
-      id: ex._id,
-      name: ex.name,
-      targetMuscles: ex.targetMuscles,
-      equipment: ex.equipment,
-    })),
-  });
+  res.status(200).json({ success: true, data: exercises });
 });
 
 // 특정 운동 상세 정보[운동 정보, 사용자 통계, 최근 로그] (GET /api/v1/exercises/:id)
 const getExerciseDetailController = asyncHandler(async (req, res) => {
-  const exerciseId = req.params.id;
-  const userId = req.user._id; // protect 미들웨어를 통해 설정된 사용자 ID
+  // const exerciseId = req.params.id;
+  // const userId = req.user._id;
 
-  if (!exerciseId) {
-    throw new BadRequestError("운동 ID가 필요합니다.");
-  }
+  // if (!exerciseId) {
+  //   throw new BadRequestError("운동 ID가 필요합니다.");
+  // }
 
-  const detailData = await exerciseService.getExerciseDetail(
-    exerciseId,
-    userId
+  const data = await exerciseService.getExerciseDetail(
+    req.params.id,
+    req.user._id
   );
-
-  res.status(200).json({
-    success: true,
-    data: detailData,
-  });
+  res.status(200).json({ success: true, data });
 });
 
 module.exports = {

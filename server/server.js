@@ -8,7 +8,8 @@ const { NotFoundError } = require("./utils/errorHandler");
 const userRouter = require("./routes/users");
 const authRouter = require("./routes/auth");
 const exerciseRouter = require("./routes/exercises");
-const routineRouter = require("./routes/routines");
+const goalRouter = require("./routes/goals");
+const historyRouter = require("./routes/history");
 
 // DB 연결 실행
 connectDB();
@@ -31,7 +32,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/api/v1/users", userRouter);
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/exercises", exerciseRouter);
-app.use("/api/v1/routines", routineRouter);
+app.use("/api/v1/goals", goalRouter);
+app.use("/api/v1/history", historyRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

@@ -1,5 +1,7 @@
+// routes/auth.js
+
 const express = require("express");
-const asyncHandler = require("express-async-handler");
+const asyncHandler = require("../utils/asyncHandler");
 const router = express.Router();
 const authService = require("../services/authService");
 const { CustomError } = require("../utils/errorHandler");
