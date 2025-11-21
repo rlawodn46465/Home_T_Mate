@@ -6,12 +6,12 @@ import { useNavigate } from "react-router-dom";
 
 const RoutineItemCard = ({ routine, onAction, isDeleting }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { routineType, name, progress, parts, activeDays, status, creator } =
+  const { type, name, progress, parts, activeDays, status, creator } =
     routine;
 
   // 진행도 바
-  const progressPercent = (progress.value * 100).toFixed(0);
-
+  const progressPercent = (progress * 100).toFixed(0);
+  
   const navigate = useNavigate();
 
   const handleCardClick = () => {
@@ -44,9 +44,9 @@ const RoutineItemCard = ({ routine, onAction, isDeleting }) => {
     >
       <div className="routine-card__header">
         <span
-          className={`routine-card__type-tag routine-card__type-tag--${routineType.toLowerCase()}`}
+          className={`routine-card__type-tag routine-card__type-tag--${type.toLowerCase()}`}
         >
-          {routineType}
+          {type}
         </span>
         <h5 className="routine-card__title">{name}</h5>
         <div className="routine-card__options">
@@ -67,7 +67,7 @@ const RoutineItemCard = ({ routine, onAction, isDeleting }) => {
       <div className="routine-card__info">
         <div className="routine-card__info-progress">
           진행도 :
-          {routineType === "챌린지" ? (
+          {type === "챌린지" ? (
             <div className="routine-card__progress-bar-wrapper">
               <div
                 className="routine-card__progress-bar"
@@ -78,13 +78,13 @@ const RoutineItemCard = ({ routine, onAction, isDeleting }) => {
               </span>
             </div>
           ) : (
-            <p>{progress.value}주차</p>
+            <p>{progress}주차</p>
           )}
         </div>
         <p>부위: {parts.join(", ")}</p>
         <div className="routine-card__progress-bottom">
           <p>빈도: {activeDays}</p>
-          <p>제작자: {creator.nickname}</p>
+          <p>제작자: {creator}</p>
         </div>
       </div>
     </div>

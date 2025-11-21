@@ -10,7 +10,7 @@ const ExerciseCard = ({ record }) => {
 
   // 콘솔 테스트
   useEffect(() => {
-    console.log(record);
+    // console.log(record);
   }, []);
 
   // 메뉴 토글

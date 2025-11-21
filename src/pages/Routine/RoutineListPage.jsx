@@ -2,7 +2,7 @@ import "./RoutineListPage.css";
 import TabNavigation from "../../components/ui/Routine/TabNavigation";
 import RoutineHeader from "../../components/ui/Routine/RoutineHeader";
 import BodyPartFilter from "../../components/ui/Routine/BodyPartFilter";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import RoutineItemCard from "../../components/ui/Routine/RoutineItemCard";
 import { useRoutines } from "../../hooks/useRoutines";
 import { useRoutineDelete } from "../../hooks/useRoutineDelete";
@@ -29,17 +29,23 @@ const RoutineListPage = () => {
   const { isDeleting, deleteRoutineHandler } = useRoutineDelete();
 
   // 루틴 리스트 불러올 곳
-  const filteredRoutines = routines.filter((routine) => {
-    const typeMatch = activeTab === "전체" || routine.routineType === activeTab;
-    const statusMatch = routine.status === activeStatus;
-    const partMatch =
-      activePart === "전체" || routine.parts.includes(activePart);
-    return typeMatch && partMatch && statusMatch;
-  });
+  const filteredRoutines = useMemo(() => {
+    return routines.filter((routine) => {
+      const typeMatch = activeTab === "전체" || routine.type === activeTab;
+
+      // 추가 한국어로 상태 변환
+      const statusMatch = routine.status === activeStatus;
+
+      const partMatch =
+        activePart === "전체" ||
+        (routine.parts && routine.parts.includes(activePart));
+
+      return typeMatch && partMatch && statusMatch;
+    });
+  }, [routines, activeTab, activeStatus, activePart]);
 
   const handleItemAction = useCallback(
     async (id, action) => {
-      console.log(`Routine ID: ${id}, Action: ${action}`);
       // 실제 상태 변경, API 호출 등 로직 구현
       if (action === "삭제") {
         const isConfirmed = window.confirm("정말 루틴을 삭제하시겠습니까?");

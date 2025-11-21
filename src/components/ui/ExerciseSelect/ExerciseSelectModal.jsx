@@ -67,8 +67,8 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
   const handleToggleExercise = (exercise) => {
     setSelectedExercises(
       (prev) =>
-        prev.some((ex) => ex.id === exercise.id)
-          ? prev.filter((ex) => ex.id !== exercise.id) //제거
+        prev.some((ex) => ex._id === exercise._id)
+          ? prev.filter((ex) => ex._id !== exercise._id) //제거
           : [...prev, exercise] //추가
     );
   };
@@ -171,7 +171,7 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
           ) : (
             exercises.map((ex) => {
               const isSelected = selectedExercises.some(
-                (sEx) => sEx.id === ex.id
+                (sEx) => sEx._id === ex._id
               );
 
               const metaInfo = [ex.targetMuscles].filter(Boolean).join(", ");

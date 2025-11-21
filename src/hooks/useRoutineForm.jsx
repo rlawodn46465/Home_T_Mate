@@ -74,8 +74,10 @@ const useRoutineForm = (isEditMode, initialRoutine) => {
   // 운동 추가 핸들러
   const handleAddExercise = useCallback((newExercises) => {
     // 새로운 운동 항목 배열 생성
+    console.log(newExercises);
     const exercisesToAdd = newExercises.map((ex) => ({
       id: Date.now() + Math.random(),
+      exerciseId: ex._id,
       name: ex.name,
       targetMuscles: ex.targetMuscles,
       equipment: ex.equipment || [],
@@ -167,16 +169,17 @@ const useRoutineForm = (isEditMode, initialRoutine) => {
 
   // 저장을 위해 서버 전송용 데이터로 가공
   const getRoutineDataForSave = useCallback(() => {
+    console.log(routineForm);
     return {
       name: routineForm.info.name,
       // 첫 글자만 대문자로 변환
-      routineType:
-        routineForm.info.routineType.charAt(0).toUpperCase() +
-        routineForm.info.routineType.slice(1),
+      goalType:
+        routineForm.info.routineType.toUpperCase(),
 
-      goalWeeks: routineForm.info.goalWeeks,
+      durationWeek: routineForm.info.goalWeeks,
 
       exercises: routineForm.exercises.map((ex) => ({
+        exerciseId: ex.exerciseId,
         name: ex.name,
         targetMuscles: ex.targetMuscles || [],
         days: ex.days,

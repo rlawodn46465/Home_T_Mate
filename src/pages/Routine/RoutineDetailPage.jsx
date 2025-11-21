@@ -159,7 +159,7 @@ const RoutineDetailPage = ({ routineId }) => {
           생성일 : {formatCreationDate(routineDetail.createdAt)}
         </p>
         <p className="routine-meta">
-          제작자 : {routineDetail.creator.nickname}
+          제작자 : {routineDetail.creator}
         </p>
         <RoutineSummary
           routineDetail={routineDetail}

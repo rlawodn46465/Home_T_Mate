@@ -1,7 +1,7 @@
 // 사용자님의 전역 Axios 인스턴스를 가져옵니다.
 import api from "./api";
 
-const API_ROUTINE_PATH = "/api/v1/routines";
+const API_ROUTINE_PATH = "/api/v1/goals";
 const API_EXERCISE_PATH = "/api/v1/exercises";
 
 // --------------------
