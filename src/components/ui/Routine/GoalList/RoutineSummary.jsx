@@ -1,4 +1,4 @@
-import MuscleMap from "../../common/MuscleMap";
+import MuscleMap from "../../../common/MuscleMap";
 import "./RoutineSummary.css";
 import WeekDaySelector from "./WeekDaySelector";
 

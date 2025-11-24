@@ -1,5 +1,5 @@
 import "./RoutineHeader.css";
-import Button from "../../../components/common/Button";
+import Button from "../../../common/Button";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const RoutineHeader = () => {

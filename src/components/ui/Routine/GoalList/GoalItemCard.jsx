@@ -1,10 +1,10 @@
 import { useState } from "react";
 
-import "./RoutineItemCard.css";
+import "./GoalItemCard.css";
 import ContextualMenu from "./ContextualMenu";
 import { useNavigate } from "react-router-dom";
 
-const RoutineItemCard = ({ routine, onAction, isDeleting }) => {
+const GoalItemCard = ({ routine, onAction, isDeleting }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { type, name, progress, parts, activeDays, status, creator } =
     routine;
@@ -91,4 +91,4 @@ const RoutineItemCard = ({ routine, onAction, isDeleting }) => {
   );
 };
 
-export default RoutineItemCard;
+export default GoalItemCard;
