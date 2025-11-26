@@ -54,15 +54,6 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
   // 커스텀 훅을 통한 데이터, 로딩/에러 상태
   const { exercises, isLoading } = useExercises(filters);
 
-  useEffect(() => {
-    // 테스트 콘솔
-    if (exercises.length > 0) {
-      console.log(exercises);
-    } else if (!isLoading) {
-      console.log("로드된 운동 데이터가 없습니다.");
-    }
-  }, [exercises, isLoading]);
-
   // 운동 선택/해제 핸들러
   const handleToggleExercise = (exercise) => {
     setSelectedExercises(

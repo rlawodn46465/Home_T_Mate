@@ -77,7 +77,7 @@ const RoutineExerciseItem = ({
 
   // 무게/횟수 변경 핸들러
   const handleSetFieldChange = (setId, field, e) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // 숫지 외 제거
+    const rawValue = e.target.value.replace(/[^0-9]/g, "");
     const numValue = parseInt(rawValue, 10);
 
     if (rawValue === "" || !isNaN(numValue)) {

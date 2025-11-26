@@ -9,10 +9,11 @@ const CalendarDay = ({
   isDisabled,
   opacity,
   onClick,
+  children,
 }) => {
-  // 이번 달이 아닌 날짜는 렌더링은 하되 흐리게 처리하거나 빈 공간으로 둘 수 있음
-  // 디자인 요구사항에 따라 빈칸 대신 흐리게 표시
-  const monthClass = !isCurrentMonth ? "is-not-current-month" : "";
+  if (!isCurrentMonth) {
+    return <div className="calendar-day-cell is-not-current-month" />;
+  }
 
   // 주말 색상 처리
   const dayIndex = getDay(date);
@@ -20,24 +21,29 @@ const CalendarDay = ({
   const isSaturday = dayIndex === 6;
   const weekendClass = isSunday ? "is-sunday" : isSaturday ? "is-saturday" : "";
 
-  // 오늘 날짜 스타일
+  // 오늘/선택/비활성화 클래스
   const todayClass = isToday ? "is-today" : "";
-
-  // 선택된 날짜 스타일
   const selectedClass = isSelected ? "is-selected" : "";
+  const disabledClass = isDisabled ? "is-disabled" : "";
+
+  const handleClick = () => {
+    if (!isDisabled && onClick) {
+      onClick();
+    }
+  };
 
   return (
     <div
-      className={`calendar-day-cell ${monthClass} ${weekendClass} ${selectedClass}`}
-      onClick={onClick}
+      className={`calendar-day-cell ${weekendClass} ${selectedClass} ${disabledClass}`}
+      onClick={handleClick}
       style={{
         opacity: opacity,
         cursor: isDisabled ? "default" : "pointer",
       }}
+      title={isDisabled ? "선택할 수 없는 날짜" : ""}
     >
       <div className={`day-number ${todayClass}`}>{dayOfMonth}</div>
-
-      {/* 선택된 날짜 밑에 작은 점 표시 (선택됨을 강조) */}
+      <div className="day-content-area">{children}</div>
       {isSelected && <div className="selected-dot" />}
     </div>
   );

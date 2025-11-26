@@ -4,19 +4,30 @@ import "./GoalItemCard.css";
 import ContextualMenu from "./ContextualMenu";
 import { useNavigate } from "react-router-dom";
 
-const GoalItemCard = ({ routine, onAction, isDeleting }) => {
+const GoalItemCard = ({
+  goals,
+  onAction,
+  isDeleting,
+  onClickOverride = null,
+  hidenMenu = false,
+}) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { type, name, progress, parts, activeDays, status, creator } =
-    routine;
-
+  const { goalType, name, progress, parts, activeDays, creator } = goals;
   // 진행도 바
   const progressPercent = (progress * 100).toFixed(0);
-  
+
   const navigate = useNavigate();
 
   const handleCardClick = () => {
-    if (!isMenuOpen && !isDeleting) {
-      navigate(`/?panel=routine-detail&routineId=${routine.id}`);
+    if (isDeleting) return;
+
+    if (onClickOverride) {
+      onClickOverride(goals);
+      return;
+    }
+
+    if (!isMenuOpen) {
+      navigate(`/?panel=routine-detail&routineId=${goals.id}`);
     }
   };
 
@@ -30,9 +41,9 @@ const GoalItemCard = ({ routine, onAction, isDeleting }) => {
     setIsMenuOpen(false);
 
     if (action === "수정") {
-      navigate(`/?panel=routine-form&routineId=${routine.id}&isEditMode=true`);
+      navigate(`/?panel=routine-form&routineId=${goals.id}&isEditMode=true`);
     } else {
-      onAction(routine.id, action);
+      if (onAction) onAction(goals.id, action);
     }
   };
 
@@ -44,30 +55,30 @@ const GoalItemCard = ({ routine, onAction, isDeleting }) => {
     >
       <div className="routine-card__header">
         <span
-          className={`routine-card__type-tag routine-card__type-tag--${type.toLowerCase()}`}
+          className={`routine-card__type-tag routine-card__type-tag--${goalType}`}
         >
-          {type}
+          {goalType}
         </span>
         <h5 className="routine-card__title">{name}</h5>
-        <div className="routine-card__options">
-          <button
-            className="routine-card__options-btn"
-            // onClick={() => setIsMenuOpen(!isMenuOpen)}
-            onClick={handleOptionsClick}
-            disabled={isDeleting}
-          >
-            <span className="dot"></span>
-            <span className="dot"></span>
-            <span className="dot"></span>
-          </button>
-
-          {isMenuOpen && <ContextualMenu onSelect={handleMenuSelect} />}
-        </div>
+        {!hidenMenu && (
+          <div className="routine-card__options">
+            <button
+              className="routine-card__options-btn"
+              onClick={handleOptionsClick}
+              disabled={isDeleting}
+            >
+              <span className="dot"></span>
+              <span className="dot"></span>
+              <span className="dot"></span>
+            </button>
+            {isMenuOpen && <ContextualMenu onSelect={handleMenuSelect} />}
+          </div>
+        )}
       </div>
       <div className="routine-card__info">
         <div className="routine-card__info-progress">
           진행도 :
-          {type === "챌린지" ? (
+          {goalType === "챌린지" ? (
             <div className="routine-card__progress-bar-wrapper">
               <div
                 className="routine-card__progress-bar"

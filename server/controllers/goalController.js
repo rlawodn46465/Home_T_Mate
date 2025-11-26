@@ -3,6 +3,7 @@
 const asyncHandler = require("../utils/asyncHandler");
 const goalService = require("../services/goalService");
 const { mapGoalToListItem, mapGoalToDetail } = require("../utils/responseMap");
+const { BadRequestError } = require("../utils/errorHandler");
 // const routineService = require("../services/routineService");
 
 // GET /api/v1/goals (목표 목록)
@@ -11,6 +12,38 @@ const getGoals = asyncHandler(async (req, res) => {
   // const routineListItems = routines.map(mapRoutineToListItem);
 
   res.status(200).json({ success: true, data: goals.map(mapGoalToListItem) });
+});
+
+// GET /api/v1/goals/records?date=YYYY-MM-DD (특정 날짜 목표 불러오기)
+const getExerciseRecords = asyncHandler(async (req, res) => {
+  const { date } = req.query; // 프론트엔드로부터 날짜(YYYY-MM-DD)를 받음
+  const userId = req.user._id;
+
+  if (!date) {
+    throw new BadRequestError("조회할 날짜(date) 쿼리 파라미터가 필요합니다.");
+  }
+
+  if (!/\d{4}-\d{2}-\d{2}/.test(date)) {
+    throw new BadRequestError(
+      "날짜 형식이 유효하지 않습니다 (YYYY-MM-DD 형식)."
+    );
+  }
+
+  const records = await goalService.getDailyExerciseRecords(userId, date);
+  console.log(records);
+  res.status(200).json({ success: true, data: records });
+});
+
+// GET /api/v1/goals/all
+const getGoalsAndRecords = asyncHandler(async (req, res) => {
+
+  const userId = req.user._id;
+  const goals = await goalService.getGoalsAndDailyRecords(userId);
+  console.log(goals.customExercises);
+  res.status(200).json({
+    success: true,
+    data: goals,
+  });
 });
 
 // GET /api/v1/goals/:id (상세)
@@ -51,4 +84,6 @@ module.exports = {
   createGoal,
   updateGoal,
   deleteGoal,
+  getExerciseRecords,
+  getGoalsAndRecords,
 };

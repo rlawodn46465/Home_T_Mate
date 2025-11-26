@@ -10,6 +10,10 @@ import {
   addMonths,
   subMonths,
   getDate,
+  startOfDay,
+  getDay,
+  isAfter,
+  isBefore,
 } from "date-fns";
 import { ko } from "date-fns/locale";
 import CalendarDay from "./CalendarDay";
@@ -17,24 +21,18 @@ import { useMemo, useState } from "react";
 
 import "./Calendar.css";
 
-// 서버에서 받아온다고 가정한 더미 운동 데이터 (YYYY-MM-DD 형식)
-// 예시: 9월 3일: 가슴, 등, 어깨 / 9월 10일: 하체, 코어 / 9월 8일: 가슴
-const DUMMY_WORKOUT_DATA = {
-  "2025-09-03": ["가슴", "등", "어깨", "하체", "팔", "코어"],
-  "2025-09-04": ["가슴", "등", "어깨", "하체", "팔", "코어"],
-  "2025-09-10": ["하체", "코어"],
-  "2025-09-08": ["가슴"],
-  "2025-08-31": ["팔"], // 이전 달 데이터 예시
-  "2025-10-04": ["코어"], // 다음 달 데이터 예시
-  "2025-11-19": ["코어"], // 다음 달 데이터 예시
-};
-
-const Calendar = () => {
+const Calendar = ({
+  startDate,
+  endDate,
+  activeDays = [],
+  selectedDate,
+  onSelectDate,
+  renderDayContents,
+}) => {
   // 오늘 날짜
-  const today = useMemo(() => new Date(), []);
-
+  const today = useMemo(() => startOfDay(new Date()), []);
   // 오늘 날짜로 초기 설정
-  const [currentDate, setCurrentDate] = useState(today);
+  const [currentDate, setCurrentDate] = useState(new Date());
 
   // 월 이동 핸들러
   const prevMonth = () => setCurrentDate(subMonths(currentDate, 1));
@@ -43,18 +41,41 @@ const Calendar = () => {
   // 달력 날짜 배열 생성
   const monthStart = startOfMonth(currentDate);
   const monthEnd = endOfMonth(currentDate);
-  const startDate = startOfWeek(monthStart, { locale: ko });
-  const endDate = endOfWeek(monthEnd, { locale: ko });
+  const calendarStart = startOfWeek(monthStart, { locale: ko });
+  const calendarEnd = endOfWeek(monthEnd, { locale: ko });
 
-  const calendarDays = eachDayOfInterval({ start: startDate, end: endDate });
+  const calendarDays = eachDayOfInterval({
+    start: calendarStart,
+    end: calendarEnd,
+  });
 
   // 헤더 요일 배열
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
-  // 날짜에 해당하는 운동 데이터 조회
-  const getWorkoutsForDate = (date) => {
-    const dateKey = format(date, "yyyy-MM-dd");
-    return DUMMY_WORKOUT_DATA[dateKey] || null;
+  const getDateStatus = (date) => {
+    const checkDate = startOfDay(date);
+    const startLimit = startDate ? startOfDay(new Date(startDate)) : null;
+    const endLimit = endDate ? startOfDay(new Date(endDate)) : null;
+
+    // 범위 체크
+    const isTooEarly = startLimit ? isBefore(checkDate, startLimit) : false;
+    const isFuture = isAfter(checkDate, today);
+    const isAfterEnd = endLimit ? isAfter(checkDate, endLimit) : false;
+
+    if (isTooEarly || isFuture || isAfterEnd) {
+      return { disabled: true, opacity: 0.2 };
+    }
+
+    // 요일 체크
+    const dayMap = ["일", "월", "화", "수", "목", "금", "토"];
+    const dayStr = dayMap[getDay(checkDate)];
+    const isActiveDay = activeDays.length === 0 || activeDays.includes(dayStr);
+
+    if (!isActiveDay) {
+      return { disabled: true, opacity: 0.5 };
+    }
+
+    return { disabled: false, opacity: 1 };
   };
 
   return (
@@ -88,7 +109,8 @@ const Calendar = () => {
         {/* 날짜 그리드 */}
         <div className="calendar-grid calendar-days">
           {calendarDays.map((date, index) => {
-            const workouts = getWorkoutsForDate(date);
+            const { disabled, opacity } = getDateStatus(date);
+            const isSelected = selectedDate && isSameDay(date, selectedDate);
 
             return (
               <CalendarDay
@@ -96,57 +118,18 @@ const Calendar = () => {
                 date={date}
                 dayOfMonth={getDate(date)}
                 isCurrentMonth={isSameMonth(date, currentDate)}
-                hasWorkout={!!workouts}
-                workouts={workouts || []}
                 isToday={isSameDay(date, today)}
-              />
+                isSelected={isSelected}
+                isDisabled={disabled}
+                opacity={opacity}
+                onClick={() => !disabled && onSelectDate(date)}
+              >
+                {isSameMonth(date, currentDate) &&
+                  renderDayContents &&
+                  renderDayContents(date)}
+              </CalendarDay>
             );
           })}
-        </div>
-        {/* 운동 부위 */}
-        <div className="calendar-legend">
-          <span className="legend-item">
-            <span
-              className="workout-dot"
-              style={{ backgroundColor: "#DC3545" }}
-            />
-            가슴
-          </span>
-          <span className="legend-item">
-            <span
-              className="workout-dot"
-              style={{ backgroundColor: "#FFC107" }}
-            />
-            등
-          </span>
-          <span className="legend-item">
-            <span
-              className="workout-dot"
-              style={{ backgroundColor: "#28A745" }}
-            />
-            어깨
-          </span>
-          <span className="legend-item">
-            <span
-              className="workout-dot"
-              style={{ backgroundColor: "#007BFF" }}
-            />
-            하체
-          </span>
-          <span className="legend-item">
-            <span
-              className="workout-dot"
-              style={{ backgroundColor: "#17A2B8" }}
-            />
-            팔
-          </span>
-          <span className="legend-item">
-            <span
-              className="workout-dot"
-              style={{ backgroundColor: "#6610F2" }}
-            />
-            코어
-          </span>
         </div>
       </div>
     </div>

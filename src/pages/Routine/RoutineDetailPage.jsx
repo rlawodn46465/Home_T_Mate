@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./RoutineDetailPage.css";
-import RoutineDetailHeader from "../../components/ui/Routine/RoutineDetailHeader";
-import ExerciseList from "../../components/ui/Routine/ExerciseList";
-import RoutineSummary from "../../components/ui/Routine/RoutineSummary";
+import RoutineDetailHeader from "../../components/ui/Routine/GoalList/RoutineDetailHeader"
+import ExerciseList from "../../components/ui/Routine/GoalList/ExerciseList";
+import RoutineSummary from "../../components/ui/Routine/GoalList/RoutineSummary";
 import TabNavigation from "../../components/common/TabNavigation";
 import { useRoutineDetail } from "../../hooks/useRoutineDetail";
 import { useRoutineDelete } from "../../hooks/useRoutineDelete";

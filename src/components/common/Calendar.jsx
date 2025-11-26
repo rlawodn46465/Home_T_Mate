@@ -15,6 +15,7 @@ import {
   isAfter,
   startOfDay,
   getDay,
+  setMonth,
 } from "date-fns";
 import { ko } from "date-fns/locale";
 import CalendarDay from "./CalendarDay";
@@ -35,8 +36,15 @@ const Calendar = ({
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // 월 이동 핸들러
-  const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
-  const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
+  const prevMonth = () => {
+    const newMonth = subMonths(currentMonth, 1);
+    setCurrentMonth(newMonth);
+  };
+
+  const nextMonth = () => {
+    const newMonth = addMonths(currentMonth, 1);
+    setCurrentMonth(newMonth);
+  };
 
   // 달력 그리드 생성
   const monthStart = startOfMonth(currentMonth);

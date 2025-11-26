@@ -7,6 +7,7 @@ import RoutineDetailPage from "./Routine/RoutineDetailPage";
 import ExerciseDetail from "./Exercise/ExerciseDetail";
 import RoutineFormPage from "./Routine/RoutineFormPage";
 import ExerciseListPage from "./Exercise/ExerciseListPage";
+import ExerciseFormPage from "./Exercise/ExerciseFormPage";
 
 const RightPanel = () => {
   const location = useLocation();
@@ -14,6 +15,7 @@ const RightPanel = () => {
 
   const panelType = searchParams.get("panel") || "login";
   const routineId = searchParams.get("routineId");
+  const exerciseId = searchParams.get("exerciseId");
 
   let content;
 
@@ -41,6 +43,9 @@ const RightPanel = () => {
       break;
     case "routine-form":
       content = <RoutineFormPage routineId={routineId} />;
+      break;
+    case "exercise-form":
+      content = <ExerciseFormPage exerciseId={exerciseId} />;
       break;
     default:
       content = <div>요청하신 페이지를 찾을 수 없습니다.</div>;

@@ -11,7 +11,6 @@ export const useExercises = (filters) => {
 
     let isCancelled = false;
     const loadExercises = async () => {
-      console.log(filters);
       setIsLoading(true);
       try {
         // 필터 없이 전체 운동 마스터 목록 로드 (캐시 필요 시 여기에 로직 추가)

@@ -74,7 +74,6 @@ const useRoutineForm = (isEditMode, initialRoutine) => {
   // 운동 추가 핸들러
   const handleAddExercise = useCallback((newExercises) => {
     // 새로운 운동 항목 배열 생성
-    console.log(newExercises);
     const exercisesToAdd = newExercises.map((ex) => ({
       id: Date.now() + Math.random(),
       exerciseId: ex._id,
@@ -173,8 +172,7 @@ const useRoutineForm = (isEditMode, initialRoutine) => {
     return {
       name: routineForm.info.name,
       // 첫 글자만 대문자로 변환
-      goalType:
-        routineForm.info.routineType.toUpperCase(),
+      goalType: routineForm.info.routineType.toUpperCase(),
 
       durationWeek: routineForm.info.goalWeeks,
 

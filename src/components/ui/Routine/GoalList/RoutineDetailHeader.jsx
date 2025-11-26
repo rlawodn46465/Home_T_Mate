@@ -1,7 +1,7 @@
 import Button from "../../../common/Button";
 import "./RoutineDetailHeader.css";
-import edit_icon from "../../../assets/images/edit_icon.svg";
-import delete_icon from "../../../assets/images/delete_icon.svg";
+import edit_icon from "../../../../assets/images/edit_icon.svg";
+import delete_icon from "../../../../assets/images/delete_icon.svg";
 
 const RoutineDetailHeader = ({
   title,

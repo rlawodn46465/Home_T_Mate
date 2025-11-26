@@ -1,9 +1,9 @@
 import "./RoutineListPage.css";
-import TabNavigation from "../../components/ui/Routine/TabNavigation";
-import RoutineHeader from "../../components/ui/Routine/RoutineHeader";
-import BodyPartFilter from "../../components/ui/Routine/BodyPartFilter";
+import TabNavigation from "../../components/ui/Routine/GoalList/TabNavigation";
+import RoutineHeader from "../../components/ui/Routine/GoalList/RoutineHeader";
+import BodyPartFilter from "../../components/ui/Routine/GoalList/BodyPartFilter";
 import { useState, useCallback, useMemo } from "react";
-import RoutineItemCard from "../../components/ui/Routine/RoutineItemCard";
+import RoutineItemCard from "../../components/ui/Routine/GoalList/GoalItemCard";
 import { useRoutines } from "../../hooks/useRoutines";
 import { useRoutineDelete } from "../../hooks/useRoutineDelete";
 
@@ -97,7 +97,7 @@ const RoutineListPage = () => {
         {filteredRoutines.map((routine) => (
           <RoutineItemCard
             key={routine.id}
-            routine={routine}
+            goals={routine}
             onAction={handleItemAction}
             isDeleting={isDeleting}
           />
