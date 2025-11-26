@@ -7,8 +7,8 @@
 /* --- 목표 카드 스타일 (리스트 & 헤더 공통) --- */
 .goal-card, .selected-goal-header {
   background: white;
-  padding: 16px;
   border-bottom: 1px solid #eee;
+  margin-bottom: 10px;
 }
 
 .goal-card:active {
@@ -55,13 +55,13 @@
 
 /* --- 날짜 선택 섹션 --- */
 .date-selection-section {
-  padding: 16px;
   background-color: #f8f9fa; /* 배경색 살짝 */
+  margin-bottom: 10px;
 }
 
 .section-title {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 600;
   margin-bottom: 10px;
   color: #333;
 }
@@ -89,12 +89,9 @@
 }
 
 /* --- 운동 목록 --- */
-.daily-exercise-list {
-  padding: 16px;
-}
 .list-title {
-  font-size: 14px;
-  font-weight: bold;
+  font-size: 16px;
+  font-weight: 600;
   margin-bottom: 12px;
 }
 .exercise-item-card {
@@ -108,17 +105,19 @@
 
 /* --- 하단 저장 버튼 --- */
 .bottom-action-area {
+  display: flex;
+  justify-content: center;
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
   padding: 16px;
   background: white;
-  border-top: 1px solid #eee;
   z-index: 100;
 }
 
 .save-button {
+  max-width: 500px;
   width: 100%;
   padding: 14px;
   background-color: #6610F2; /* 메인 컬러 */
