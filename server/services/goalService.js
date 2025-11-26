@@ -67,11 +67,10 @@ const getGoalsAndDailyRecords = async (userId) => {
     })
     .populate({
       path: "customExercises.exerciseId",
-      select: "name",
+      select: "name targetMuscles",
     })
     .sort({ createdAt: -1 });
 
-  
   const combinedGoals = userGoals.map((ug) => {
     const goalInfo = ug.goalId;
     if (!goalInfo) return null;
@@ -92,13 +91,13 @@ const getGoalsAndDailyRecords = async (userId) => {
       createdAt: ug.createdAt,
       customExercises: ug.customExercises.map((ce) => {
         const exerciseInfo = ce.exerciseId || {};
-
         return {
           exerciseId: exerciseInfo._id,
           days: ce.days,
           restTime: ce.restTime,
           sets: ce.sets,
           name: exerciseInfo.name || "이름 없음",
+          targetMuscles: exerciseInfo.targetMuscles,
         };
       }),
       durationWeek: ug.durationWeek,
