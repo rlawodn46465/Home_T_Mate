@@ -3,6 +3,16 @@ const ExerciseHistory = require("../models/ExerciseHistory");
 const UserGoal = require("../models/UserGoal");
 const { mapHistoryToCalendar } = require("../utils/responseMap");
 
+// 운동 목록 조회
+const getWorkoutSession = async (userId) => {
+  // 내 운동 기록 조회
+  const exerciseHistory = await ExerciseHistory.find({
+    userId: userId,
+  }).populate("exerciseId", "name category");
+
+  return exerciseHistory;
+};
+
 // 운동 기록 저장 (운동 완료 시 호출)
 const saveWorkoutSession = async (userId, workoutData) => {
   const { date, userGoalId, type, exercises, title, totalTime } = workoutData;
@@ -101,4 +111,4 @@ const getMonthlyHistory = async (userId, year, month) => {
   return mapHistoryToCalendar(rawHistory);
 };
 
-module.exports = { saveWorkoutSession, getMonthlyHistory };
+module.exports = { getWorkoutSession, saveWorkoutSession, getMonthlyHistory };

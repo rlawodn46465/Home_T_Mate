@@ -8,10 +8,18 @@ const {
   getGoalDetail,
   updateGoal,
   deleteGoal,
+  getExerciseRecords,
+  getGoalsAndRecords
 } = require("../controllers/goalController");
 
 // 루틴/챌린지 목록 조회 (GET /api/v1/goals)
 router.get("/", protect, getGoals);
+
+// 특정 날짜의 모든 운동 기록 조회 (GET /api/v1/goals/records?date=YYYY-MM-DD)
+router.get("/records", protect, getExerciseRecords);
+
+// 루틴/챌린지 목록과 운동 기록 조회 (GET /api/v1/goals/all)
+router.get("/all", protect, getGoalsAndRecords);
 
 // 루틴/챌린지 생성 (POST /api/v1/goals)
 router.post("/", protect, createGoal);

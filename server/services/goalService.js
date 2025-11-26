@@ -2,6 +2,9 @@
 
 const Goal = require("../models/Goal");
 const UserGoal = require("../models/UserGoal");
+const ExerciseHistory = require("../models/ExerciseHistory");
+const { calculateGoalProgress } = require("../utils/responseMap");
+const { parseISO, startOfDay, endOfDay } = require("date-fns");
 
 const {
   NotFoundError,
@@ -49,8 +52,155 @@ const getUserGoals = async (userId) => {
   return combinedGoals;
 };
 
+// 사용자 목표 목록 조회(운동 기록쪽)
+const getGoalsAndDailyRecords = async (userId) => {
+  const typeMap = {
+    ROUTINE: "루틴",
+    CHALLENGE: "챌린지",
+  };
+
+  const userGoals = await UserGoal.find({ userId: userId })
+    .populate({
+      path: "goalId",
+      select: "name goalType parts creatorId",
+      populate: { path: "creatorId", select: "nickname" },
+    })
+    .populate({
+      path: "customExercises.exerciseId",
+      select: "name",
+    })
+    .sort({ createdAt: -1 });
+
+  
+  const combinedGoals = userGoals.map((ug) => {
+    const goalInfo = ug.goalId;
+    if (!goalInfo) return null;
+    const progress = calculateGoalProgress({
+      goalType: goalInfo.goalType,
+      durationWeek: ug.durationWeek,
+      activeDays: ug.activeDays,
+      completedSessions: ug.completedSessions,
+      currentWeek: ug.currentWeek,
+    });
+
+    return {
+      _id: ug._id,
+      userId: ug.userId,
+      status: ug.status,
+      activeDays: ug.activeDays,
+      startDate: ug.startDate,
+      createdAt: ug.createdAt,
+      customExercises: ug.customExercises.map((ce) => {
+        const exerciseInfo = ce.exerciseId || {};
+
+        return {
+          exerciseId: exerciseInfo._id,
+          days: ce.days,
+          restTime: ce.restTime,
+          sets: ce.sets,
+          name: exerciseInfo.name || "이름 없음",
+        };
+      }),
+      durationWeek: ug.durationWeek,
+
+      progress: progress,
+
+      originalGoalId: goalInfo._id,
+      creator: goalInfo.creatorId?.nickname || "Unknown",
+      name: goalInfo.name,
+      goalType: typeMap[goalInfo.goalType] || goalInfo.goalType,
+      parts: goalInfo.parts,
+    };
+  });
+
+  return combinedGoals;
+};
+
+// 특정 날짜 목표 기록 조회
+const getDailyExerciseRecords = async (userId, dateString) => {
+  // 날짜 범위 계산
+  const targetDate = parseISO(dateString);
+  if (isNaN(targetDate.getTime())) {
+    // 이미 컨트롤러에서 검증했지만, 서비스에서도 혹시 모를 상황 대비
+    throw new BadRequestError("유효하지 않은 날짜 형식입니다.");
+  }
+
+  const start = startOfDay(targetDate);
+  const end = endOfDay(targetDate);
+
+  // ExerciseHistory 문서에서 해당 날짜에 기록이 있는 모든 항목을 조회
+  // 'records.date'가 범위 내에 있고 'userId'가 일치하는 문서 찾기
+  const histories = await ExerciseHistory.find({
+    userId: userId,
+    // $elemMatch를 사용하여 records 배열 내의 특정 조건을 만족하는 요소를 찾습니다.
+    records: {
+      $elemMatch: {
+        date: { $gte: start, $lte: end },
+      },
+    },
+  })
+    // 운동의 세부 정보(이름, 타겟 근육)를 채우기 위해 populate
+    .populate({
+      path: "exerciseId",
+      select: "name targetMuscles", // 이름과 운동 부위만 가져옵니다.
+    });
+
+  // 데이터 가공 및 필터링
+  const dailyRecords = [];
+
+  histories.forEach((history) => {
+    if (!history.exerciseId) return; // 운동 정보가 없는 경우 스킵 (데이터 무결성 문제)
+
+    // 해당 날짜에 해당하는 records만 필터링합니다.
+    const relevantRecords = history.records.filter((record) => {
+      // date-fns의 isSameDay를 사용하거나, 날짜가 start와 end 범위 내에 있는지 확인
+      return (
+        record.date.getTime() >= start.getTime() &&
+        record.date.getTime() <= end.getTime()
+      );
+    });
+
+    // 프론트엔드가 요구하는 형식에 맞게 데이터 재구성
+    relevantRecords.forEach((record) => {
+      // 운동 부위를 Exercise 모델의 targetMuscles에서 가져옵니다.
+      const parts = history.exerciseId.targetMuscles || [];
+
+      dailyRecords.push({
+        id: history._id, // 히스토리 ID (이 운동의 기록 전체 ID)
+        recordId: record._id, // 이 날짜의 기록 ID (수정/삭제 시 유용)
+        exerciseId: history.exerciseId._id,
+
+        // 🚨 요청하신 필수 정보 🚨
+        exerciseName: history.exerciseId.name, // 목표 이름 대신 운동 이름
+        recordType: record.recordType, // 운동 타입 (ROUTINE, CHALLENGE, PERSONAL)
+        goalName: record.goalName, // 루틴/챌린지 이름 (개별운동 시 null)
+        parts: parts, // 운동 부위 (카테고리)
+
+        // 수행 데이터
+        sets: record.sets, // 세트 정보 (setNumber, weight, reps, isCompleted)
+        totalTime: record.totalTime, // 운동 시간
+        isCompleted: record.sets.every((set) => set.isCompleted), // 모든 세트가 완료되었는지 여부
+
+        // 추가 정보
+        totalVolume: record.totalVolume,
+        maxWeight: record.maxWeight,
+        date: record.date,
+      });
+    });
+  });
+
+  // 날짜/시간 순으로 정렬이 필요하다면 여기서 수행
+  dailyRecords.sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  return dailyRecords;
+};
+
 // 목표 상세 조회
 const getGoalDetail = async (goalId) => {
+  if (!goalId) {
+    throw new BadRequestError("조회할 목표 ID가 누락되었습니다.");
+  }
+
   // 운동 정보 채우기
   const userGoal = await UserGoal.findById(goalId)
     .populate({
@@ -223,4 +373,6 @@ module.exports = {
   createGoal,
   updateGoal,
   deleteGoal,
+  getDailyExerciseRecords,
+  getGoalsAndDailyRecords,
 };

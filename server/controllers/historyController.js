@@ -1,5 +1,14 @@
+// controllers/historyController.js
+
 const asyncHandler = require("../utils/asyncHandler");
 const historyService = require("../services/historyService");
+
+// GET /api/v1/history (운동 목록 조회)
+const getWorkout = asyncHandler(async (req, res) => {
+  const historys = await historyService.getWorkoutSession(req.user._id);
+  res.status(200).json({success: true, data: historys})
+});
+
 
 // POST /api/v1/history (운동 완료 시 기록 저장)
 const saveWorkout = asyncHandler(async (req, res) => {
@@ -21,4 +30,4 @@ const getCalendar = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, data: calendarData });
 });
 
-module.exports = { saveWorkout, getCalendar };
+module.exports = { getWorkout, saveWorkout, getCalendar };

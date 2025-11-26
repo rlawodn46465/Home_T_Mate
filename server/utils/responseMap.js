@@ -1,7 +1,7 @@
 // utils/responseMap.js
 
 // 루틴/챌린지의 진행도를 계산하여 프론트엔드 형식에 맞게 반환
-const calculateProgress = (goal) => {
+const calculateGoalProgress = (goal) => {
   // 주당 운동 횟수
   const activeDaysCount = goal.activeDays ? goal.activeDays.length : 0;
 
@@ -72,11 +72,11 @@ const mapGoalToListItem = (goal) => {
     CHALLENGE: "챌린지",
   };
   // 진행도 계산 유틸리티 사용
-  const progress = calculateProgress(goal);
+  const progress = calculateGoalProgress(goal);
   return {
     id: goal._id,
     name: goal.name,
-    type: typeMap[goal.goalType] || goal.goalType,
+    goalType: typeMap[goal.goalType] || goal.goalType,
     activeDays: mapActiveDaysToDisplay(goal.activeDays),
     creator: goal.creator?.nickname || "Unknown",
     status: goal.status,
@@ -90,25 +90,16 @@ const mapGoalToListItem = (goal) => {
 
 // 목표 상세 정보 변환
 const mapGoalToDetail = (userGoal) => {
-
   const originalGoal = userGoal.goalId || {};
   const creator = originalGoal.creatorId || {};
 
-  // 진행률 계산
-  let progress = 0;
-  if (originalGoal.goalType === "CHALLENGE") {
-    const totalWeeks = userGoal.durationWeek || 1;
-    // 주당 운동 횟수 (요일 개수)
-    const activeDaysCount = userGoal.activeDays
-      ? userGoal.activeDays.length
-      : 0;
-    const totalSessions = activeDaysCount * totalWeeks;
-
-    if (totalSessions > 0) {
-      progress = userGoal.completedSessions / totalSessions;
-      progress = Math.min(progress, 1); // 최대 100%
-    }
-  }
+  const progress = calculateGoalProgress({
+    goalType: originalGoal.goalType,
+    durationWeek: userGoal.durationWeek,
+    activeDays: userGoal.activeDays,
+    completedSessions: userGoal.completedSessions,
+    currentWeek: userGoal.currentWeek,
+  });
 
   return {
     id: userGoal._id,
@@ -127,7 +118,8 @@ const mapGoalToDetail = (userGoal) => {
     startDate: userGoal.startDate,
     currentWeek: userGoal.currentWeek,
     durationWeek: userGoal.durationWeek,
-    progress: parseFloat(progress.toFixed(2)), // 소수점 2자리
+    // progress: parseFloat(progress.toFixed(2)), // 소수점 2자리
+    progress: progress,
 
     // 운동 목록
     exercises: userGoal.customExercises.map((ex) => {
@@ -151,9 +143,6 @@ const mapGoalToDetail = (userGoal) => {
     }),
 
     createdAt: userGoal.createdAt,
-   
-    // goalWeeks: routine.goalWeeks,
-    // days: allDays,
   };
 };
 
@@ -183,4 +172,5 @@ module.exports = {
   mapGoalToListItem,
   mapGoalToDetail,
   mapHistoryToCalendar,
+  calculateGoalProgress,
 };
