@@ -4,21 +4,15 @@ import DotsMenuToggle from "../../common/DotsMenuToggle";
 import DropdownMenu from "../../common/DropdownMenu";
 
 const ExerciseCard = ({ record }) => {
-  const { type, name, category, sets, duration, completed, maker } = record;
+  const { type, name, category,  duration, completed } = record;
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-
-  // 콘솔 테스트
-  useEffect(() => {
-    // console.log(record);
-  }, []);
 
   // 메뉴 토글
   const handleMenuItemClick = (action) => {
     if (action === "삭제") {
       console.log("삭제");
     }
-    console.log(`${action} 버튼이 클릭되었습니다.`);
     setIsMenuOpen(false);
   };
 

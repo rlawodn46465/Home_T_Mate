@@ -96,7 +96,6 @@ const LoadGoalTab = () => {
 
   useEffect(() => {
     if (allGoalsFromHook && allGoalsFromHook.length > 0) {
-      console.log("훅에서 로드된 전체 목표:", allGoalsFromHook);
       setGoals(allGoalsFromHook);
     } else if (goalsError) {
       console.error("목표 목록 로딩 실패:", goalsError);
