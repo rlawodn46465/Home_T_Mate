@@ -13,3 +13,11 @@ export const saveExerciseSession = async (workoutData) => {
   const response = await api.post(API_HISTORY_PATH, workoutData);
   return response.data;
 };
+
+// 날짜별 운동 기록 조회
+export const fetchMonthlyHistory = async (year, month) => {
+  const response = await api.get(`${API_HISTORY_PATH}/calendar`, {
+    params: {year, month},
+  });
+  return response.data.data;
+};

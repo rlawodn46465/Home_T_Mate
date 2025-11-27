@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect, useMemo } from "react";
+import { format, isSameDay } from "date-fns";
 import ExerciseDayGroup from "./ExerciseDayGroup";
 import "./ExerciseList.css";
-
 
 const DUMMY_DATA = [
   // 날짜별로 혼합된 더미 데이터 (서버에서 가져온다고 가정)
@@ -56,87 +56,105 @@ const DUMMY_DATA = [
   // ... 더 많은 데이터
 ];
 
-// 운동 기록 배열을 날짜를 기준으로 그룹화 후 객체 반환
-const groupRecordsByDate = (records) => {
-  if (!Array.isArray(records)) return {};
-  return records.reduce((acc, record) => {
-    const dateKey = record.date;
-    if (dateKey) {
-      if (!acc[dateKey]) acc[dateKey] = [];
-      acc[dateKey].push(record);
-    }
-    return acc;
-  }, {});
+//
+const transformDataForCard = (backendRecord) => {
+  return backendRecord.exercises.map((ex, index) => ({
+    id: `${backendRecord.date}-${index}`,
+    date: backendRecord.date,
+    type: backendRecord.recordType, // 예: 'ROUTINE' -> 매핑 필요할 수 있음
+    name: ex.name,
+    category: ex.category,
+    sets: `${ex.sets.length}세트`, // 세트 수 문자열 변환
+    duration: `${Math.floor(ex.totalTime / 60)}분`, // 초 -> 분 변환
+    completed: true, // 로직에 따라 변경
+    // 필요한 추가 필드 매핑
+  }));
 };
 
-const ExerciseList = ({ activeTab }) => {
-  const [exerciseRecords, setExerciseRecords] = useState([]);
-  const [allRecords, setAllRecords] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+// 운동 기록 배열을 날짜를 기준으로 그룹화 후 객체 반환
+// const groupRecordsByDate = (records) => {
+//   if (!Array.isArray(records)) return {};
+//   return records.reduce((acc, record) => {
+//     const dateKey = record.date;
+//     if (dateKey) {
+//       if (!acc[dateKey]) acc[dateKey] = [];
+//       acc[dateKey].push(record);
+//     }
+//     return acc;
+//   }, {});
+// };
+
+const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
+  const [displayData, setDisplayData] = useState([]);
+
+  // 선택된 날짜와 탭에 따라 데이터 필터
+  const filteredRecords = useMemo(() => {
+    if (!selectedDate || monthlyData.length === 0) return [];
+
+    // 선택된 날짜의 데이터 찾기
+    const targetDayData = monthlyData.find((data) =>
+      isSameDay(new Date(data.date), selectedDate)
+    );
+
+    if (!targetDayData) return [];
+
+    const transformedList = transformDataForCard(targetDayData);
+
+    // 탭(카테고리) 필터링
+    if (activeTab === "전체") return transformedList;
+
+    return transformedList.filter((record) => {
+      if (activeTab === "개별운동")
+        return record.type === "PERSONAL" || record.type === "개별운동";
+      if (activeTab === "루틴")
+        return record.type === "ROUTINE" || record.type === "루틴";
+      if (activeTab === "챌린지")
+        return record.type === "CHALLENGE" || record.type === "챌린지";
+      return true;
+    });
+  }, [selectedDate, monthlyData, activeTab]);
 
   useEffect(() => {
-    // let filteredData = DUMMY_DATA;
-    const loadData = async () => {
-      try {
-        setIsLoading(true);
-        // const response = await fetchExerciseHistory();
-        // if (response.success) {
-        //   const flatData = transformHistoryToFlatList(response.data);
-        //   setAllRecords(flatData);
-        // }
-      } catch (error) {
-        console.error("운동 기록 로딩 실패: ", error);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadData();
-  }, []);
+    setDisplayData(filteredRecords);
+  }, [filteredRecords]);
 
-  useEffect(() => {
-    if (activeTab === "전체") {
-      setExerciseRecords(allRecords);
-    } else {
-      setExerciseRecords(
-        allRecords.filter((record) => record.type === activeTab)
-      );
-    }
-  }, [activeTab, allRecords]);
-
-  // 렌더링 준비
-  const groupedRecords = groupRecordsByDate(exerciseRecords);
-  const dates = Object.keys(groupedRecords).sort(
-    (a, b) => new Date(b) - new Date(a)
-  );
-
-  if (isLoading) return <div className="loading">데이터를 불러오는 중...</div>;
-
-  if (exerciseRecords.length === 0) {
+  if (monthlyData.length > 0 && displayData.length === 0) {
     return (
-      <div className="no-data">선택한 탭에 해당하는 운동 기록이 없습니다.</div>
+      <div className="exercise-list">
+        <div
+          className="no-data"
+          style={{ padding: "20px", textAlign: "center", color: "#888" }}
+        >
+          {format(selectedDate, "M월 d일")}에 해당 운동 기록이 없습니다.
+        </div>
+      </div>
     );
   }
 
-  //   if (activeTab === "개별운동") {
-  //     filteredData = DUMMY_DATA.filter((record) => record.type === "개별운동");
-  //   } else if (activeTab === "루틴") {
-  //     filteredData = DUMMY_DATA.filter((record) => record.type === "루틴");
-  //   } else if (activeTab === "챌린지") {
-  //     filteredData = DUMMY_DATA.filter((record) => record.type === "챌린지");
-  //   }
-
-  //   setExerciseRecords(filteredData);
-  // }, [activeTab]);
+  // 데이터가 아예 없는 경우 (그 날 운동 안 함)
+  if (
+    monthlyData.length > 0 &&
+    !monthlyData.find((d) => isSameDay(new Date(d.date), selectedDate))
+  ) {
+    return (
+      <div className="exercise-list">
+        <div
+          className="no-data"
+          style={{ padding: "20px", textAlign: "center", color: "#888" }}
+        >
+          운동 기록이 없는 날입니다. <br />
+          운동을 추가해보세요!
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="exercise-list">
-      {dates.map((date) => (
-        <ExerciseDayGroup
-          key={date}
-          date={date}
-          records={groupedRecords[date]}
-        />
-      ))}
+      <ExerciseDayGroup
+        date={format(selectedDate, "yyyy-MM-dd")}
+        records={displayData}
+      />
     </div>
   );
 };

@@ -1,19 +1,20 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { format } from "date-fns";
+import { useLocation, useNavigate } from "react-router-dom";
+
 import Button from "../../components/common/Button";
 import TabNavigation from "../../components/common/TabNavigation";
-// import Calendar from "../../components/ui/ExerciseList/Calendar";
 import Calendar from "../../components/common/Calendar";
 import ExerciseList from "../../components/ui/ExerciseList/ExerciseList";
+
+import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
+
 import "./ExerciseListPage.css";
-import { useLocation, useNavigate } from "react-router-dom";
-import useDailyExerciseRecords from "../../hooks/useDailyGoalsRecords";
-import useMonthlyWorkoutDots from "../../hooks/useMonthlyWorkoutDots";
 
 const TABS = ["전체", "개별운동", "루틴", "챌린지"];
 const ALL_DAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
-// 부위별 색상 매핑 (상수로 분리하여 관리)
+// 부위별 색상 매핑
 const BODY_PART_COLORS = {
   가슴: "#DC3545",
   등: "#FFC107",
@@ -28,41 +29,46 @@ const ExerciseListPage = () => {
   const location = useLocation();
 
   const [activeTab, setActiveTab] = useState(TABS[0]);
+  const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const {
-    records,
-    isLoading: isRecordsLoading,
-    error: recordsError,
-    refetch: refetchDaily,
-  } = useDailyExerciseRecords(selectedDate);
+  // 데이터 불러오기
+  const { historyData, isLoading, error } = useMonthlyHistory(
+    currentMonthDate.getFullYear(),
+    currentMonthDate.getMonth() + 1
+  );
 
-  const { monthlyDots, isLoading: isDotsLoading } =
-    useMonthlyWorkoutDots(selectedDate);
-
-  useEffect(() => {
-  }, [records, selectedDate]);
+  // 캘린더 전달 데이터 가공
+  const monthlyDots = useMemo(() => {
+    if (!historyData) return {};
+    return historyData.reduce((acc, curr) => {
+      // curr.date가 "2025-11-27" 형태라고 가정
+      // curr.categoryGroup이 ["가슴", "등"] 형태라고 가정
+      acc[curr.date] = curr.categoryGroup;
+      return acc;
+    }, {});
+  }, [historyData]);
 
   // 운동 추가 페이지 이동
   const handleAddExerciseClick = () => {
     navigate(`${location.pathname}?panel=exercise-form`);
   };
 
-  // 달력의 각 날짜에 렌더링할 내용 정의
+  // 달력 날짜별 렌더링 함수
   const renderDayContents = (date) => {
     const dateKey = format(date, "yyyy-MM-dd");
-    const workouts = monthlyDots[dateKey];
+    const categories = monthlyDots[dateKey];
 
-    if (!workouts) return null;
+    if (!categories || categories.length === 0) return null;
 
     return (
       <div className="workout-dots-container">
-        {workouts.map((part, index) => (
+        {categories.map((part, index) => (
           <span
             key={index}
             className="workout-dot"
             style={{ backgroundColor: BODY_PART_COLORS[part] || "#ccc" }}
-            title={part} // 마우스 호버 시 부위 이름 표시
+            title={part}
           />
         ))}
       </div>
@@ -75,12 +81,13 @@ const ExerciseListPage = () => {
         <h2>운동 활동</h2>
         <Button text={"+ 운동 추가"} onClick={handleAddExerciseClick} />
       </div>
-      {/* <Calendar /> */}
       <Calendar
         startDate={new Date("2020-01-01")} // 과거 데이터도 볼 수 있게 넉넉히 설정
         activeDays={ALL_DAYS} // 모든 요일 활성화
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
+        currentMonth={currentMonthDate}
+        onMonthChange={setCurrentMonthDate}
         renderDayContents={renderDayContents}
       />
 
@@ -102,7 +109,17 @@ const ExerciseListPage = () => {
         onTabChange={setActiveTab}
       />
       <div className="exercise-list-box">
-        <ExerciseList activeTab={activeTab} selectedDate={selectedDate} />
+        {isLoading ? (
+          <div className="loading-message">데이터를 불러오는 중입니다...</div>
+        ) : error ? (
+          <div className="error-message">데이터 로딩 실패</div>
+        ) : (
+          <ExerciseList
+            activeTab={activeTab}
+            selectedDate={selectedDate}
+            monthlyData={historyData}
+          />
+        )}
       </div>
     </div>
   );
