@@ -15,6 +15,7 @@ import {
   isAfter,
   startOfDay,
   getDay,
+  isValid,
 } from "date-fns";
 import { ko } from "date-fns/locale";
 import CalendarDay from "./CalendarDay";
@@ -57,16 +58,26 @@ const Calendar = ({
   });
   const weekDays = ["일", "월", "화", "수", "목", "금", "토"];
 
+  // 유효한 날짜인지 확인
+  const createValidDate = (dateProp) => {
+    const dateObj = new Date(dateProp);
+    // date-fns의 isValid()를 사용하여 유효성을 확인하고, 유효하지 않으면 null 반환
+    return dateProp && isValid(dateObj) ? dateObj : null;
+  };
+
+  const validStartDate = useMemo(() => createValidDate(startDate), [startDate]);
+  const validEndDate = useMemo(() => createValidDate(endDate), [endDate]);
+
   // 🛠️ 날짜 유효성 및 상태 계산 함수
   const getDateStatus = (date) => {
     const checkDate = startOfDay(date);
 
     // 1. 범위 체크: 시작일 이전이거나, 오늘 이후거나, 종료일 이후면 아예 선택 불가
     const isTooEarly =
-      startDate && isBefore(checkDate, startOfDay(new Date(startDate)));
+      validStartDate && isBefore(checkDate, startOfDay(validStartDate));
     const isFuture = isAfter(checkDate, today);
-    const isAfterEnd = endDate
-      ? isAfter(checkDate, startOfDay(new Date(endDate)))
+    const isAfterEnd = validEndDate
+      ? isAfter(checkDate, startOfDay(validEndDate))
       : false;
 
     if (isTooEarly || isFuture || isAfterEnd) {

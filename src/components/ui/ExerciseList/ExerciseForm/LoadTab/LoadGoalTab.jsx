@@ -58,6 +58,8 @@ const LoadGoalTab = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [isCalendarExpanded, setIsCalendarExpanded] = useState(true);
 
+  const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
+
   const { isSaving, saveError, createHistory } = useCreateHistory();
 
   const [isLocalLoading, setIsLocalLoading] = useState(false);
@@ -236,6 +238,8 @@ const LoadGoalTab = () => {
                 activeDays={selectedGoal.activeDays}
                 selectedDate={selectedDate}
                 onSelectDate={handleSelectDate}
+                currentMonth={currentMonthDate}
+                onMonthChange={setCurrentMonthDate}
               />
             ) : (
               // 달력(접힌 상태)
