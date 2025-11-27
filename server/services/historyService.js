@@ -106,29 +106,97 @@ const getMonthlyHistory = async (userId, year, month) => {
     },
     { $unwind: "$exerciseInfo" },
 
+    // 운동부위
+    {
+      $unwind: {
+        path: "$exerciseInfo.targetMuscles",
+        preserveNullAndEmptyArrays: true
+      }
+    },
+
     // 날짜별 + 세션별 그룹화 (재조립)
     {
       $group: {
         _id: {
-          date: "$records.date",
+          date: {
+            $dateToString: { format: "%Y-%m-%d", date: "$records.date" },
+          },
           type: "$records.recordType",
           goalId: "$records.relatedUserGoalId",
         },
         title: { $first: "$records.goalName" },
-        totalTime: { $max: "$records.totalTime" },
-        targetMuscles: { $addToSet: "$exerciseInfo.category" },
+        recordType: { $first: "$records.recordType" },
+        totalSessionTime: { $max: "$records.totalTime" },
+
+        rawMuscles: { $addToSet: "$exerciseInfo.targetMuscles" },
+
         exercises: {
           $push: {
             name: "$exerciseInfo.name",
-            isCompleted: { $allElementsTrue: ["$records.sets.isCompleted"] },
+            targetMuscles: "$exerciseInfo.targetMuscles",
+            totalTime: "$records.totalTime",
+            sets: "$records.sets",
+            // isCompleted: { $allElementsTrue: ["$records.sets.isCompleted"] }, // (선택: 필요하면 주석 해제)
           },
         },
       },
     },
-    { $sort: { "_id.date": -1 } },
+    {
+      $project: {
+        _id: 0, // 기본 _id 제거
+        date: "$_id.date", // 그룹핑 기준이었던 날짜
+        recordType: "$recordType", // 운동 타입
+        goalId: "$_id.goalId", // 목표 ID
+        title: "$title", // 목표 이름
+        totalSessionTime: "$totalSessionTime", // 세션 총 시간
+        exercises: "$exercises", // 운동 상세 목록
+
+        // 6개 그룹 카테고리 생성 로직: rawMuscles 배열을 순회하며 매핑
+        categoryGroup: {
+          $reduce: {
+            input: "$rawMuscles",
+            initialValue: [],
+            in: {
+              $let: {
+                vars: {
+                  mappedCategory: {
+                    $switch: {
+                      branches: [
+                        { case: { $eq: ["$$this", "가슴"] }, then: "가슴" },
+                        { case: { $eq: ["$$this", "승모"] }, then: "등" },
+                        { case: { $eq: ["$$this", "어깨"] }, then: "어깨" },
+                        {
+                          case: { $in: ["$$this", ["종아리", "대퇴사두"]] },
+                          then: "하체",
+                        },
+                        {
+                          case: { $in: ["$$this", ["이두", "삼두", "전완"]] },
+                          then: "팔",
+                        },
+                        { case: { $eq: ["$$this", "복근"] }, then: "코어" },
+                      ],
+                      default: "기타",
+                    },
+                  },
+                },
+                // 이미 배열에 있는 카테고리라면 추가하지 않음 ($in)
+                in: {
+                  $cond: {
+                    if: { $in: ["$$mappedCategory", "$$value"] },
+                    then: "$$value",
+                    else: { $concatArrays: ["$$value", ["$$mappedCategory"]] },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    { $sort: { "date": -1 } },
   ]);
 
-  return mapHistoryToCalendar(rawHistory);
+  return rawHistory;
 };
 
 module.exports = {
