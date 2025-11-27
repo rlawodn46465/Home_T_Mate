@@ -1,5 +1,6 @@
 import { addWeeks, format } from "date-fns";
 import { useEffect, useState, useMemo } from "react";
+import { useCreateHistory } from "../../../../../hooks/useHistory";
 import SelectedGoalHeader from "./SelectedGoalHeader";
 import Calendar from "../../../../common/Calendar";
 import DailyExerciseList from "./DailyExerciseList";
@@ -9,16 +10,61 @@ import GoalItemCard from "../../../Routine/GoalList/GoalItemCard";
 import useGoalsAndDailyRecords from "../../../../../hooks/useGoalsAndDailyRecords";
 import useRoutineForm from "../../../../../hooks/useRoutineForm";
 
+const calculateExerciseStats = (exercises) => {
+  return exercises.map((ex) => {
+    let maxWeight = 0;
+    let totalVolume = 0;
+    let totalReps = 0;
+
+    const setsArray = ex.sets && Array.isArray(ex.sets) ? ex.sets : [];
+
+    // 세트별 통계 계산
+    const setsWithCompletion = setsArray.map((set, index) => {
+      const weight = set.weight || 0;
+      const reps = set.reps || 0;
+
+      const volume = weight * reps;
+      totalVolume += volume;
+      totalReps += reps;
+
+      if (weight > maxWeight) {
+        maxWeight = weight;
+      }
+
+      const isCompleted = true;
+
+      return {
+        setNumber: set.setNumber || index + 1,
+        weight: weight,
+        reps: reps,
+        isCompleted: isCompleted,
+      };
+    });
+
+    return {
+      exerciseId: ex.exerciseId,
+      name: ex.name,
+      sets: setsWithCompletion,
+      maxWeight: maxWeight,
+      totalVolume: totalVolume,
+      totalReps: totalReps,
+    };
+  });
+};
+
 const LoadGoalTab = () => {
   const [goals, setGoals] = useState([]);
   const [selectedGoal, setSelectedGoal] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isCalendarExpanded, setIsCalendarExpanded] = useState(true);
-  const [isLoading, setIsLoading] = useState(false);
+
+  const { isSaving, saveError, createHistory } = useCreateHistory();
+
+  const [isLocalLoading, setIsLocalLoading] = useState(false);
+  const isLoading = isLocalLoading;
 
   const initialGoalData = useMemo(() => {
     if (!selectedGoal) return null;
-
     return {
       name: selectedGoal.name,
       routineType: selectedGoal.goalType,
@@ -55,12 +101,12 @@ const LoadGoalTab = () => {
     } else if (goalsError) {
       console.error("목표 목록 로딩 실패:", goalsError);
     }
-  }, [allGoalsFromHook, goalsError, goals]);
+  }, [allGoalsFromHook, goalsError]);
 
   // 목표 선택
   const handleSelectGoal = async (goalListItem) => {
     try {
-      setIsLoading(true);
+      setIsLocalLoading(true);
       if (goalListItem) {
         setSelectedGoal(goalListItem);
         setIsCalendarExpanded(true);
@@ -72,7 +118,7 @@ const LoadGoalTab = () => {
       console.error("목표 상세 로딩 실패:", error);
       alert("목표 정보를 불러오는데 실패했습니다.");
     } finally {
-      setIsLoading(false);
+      setIsLocalLoading(false);
     }
   };
 
@@ -94,19 +140,38 @@ const LoadGoalTab = () => {
   };
 
   // 저장하기
-  const handleSave = () => {
-    if (!selectedGoal || !selectedDate) return;
+  const handleSave = async () => {
+    if (!selectedGoal || !selectedDate || isSaving) return;
 
-    // 여기서 상위 컴포넌트로 데이터를 전달하거나
-    // 해당 날짜에 운동 계획을 추가하는 API를 호출합니다.
+    // 데이터 가공
+    const processedExercises = calculateExerciseStats(routineForm.exercises);
+
+    // totalTime 계산(임시)
+    const estimatedTotalTime = processedExercises.length * 10 * 60; // 운동당 10분 가정
+
     const planData = {
-      goalId: selectedGoal._id, // UserGoal ID
       date: format(selectedDate, "yyyy-MM-dd"),
-      exercises: routineForm.exercises,
+      userGoalId: selectedGoal._id,
+      type: selectedGoal.goalType.toUpperCase(),
+      title: selectedGoal.name,
+      totalTime: estimatedTotalTime,
+      exercises: processedExercises,
     };
 
     console.log("서버로 전송할 데이터:", planData);
-    // 예: saveDailyPlan(planData).then(() => alert('저장 완료'));
+
+    // API 호출
+    const success = await createHistory(planData);
+    console.log(success);
+
+    if (success) {
+      alert("✅ 운동 기록이 성공적으로 저장되었습니다!");
+      handleDeselectGoal();
+    } else {
+      alert(
+        `❌ 운동 기록 저장에 실패했습니다: ${saveError || "알 수 없는 오류"}`
+      );
+    }
   };
 
   // 챌린지 종료일 계산
@@ -124,8 +189,10 @@ const LoadGoalTab = () => {
 
   return (
     <div className="load-goal-container">
-      {(isLoading || isGoalsLoading) && (
-        <div className="loading-overlay">로딩중...</div>
+      {(isLoading || isGoalsLoading || isSaving) && (
+        <div className="loading-overlay">
+          {isSaving ? "운동 기록 저장 중..." : "로딩중..."}
+        </div>
       )}
       {/* 목표 리스트 */}
       {!selectedGoal && (
@@ -198,11 +265,13 @@ const LoadGoalTab = () => {
           {/* 저장 버튼 */}
           <div className="bottom-action-area">
             <button
-              className={`save-button ${!selectedDate ? "disabled" : ""}`}
-              disabled={!selectedDate}
+              className={`save-button ${
+                !selectedDate || isSaving ? "disabled" : ""
+              }`}
+              disabled={!selectedDate || isSaving}
               onClick={handleSave}
             >
-              저장하기
+              {isSaving ? "저장 중..." : "저장하기"}
             </button>
           </div>
         </>

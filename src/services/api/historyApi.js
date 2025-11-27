@@ -11,5 +11,5 @@ export const fetchHistorys = async () => {
 // 운동 기록 저장
 export const saveExerciseSession = async (workoutData) => {
   const response = await api.post(API_HISTORY_PATH, workoutData);
-  return response.data.data;
+  return response.data;
 };
