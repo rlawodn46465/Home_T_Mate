@@ -1,11 +1,12 @@
 /* 전체 컨테이너 */
 .load-goal-container {
-  padding: 0 0 80px 0; /* 하단 버튼 공간 확보 */
+  padding-bottom: 80px; /* 하단 버튼 공간 확보 */
   position: relative;
 }
 
 /* --- 목표 카드 스타일 (리스트 & 헤더 공통) --- */
-.goal-card, .selected-goal-header {
+.goal-card,
+.selected-goal-header {
   background: white;
   border-bottom: 1px solid #eee;
   margin-bottom: 10px;
@@ -29,8 +30,12 @@
   margin-right: 8px;
   font-weight: bold;
 }
-.badge.routine { background-color: #6610F2; }
-.badge.challenge { background-color: #6c757d; }
+.badge.routine {
+  background-color: #6610f2;
+}
+.badge.challenge {
+  background-color: #6c757d;
+}
 
 .goal-name {
   font-size: 16px;
@@ -80,7 +85,7 @@
 
 .selected-date-text {
   font-weight: 600;
-  color: #6610F2;
+  color: #6610f2;
 }
 
 .toggle-icon {
@@ -95,12 +100,12 @@
   margin-bottom: 12px;
 }
 .exercise-item-card {
-    background: white;
-    padding: 12px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    margin-bottom: 10px;
-    border: 1px solid #eee;
+  background: white;
+  padding: 12px;
+  border-radius: 8px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 10px;
+  border: 1px solid #eee;
 }
 
 /* --- 하단 저장 버튼 --- */
@@ -120,7 +125,7 @@
   max-width: 500px;
   width: 100%;
   padding: 14px;
-  background-color: #6610F2; /* 메인 컬러 */
+  background-color: #6610f2; /* 메인 컬러 */
   color: white;
   border: none;
   border-radius: 8px;

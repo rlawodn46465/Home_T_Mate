@@ -42,7 +42,9 @@ export const useCreateHistory = () => {
     setIsSaving(true);
     setSaveError(null);
     try {
+      console.log("데이터 : ", workoutData);
       const result = await saveExerciseSession(workoutData);
+      console.log(result);
       console.log("운동 기록 저장 성공:", result.message);
       return true;
     } catch (error) {

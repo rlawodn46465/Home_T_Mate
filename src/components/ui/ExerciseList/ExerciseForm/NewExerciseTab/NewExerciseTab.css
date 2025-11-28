@@ -1,0 +1,4 @@
+.new-exercise-tab {
+  padding-bottom: 80px; /* 하단 버튼 공간 확보 */
+  position: relative;
+}

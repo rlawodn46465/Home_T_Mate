@@ -1,6 +1,7 @@
 import { useState } from "react";
 import TabNavigation from "../../../common/TabNavigation";
 import LoadGoalTab from "./LoadTab/LoadGoalTab";
+import NewExerciseTab from "./NewExerciseTab/NewExerciseTab";
 
 const TABS = ["불러오기", "새 운동"];
 const ExerciseInfoSection = () => {
@@ -14,7 +15,7 @@ const ExerciseInfoSection = () => {
         onTabChange={setActiveTab}
       />
       {activeTab === "불러오기" && <LoadGoalTab />}
-      {activeTab === "새 운동" && <div>새 운동</div>}
+      {activeTab === "새 운동" && <NewExerciseTab/>}
     </div>
   );
 };
