@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchHistorys } from "../services/api/historyApi";
-import { saveExerciseSession } from "../services/api/historyApi";
+import { fetchHistorys, saveExerciseSession } from "../services/api/historyApi";
 
 // 루틴 목록 상태 관리, API 통신 훅
 export const useHistorys = () => {
