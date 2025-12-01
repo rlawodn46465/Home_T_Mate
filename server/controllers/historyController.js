@@ -12,6 +12,8 @@ const getWorkout = asyncHandler(async (req, res) => {
 // POST /api/v1/history (운동 완료 시 기록 저장)
 const saveWorkout = asyncHandler(async (req, res) => {
   // req.body는 WorkoutRecord 구조와 유사해야 함
+  // console.log("req.user._id: ", req.user._id);
+  // console.log("req.body: ", req.body);
   await historyService.saveWorkoutSession(req.user._id, req.body);
   res.status(201).json({ success: true, message: "운동이 기록되었습니다." });
 });
