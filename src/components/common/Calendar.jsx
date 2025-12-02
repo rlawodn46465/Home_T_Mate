@@ -138,7 +138,7 @@ const Calendar = ({
                 opacity={opacity}
                 onClick={() => !disabled && onSelectDate(date)}
               >
-                {/* [추가] 날짜 칸 안에 내용을 그릴 수 있도록 함수 호출 */}
+                {/* 카테고리별 점 */}
                 {renderDayContents && renderDayContents(date)}
               </CalendarDay>
             );
