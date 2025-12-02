@@ -3,68 +3,16 @@ import { format, isSameDay } from "date-fns";
 import ExerciseDayGroup from "./ExerciseDayGroup";
 import "./ExerciseList.css";
 
-const DUMMY_DATA = [
-  // 날짜별로 혼합된 더미 데이터 (서버에서 가져온다고 가정)
-  {
-    id: 1,
-    date: "2025-09-10",
-    type: "개별운동",
-    name: "런지 (덤벨)",
-    category: "하체",
-    sets: "10회 3세트",
-    duration: "12분",
-    completed: true,
-  },
-  {
-    id: 2,
-    date: "2025-09-10",
-    type: "개별운동",
-    name: "스쿼트 (맨몸)",
-    category: "하체",
-    sets: "30회 3세트",
-    duration: "15분",
-    completed: true,
-  },
-  {
-    id: 3,
-    date: "2025-09-10",
-    type: "루틴",
-    name: "맨몸 운동 3분할 루틴",
-    maker: "나님",
-    duration: "185분",
-    completed: true,
-  },
-  {
-    id: 4,
-    date: "2025-09-10",
-    type: "챌린지",
-    name: "푸쉬업 100개 만들기",
-    maker: "나님",
-    duration: "90분",
-    completed: false,
-  },
-  {
-    id: 5,
-    date: "2025-09-09",
-    type: "개별운동",
-    name: "벤치 프레스",
-    category: "가슴",
-    sets: "8회 3세트",
-    duration: "30분",
-    completed: true,
-  },
-  // ... 더 많은 데이터
-];
-
 //
 const transformDataForCard = (backendRecord) => {
+
   return backendRecord.exercises.map((ex, index) => ({
     id: `${backendRecord.date}-${index}`,
     date: backendRecord.date,
     type: backendRecord.recordType, // 예: 'ROUTINE' -> 매핑 필요할 수 있음
     name: ex.name,
-    category: ex.category,
-    sets: `${ex.sets.length}세트`, // 세트 수 문자열 변환
+    category: ex.targetMuscles,
+    sets: ex.sets, // 세트 수 문자열 변환
     duration: `${Math.floor(ex.totalTime / 60)}분`, // 초 -> 분 변환
     completed: true, // 로직에 따라 변경
     // 필요한 추가 필드 매핑
@@ -99,7 +47,7 @@ const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
     if (!targetDayData) return [];
 
     const transformedList = transformDataForCard(targetDayData);
-
+    
     // 탭(카테고리) 필터링
     if (activeTab === "전체") return transformedList;
 
