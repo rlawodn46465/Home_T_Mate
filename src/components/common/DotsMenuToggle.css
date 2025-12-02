@@ -1,10 +1,9 @@
 .dots-toggle-container {
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
-  align-items: end;
-  width: 50px;
-  height: 30px;
+  justify-content: space-between;
+  align-items: center;
+  width: 30px;
+  height: 20px;
   padding: 5px;
   background-color: transparent;
   border-radius: 50%;
