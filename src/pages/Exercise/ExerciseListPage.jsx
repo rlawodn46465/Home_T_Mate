@@ -40,13 +40,20 @@ const ExerciseListPage = () => {
 
   // 캘린더 전달 데이터 가공
   const monthlyDots = useMemo(() => {
-    if (!historyData) return {};
-    return historyData.reduce((acc, curr) => {
-      // curr.date가 "2025-11-27" 형태라고 가정
-      // curr.categoryGroup이 ["가슴", "등"] 형태라고 가정
-      acc[curr.date] = curr.categoryGroup;
+    if (!historyData || historyData.length === 0) return {};
+
+    const aggregatedData = historyData.reduce((acc, curr) => {
+      const dateKey = curr.date;
+      const currentCategories = curr.categoryGroup || [];
+
+      const existingCategories = acc[dateKey] || [];
+      const combinedCategories = [...existingCategories, ...currentCategories];
+      const uniqueCategories = Array.from(new Set(combinedCategories));
+      acc[dateKey] = uniqueCategories;
+
       return acc;
     }, {});
+    return aggregatedData;
   }, [historyData]);
 
   // 운동 추가 페이지 이동
@@ -57,20 +64,20 @@ const ExerciseListPage = () => {
   // 달력 날짜별 렌더링 함수
   const renderDayContents = (date) => {
     const dateKey = format(date, "yyyy-MM-dd");
-    const categories = monthlyDots[dateKey];
-
-    if (!categories || categories.length === 0) return null;
+    const categories = monthlyDots[dateKey] || [];
+    if (categories.length === 0) return null;
 
     return (
       <div className="workout-dots-container">
-        {categories.map((part, index) => (
-          <span
-            key={index}
-            className="workout-dot"
-            style={{ backgroundColor: BODY_PART_COLORS[part] || "#ccc" }}
-            title={part}
-          />
-        ))}
+        {Array.isArray(categories) &&
+          categories.map((part, index) => (
+            <span
+              key={index}
+              className="workout-dot"
+              style={{ backgroundColor: BODY_PART_COLORS[part] || "#ccc" }}
+              title={part}
+            />
+          ))}
       </div>
     );
   };
