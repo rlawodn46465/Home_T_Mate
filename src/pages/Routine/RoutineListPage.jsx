@@ -31,7 +31,7 @@ const RoutineListPage = () => {
   // 루틴 리스트 불러올 곳
   const filteredRoutines = useMemo(() => {
     return routines.filter((routine) => {
-      const typeMatch = activeTab === "전체" || routine.type === activeTab;
+      const typeMatch = activeTab === "전체" || routine.goalType === activeTab;
 
       // 추가 한국어로 상태 변환
       const statusMatch = routine.status === activeStatus;
