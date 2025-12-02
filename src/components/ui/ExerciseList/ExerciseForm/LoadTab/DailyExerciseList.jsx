@@ -1,5 +1,5 @@
 import { getDay } from "date-fns";
-import DailyExerciseItem from "./DailyExerciseItem";
+import DailyExerciseItem from "../../../../common/DailyExerciseItem";
 
 const DailyExerciseList = ({
   goal,
@@ -31,6 +31,7 @@ const DailyExerciseList = ({
             onSetUpdate={onSetUpdate}
             onAddSet={onAddSet}
             onRemoveSet={onRemoveSet}
+            isDaySelector={false}
           />
         ))
       ) : (

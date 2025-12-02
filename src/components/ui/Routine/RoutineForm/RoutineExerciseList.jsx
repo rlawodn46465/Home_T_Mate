@@ -1,4 +1,4 @@
-import RoutineExerciseItem from "./RoutineExerciseItem";
+import DailyExerciseItem from "../../../common/DailyExerciseItem";
 import "./RoutineExerciseList.css";
 
 const RoutineExerciseList = ({
@@ -13,7 +13,7 @@ const RoutineExerciseList = ({
   return (
     <div className="routine-exercise-list">
       {exercises.map((exercise) => (
-        <RoutineExerciseItem
+        <DailyExerciseItem
           key={exercise.id}
           exercise={exercise}
           onRemove={onRemoveExercise}
@@ -21,6 +21,7 @@ const RoutineExerciseList = ({
           onSetUpdate={onSetUpdate}
           onAddSet={onAddSet}
           onRemoveSet={onRemoveSet}
+          isDaySelector={true}
         />
       ))}
       <div className="add-exercise-area">

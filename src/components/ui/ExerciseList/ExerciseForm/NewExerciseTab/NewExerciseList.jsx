@@ -1,4 +1,4 @@
-import RoutineExerciseItem from "../../../Routine/RoutineForm/RoutineExerciseItem";
+import DailyExerciseItem from "../../../../common/DailyExerciseItem";
 
 const NewExerciseList = ({
   exercises,
@@ -12,7 +12,7 @@ const NewExerciseList = ({
   return (
     <div className="new-exercise-list">
       {exercises.map((exercise) => (
-        <RoutineExerciseItem
+        <DailyExerciseItem
           key={exercise.id}
           exercise={exercise}
           onRemove={onRemoveExercise}
@@ -20,6 +20,7 @@ const NewExerciseList = ({
           onSetUpdate={onSetUpdate}
           onAddSet={onAddSet}
           onRemoveSet={onRemoveSet}
+          isDaySelector={false}
         />
       ))}
       <div className="add-exercise-area">

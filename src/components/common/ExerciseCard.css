@@ -1,7 +1,29 @@
 .exercise-card {
   color: rgba(47, 47, 47, 1);
-  background-color: rgba(239, 239, 239, 1);
+  border: 1px solid rgba(47, 47, 47, 1);
+  border-radius: 15px;
+  padding: 7px 10px;
+}
+
+.card-type-box{
+  display: flex;
+  width: fit-content;
+  height: 18px;
+  padding: 3px 5px;
+  background-color: lightblue;
   border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: white;
+  margin-bottom: 5px;
+}
+
+.card-type-루틴{
+  background-color: rgba(81, 85, 163, 1);
+}
+
+.card-type-챌린지{
+  background-color: rgba(184, 184, 184, 1);
 }
 
 .card-header {
@@ -22,11 +44,14 @@
 }
 
 .card-info-container{
-
+  display: flex;
+  flex-direction: column;
 }
 
 .card-category{
-
+  font-size: 12px;
+  font-weight: 500;
+  margin: 2px 0;
 }
 
 .card-time-container{

@@ -1,16 +1,72 @@
-import { useState } from "react";
-import ToggleComponents from "../../../../common/ToggleComponents";
-import MuscleMap from "../../../../common/MuscleMap";
+import { useEffect, useRef, useState } from "react";
+import ToggleComponents from "./ToggleComponents";
+import DotsMenuToggle from "./DotsMenuToggle";
+import DropdownMenu from "./DropdownMenu";
+import MuscleMap from "./MuscleMap";
+
+import "./DailyExerciseItem.css";
+
+const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
 
 const DailyExerciseItem = ({
   exercise,
+  onRemove,
   onExerciseUpdate,
   onSetUpdate,
   onAddSet,
   onRemoveSet,
+  isDaySelector = true,
 }) => {
-  const { name, sets, restTime, targetMuscles, id } = exercise;
+  const { id, name, sets, restTime, days, targetMuscles } = exercise;
   const [isExpanded, setIsExpanded] = useState(true);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (containerRef.current && !containerRef.current.contains(e.target)) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  // 세트 간 휴식 시간 업데이트
+  const handleRestTimeChange = (e) => {
+    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // 숫자 외 제거
+    const numValue = parseInt(rawValue, 10);
+    if (rawValue === "" || !isNaN(numValue)) {
+      onExerciseUpdate(id, "restTime", rawValue === "" ? 0 : numValue);
+    }
+  };
+
+  const handleToggle = (e) => {
+    if (e) {
+      e.stopPropagation();
+    }
+    setIsMenuOpen((prev) => !prev);
+  };
+
+  const handleMenuItemClick = (action) => {
+    if (action === "삭제") {
+      onRemove(id);
+    }
+    console.log(`${action} 버튼이 클릭되었습니다.`);
+    setIsMenuOpen(false);
+  };
+
+  // 요일 토글
+  const toggleDay = (day) => {
+    const newDays = days.includes(day)
+      ? days.filter((d) => d !== day) // 제거
+      : [...days, day]; // 추가
+    onExerciseUpdate(id, "days", newDays);
+  };
+
   // 세트 추가
   const handleAddSet = () => {
     onAddSet(id);
@@ -25,23 +81,31 @@ const DailyExerciseItem = ({
   const handleSetFieldChange = (setId, field, e) => {
     const rawValue = e.target.value.replace(/[^0-9]/g, "");
     const numValue = parseInt(rawValue, 10);
+
     if (rawValue === "" || !isNaN(numValue)) {
       onSetUpdate(id, setId, field, rawValue === "" ? 0 : numValue);
     }
   };
 
-  // 세트간 휴식 시간 업데이트 핸들러
-  const handleRestTimeChange = (e) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // 숫자 외 제거
-    const numValue = parseInt(rawValue, 10);
-    if (rawValue === "" || !isNaN(numValue)) {
-      // onExerciseUpdate는 부모 컴포넌트로부터 받아야 함
-      onExerciseUpdate(id, "restTime", rawValue === "" ? 0 : numValue);
-    }
-  };
+  const renderDaySelectionGroup = () => (
+    <div className="day-selection-group">
+      <span className="day-label">요일</span>
+      <div className="day-buttons">
+        {daysOfWeek.map((day) => (
+          <button
+            key={day}
+            className={`day-button ${days.includes(day) ? "active" : ""}`}
+            onClick={() => toggleDay(day)}
+          >
+            {day}
+          </button>
+        ))}
+      </div>
+    </div>
+  );
 
   return (
-    <div className="exercise-item-card">
+    <div className="exercise-item-card" ref={containerRef}>
       <div className="item-header" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="item-header-left">
           <ToggleComponents isUp={isExpanded} />
@@ -50,17 +114,26 @@ const DailyExerciseItem = ({
             <span className="set-count">{sets.length}세트</span>
           </h3>
         </div>
+        <div className="dots-menu-wrapper">
+          <DotsMenuToggle onClick={handleToggle} isActive={isMenuOpen} />
+          {isMenuOpen && (
+            <DropdownMenu position="right">
+              <div onClick={() => handleMenuItemClick("시작")}>시작</div>
+              <div onClick={() => handleMenuItemClick("수정")}>수정</div>
+              <div onClick={() => handleMenuItemClick("삭제")}>삭제</div>
+            </DropdownMenu>
+          )}
+        </div>
       </div>
 
       {isExpanded && (
         <div className="item-details">
+          {isDaySelector && renderDaySelectionGroup()}
           <div className="item-info-container">
-            {targetMuscles && (
-              <MuscleMap selectedTags={targetMuscles?.join(", ")} />
-            )}
+            <MuscleMap selectedTags={targetMuscles?.join(", ")} />
             <div className="item-info-sets">
               <div className="rest-time-group">
-                <span className="rest-time-label">세트간 휴식 시간:</span>
+                <span className="rest-time-label">세트간 휴식 시간</span>
                 <input
                   type="text"
                   inputMode="numeric"
@@ -70,10 +143,9 @@ const DailyExerciseItem = ({
                 />
                 <span className="rest-time-unit">초</span>
               </div>
-
               <div className="set-list">
                 {sets.map((set, setIndex) => (
-                  <div key={set.id || setIndex} className="set-row">
+                  <div key={set.id} className="set-row">
                     <span className="set-number">{setIndex + 1}</span>
                     <input
                       type="text"

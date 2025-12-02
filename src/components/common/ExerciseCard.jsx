@@ -1,11 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./ExerciseCard.css";
-import DotsMenuToggle from "../../common/DotsMenuToggle";
-import DropdownMenu from "../../common/DropdownMenu";
+import DotsMenuToggle from "./DotsMenuToggle";
+import DropdownMenu from "./DropdownMenu";
 
 const ExerciseCard = ({ record }) => {
-  const { type, name, category,  duration, completed } = record;
-
+  const { type, name, category, duration, completed, sets } = record;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // 메뉴 토글
@@ -23,7 +22,6 @@ const ExerciseCard = ({ record }) => {
     setIsMenuOpen((prev) => !prev);
   };
 
- 
   return (
     <div
       className={`exercise-card card-${type.toLowerCase()} ${
@@ -31,7 +29,11 @@ const ExerciseCard = ({ record }) => {
       }`}
     >
       {/* 타입 */}
-      {type === "개별운동" ? <></> : <div>ㅇㅇ</div>}
+      {type === "개별운동" ? (
+        <></>
+      ) : (
+        <div className={`card-type-box card-type-${type}`}>{type}</div>
+      )}
       <div className="card-header">
         <h4 className="card-name">{name}</h4>
         <div className="card-toggle">
@@ -48,6 +50,9 @@ const ExerciseCard = ({ record }) => {
       <div className="card-meta">
         <div className="card-info-container">
           <p className="card-category">{category}</p>
+          {sets.map((st, index) => (
+            <div key={`${st}${index}`}>{`${st.weight}kg ${st.reps}회`}</div>
+          ))}
         </div>
         <div className="card-time-container">
           <p className="card-time">{duration}</p>
