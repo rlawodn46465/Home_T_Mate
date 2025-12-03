@@ -8,6 +8,7 @@
 .card-type-box{
   display: flex;
   width: fit-content;
+  align-items: center;
   height: 18px;
   padding: 3px 5px;
   background-color: lightblue;
