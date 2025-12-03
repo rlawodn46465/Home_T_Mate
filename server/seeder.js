@@ -19,7 +19,7 @@ mongoose
 const exercises = [
   {
     name: "디클라인 푸시 업",
-    category: "상체",
+    category: ["가슴", "어깨", "팔"],
     targetMuscles: ["가슴", "어깨", "삼두"],
     equipment: ["맨몸"],
     description: {
@@ -70,7 +70,7 @@ const exercises = [
   },
   {
     name: "다이아몬드 푸시 업",
-    category: "상체",
+    category: ["가슴", "팔"],
     targetMuscles: ["가슴", "삼두"],
     equipment: ["맨몸"],
     description: {
@@ -109,7 +109,7 @@ const exercises = [
   },
   {
     name: "니 푸시 업",
-    category: "상체",
+    category: ["가슴", "팔"],
     targetMuscles: ["가슴", "삼두"],
     equipment: ["맨몸"],
     description: {
@@ -153,7 +153,7 @@ const exercises = [
   },
   {
     name: "가슴 스트레칭",
-    category: "상체",
+    category: ["가슴"],
     targetMuscles: ["가슴"],
     equipment: ["맨몸"],
     description: {
@@ -171,7 +171,7 @@ const exercises = [
   },
   {
     name: "덤벨 디클라인 벤치 프레스",
-    category: "상체",
+    category: ["가슴", "어깨", "팔"],
     targetMuscles: ["가슴", "어깨", "삼두"],
     equipment: ["덤벨", "벤치"],
     description: {

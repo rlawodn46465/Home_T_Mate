@@ -3,7 +3,7 @@ import TabNavigation from "../../components/ui/Routine/GoalList/TabNavigation";
 import RoutineHeader from "../../components/ui/Routine/GoalList/RoutineHeader";
 import BodyPartFilter from "../../components/ui/Routine/GoalList/BodyPartFilter";
 import { useState, useCallback, useMemo } from "react";
-import RoutineItemCard from "../../components/ui/Routine/GoalList/GoalItemCard";
+import GoalItemCard from "../../components/ui/Routine/GoalList/GoalItemCard";
 import { useRoutines } from "../../hooks/useRoutines";
 import { useRoutineDelete } from "../../hooks/useRoutineDelete";
 
@@ -95,7 +95,7 @@ const RoutineListPage = () => {
 
       <div className="routine-list-scroll-area">
         {filteredRoutines.map((routine) => (
-          <RoutineItemCard
+          <GoalItemCard
             key={routine.id}
             goals={routine}
             onAction={handleItemAction}
