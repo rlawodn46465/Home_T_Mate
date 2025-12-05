@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const ExerciseHistory = require("../models/ExerciseHistory");
 const UserGoal = require("../models/UserGoal");
-const { mapHistoryToCalendar } = require("../utils/responseMap");
 
 // 운동 기록 추가
 const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
@@ -22,7 +21,6 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
         maxWeight: exerciseLog.maxWeight,
         totalVolume: exerciseLog.totalVolume,
         totalReps: exerciseLog.totalReps,
-        // isCompleted 필드가 sets에 있다면 자동으로 포함됨
       },
     },
   };
@@ -137,7 +135,6 @@ const getMonthlyHistory = async (userId, year, month) => {
             targetMuscles: "$exerciseInfo.targetMuscles",
             totalTime: "$records.totalTime",
             sets: "$records.sets",
-            // isCompleted: { $allElementsTrue: ["$records.sets.isCompleted"] }, // (선택: 필요하면 주석 해제)
           },
         },
       },

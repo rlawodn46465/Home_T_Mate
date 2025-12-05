@@ -15,7 +15,6 @@ const sendAuthResponse = (res, result) => {
   res.cookie("refreshToken", result.refreshToken, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production", // 배포시 변경
-    // secure: process.env.NODE_ENV === "development",
     maxAge: 3600000 * 24 * 7, // 7일 유효(ms)
     sameSite: "Lax",
   });

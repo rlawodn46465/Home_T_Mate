@@ -2,7 +2,6 @@
 
 const asyncHandler = require("../utils/asyncHandler");
 const exerciseService = require("../services/exerciseService");
-// const { BadRequestError } = require("../utils/errorHandler");
 
 // 전체 운동 목록 조회 (GET /api/v1/exercises)
 const getExerciseListController = asyncHandler(async (req, res) => {

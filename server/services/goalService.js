@@ -169,7 +169,6 @@ const getDailyExerciseRecords = async (userId, dateString) => {
         recordId: record._id, // 이 날짜의 기록 ID (수정/삭제 시 유용)
         exerciseId: history.exerciseId._id,
 
-        // 🚨 요청하신 필수 정보 🚨
         exerciseName: history.exerciseId.name, // 목표 이름 대신 운동 이름
         recordType: record.recordType, // 운동 타입 (ROUTINE, CHALLENGE, PERSONAL)
         goalName: record.goalName, // 루틴/챌린지 이름 (개별운동 시 null)

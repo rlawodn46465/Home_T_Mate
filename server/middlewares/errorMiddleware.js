@@ -3,7 +3,7 @@
 const { CustomError } = require("../utils/errorHandler");
 
 // 전역 에러 처리 미들웨어
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, res) => {
   // 1. 상태 코드 결정
   const statusCode =
     err instanceof CustomError

@@ -4,12 +4,10 @@ const asyncHandler = require("../utils/asyncHandler");
 const goalService = require("../services/goalService");
 const { mapGoalToListItem, mapGoalToDetail } = require("../utils/responseMap");
 const { BadRequestError } = require("../utils/errorHandler");
-// const routineService = require("../services/routineService");
 
 // GET /api/v1/goals (목표 목록)
 const getGoals = asyncHandler(async (req, res) => {
   const goals = await goalService.getUserGoals(req.user._id);
-  // const routineListItems = routines.map(mapRoutineToListItem);
 
   res.status(200).json({ success: true, data: goals.map(mapGoalToListItem) });
 });
@@ -48,7 +46,6 @@ const getGoalsAndRecords = asyncHandler(async (req, res) => {
 
 // GET /api/v1/goals/:id (상세)
 const getGoalDetail = asyncHandler(async (req, res) => {
-  // const { routineId } = req.params;
   const goal = await goalService.getGoalDetail(req.params.routineId);
 
   res.status(200).json({ success: true, data: mapGoalToDetail(goal) });
@@ -56,7 +53,6 @@ const getGoalDetail = asyncHandler(async (req, res) => {
 
 // POST /api/v1/goals (생성)
 const createGoal = asyncHandler(async (req, res) => {
-  // 프론트에서 받아온 데이터
   const newGoal = await goalService.createGoal(req.user._id, req.body);
   res.status(201).json({ success: true, id: newGoal._id });
 });

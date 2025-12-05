@@ -80,7 +80,6 @@ const mapGoalToListItem = (goal) => {
     activeDays: mapActiveDaysToDisplay(goal.activeDays),
     creator: goal.creator?.nickname || "Unknown",
     status: goal.status,
-    // category: routine.category,
     parts: goal.parts || [],
     downloadCount: goal.downloadCount,
     isPublic: goal.isUserPublic,
@@ -118,7 +117,6 @@ const mapGoalToDetail = (userGoal) => {
     startDate: userGoal.startDate,
     currentWeek: userGoal.currentWeek,
     durationWeek: userGoal.durationWeek,
-    // progress: parseFloat(progress.toFixed(2)), // 소수점 2자리
     progress: progress,
 
     // 운동 목록

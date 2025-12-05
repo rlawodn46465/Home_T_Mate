@@ -52,7 +52,6 @@ const refreshToken = async (refreshToken) => {
 const handleSocialLogin = async (socialIdField, socialId, profileData) => {
   // 소셜 ID로 사용자 조회
   let user = await User.findOne({ [`socialIds.${socialIdField}`]: socialId });
-  // let user = await User.findOne({ [socialIdField]: socialId });
   let isNewUser = false;
 
   if (!user) {
