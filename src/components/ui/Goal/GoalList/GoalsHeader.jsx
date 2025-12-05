@@ -10,8 +10,8 @@ const GoalsHeader = () => {
   };
   return (
     <div className="goal-header">
-      <h2>루틴</h2>
-      <Button text={"+ 루틴 추가"} onClick={handleAddGoalClick} />
+      <h2>목표</h2>
+      <Button text={"+ 목표 추가"} onClick={handleAddGoalClick} />
     </div>
   );
 };

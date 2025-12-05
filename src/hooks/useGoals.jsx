@@ -12,11 +12,11 @@ export const useGoals = () => {
     setError(null);
     try {
       const data = await fetchGoals();
+      console.log("목표의 데이터: ",data);
       setGoals(data);
     } catch (err) {
-      // 사용자님의 API 인터셉터가 401을 처리하므로, 여기서는 일반적인 에러만 처리
-      console.error("루틴 목록 로드 실패:", err.response?.data || err.message);
-      setError("루틴 목록을 불러오는 데 실패했습니다.");
+      console.error("목표 목록 로드 실패:", err.response?.data || err.message);
+      setError("목표 목록을 불러오는 데 실패했습니다.");
     } finally {
       setLoading(false);
     }

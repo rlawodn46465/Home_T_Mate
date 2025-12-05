@@ -10,7 +10,7 @@ const DailyExerciseList = ({
   onRemoveSet,
 }) => {
   // 선택된 날짜의 요일 (예: "월")
-  const dayMap = ["일", "월", "화", "수", "목", "금", "토"];
+  const dayMap = ["월", "화", "수", "목", "금", "토", "일"];
   const currentDayStr = dayMap[getDay(date)];
 
   // 해당 요일에 배정된 운동만 필터링

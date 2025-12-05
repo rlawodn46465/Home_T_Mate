@@ -12,7 +12,7 @@ const GoalItemCard = ({
   hidenMenu = false,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { goalType, name, progress, parts, activeDays, creator } = goals;
+  const { goalTypeLabel, name, progress, parts, activeDaysLabel, creator } = goals;
   // 진행도 바
   const progressPercent = (progress * 100).toFixed(0);
 
@@ -55,9 +55,9 @@ const GoalItemCard = ({
     >
       <div className="goal-card__header">
         <span
-          className={`goal-card__type-tag goal-card__type-tag--${goalType}`}
+          className={`goal-card__type-tag goal-card__type-tag--${goalTypeLabel}`}
         >
-          {goalType}
+          {goalTypeLabel}
         </span>
         <h5 className="goal-card__title">{name}</h5>
         {!hidenMenu && (
@@ -78,7 +78,7 @@ const GoalItemCard = ({
       <div className="goal-card__info">
         <div className="goal-card__info-progress">
           진행도 :
-          {goalType === "챌린지" ? (
+          {goalTypeLabel === "챌린지" ? (
             <div className="goal-card__progress-bar-wrapper">
               <div
                 className="goal-card__progress-bar"
@@ -94,7 +94,7 @@ const GoalItemCard = ({
         </div>
         <p>부위: {parts.join(", ")}</p>
         <div className="goal-card__progress-bottom">
-          <p>빈도: {activeDays}</p>
+          <p>빈도: {activeDaysLabel}</p>
           <p>제작자: {creator}</p>
         </div>
       </div>

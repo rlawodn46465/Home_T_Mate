@@ -31,7 +31,7 @@ const GoalsListPage = () => {
   // 루틴 리스트 불러올 곳
   const filteredGoals = useMemo(() => {
     return goals.filter((goal) => {
-      const typeMatch = activeTab === "전체" || goal.goalType === activeTab;
+      const typeMatch = activeTab === "전체" || goal.goalTypeLabel === activeTab;
 
       // 추가 한국어로 상태 변환
       const statusMatch = goal.status === activeStatus;

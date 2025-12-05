@@ -26,14 +26,6 @@ export const fetchDailyExerciseRecords = async (dateString) => {
   return response.data.data;
 };
 
-// 루틴/챌린지 목록의 운동 기록 통합 조회
-export const fetchGoalsAndDailyRecords = async () => {
-  // GET /api/v1/goals/all 호출
-  const response = await api.get(`${API_GOALS_PATH}/all`);
-  // 서버에서 반환한 { goals: [...], dailyRecords: [...] } 구조를 그대로 반환
-  return response.data.data;
-};
-
 // 특정 루틴/챌린지 상세 정보 조회
 export const fetchGoalDetail = async (id) => {
   const response = await api.get(`${API_GOALS_PATH}/${id}`);

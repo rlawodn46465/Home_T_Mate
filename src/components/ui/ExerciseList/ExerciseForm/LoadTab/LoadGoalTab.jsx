@@ -1,5 +1,5 @@
 import { addWeeks, format } from "date-fns";
-import { useEffect, useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import { useCreateHistory } from "../../../../../hooks/useHistory";
 import SelectedGoalHeader from "./SelectedGoalHeader";
 import Calendar from "../../../../common/Calendar";
@@ -7,8 +7,8 @@ import DailyExerciseList from "./DailyExerciseList";
 
 import "./LoadGoalTab.css";
 import GoalItemCard from "../../../Goal/GoalList/GoalItemCard";
-import useGoalsAndDailyRecords from "../../../../../hooks/useGoalsAndDailyRecords";
 import useGoalForm from "../../../../../hooks/useGoalForm";
+import { useGoals } from "../../../../../hooks/useGoals";
 
 const calculateExerciseStats = (exercises) => {
   return exercises.map((ex) => {
@@ -27,17 +27,13 @@ const calculateExerciseStats = (exercises) => {
       totalVolume += volume;
       totalReps += reps;
 
-      if (weight > maxWeight) {
-        maxWeight = weight;
-      }
-
-      const isCompleted = true;
+      if (weight > maxWeight) maxWeight = weight;
 
       return {
         setNumber: set.setNumber || index + 1,
         weight: weight,
         reps: reps,
-        isCompleted: isCompleted,
+        isCompleted: true,
       };
     });
 
@@ -53,27 +49,24 @@ const calculateExerciseStats = (exercises) => {
 };
 
 const LoadGoalTab = () => {
-  const [goals, setGoals] = useState([]);
+  const { goals, loading: isGoalsLoading, error: goalsError } = useGoals();
+
   const [selectedGoal, setSelectedGoal] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
   const [isCalendarExpanded, setIsCalendarExpanded] = useState(true);
-
   const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
 
   const { isSaving, saveError, createHistory } = useCreateHistory();
-
-  const [isLocalLoading, setIsLocalLoading] = useState(false);
-  const isLoading = isLocalLoading;
 
   const initialGoalData = useMemo(() => {
     if (!selectedGoal) return null;
     return {
       name: selectedGoal.name,
-      goalType: selectedGoal.goalType,
+      goalType: selectedGoal.goalTypeLabel,
       goalWeeks: selectedGoal.durationWeek,
       exercises: selectedGoal.customExercises.map((ex) => ({
         ...ex,
-        id: ex._id,
+        id: ex.exerciseId,
         sets: ex.sets.map((set) => ({
           ...set,
           id: set._id || Date.now() + Math.random(),
@@ -90,36 +83,12 @@ const LoadGoalTab = () => {
     handleRemoveSet,
   } = useGoalForm(true, initialGoalData);
 
-  const {
-    allGoals: allGoalsFromHook,
-    isLoading: isGoalsLoading,
-    error: goalsError,
-  } = useGoalsAndDailyRecords();
-
-  useEffect(() => {
-    if (allGoalsFromHook && allGoalsFromHook.length > 0) {
-      setGoals(allGoalsFromHook);
-    } else if (goalsError) {
-      console.error("목표 목록 로딩 실패:", goalsError);
-    }
-  }, [allGoalsFromHook, goalsError]);
-
   // 목표 선택
-  const handleSelectGoal = async (goalListItem) => {
-    try {
-      setIsLocalLoading(true);
-      if (goalListItem) {
-        setSelectedGoal(goalListItem);
-        setIsCalendarExpanded(true);
-        setSelectedDate(new Date());
-      } else {
-        throw new Error(goalListItem.message || "목표 상세 정보가 없습니다.");
-      }
-    } catch (error) {
-      console.error("목표 상세 로딩 실패:", error);
-      alert("목표 정보를 불러오는데 실패했습니다.");
-    } finally {
-      setIsLocalLoading(false);
+  const handleSelectGoal = (goalListItem) => {
+    if (goalListItem) {
+      setSelectedGoal(goalListItem);
+      setIsCalendarExpanded(true);
+      setSelectedDate(new Date());
     }
   };
 
@@ -163,7 +132,6 @@ const LoadGoalTab = () => {
 
     // API 호출
     const success = await createHistory(planData);
-    console.log(success);
 
     if (success) {
       alert("✅ 운동 기록이 성공적으로 저장되었습니다!");
@@ -177,7 +145,7 @@ const LoadGoalTab = () => {
 
   // 챌린지 종료일 계산
   const challengeEndDate =
-    selectedGoal?.goalType === "챌린지" && selectedGoal.durationWeek
+    selectedGoal?.goalTypeLabel === "챌린지" && selectedGoal.durationWeek
       ? addWeeks(new Date(selectedGoal.startDate), selectedGoal.durationWeek)
       : null;
 
@@ -190,7 +158,7 @@ const LoadGoalTab = () => {
 
   return (
     <div className="load-goal-container">
-      {(isLoading || isGoalsLoading || isSaving) && (
+      {(isGoalsLoading || isSaving) && (
         <div className="loading-overlay">
           {isSaving ? "운동 기록 저장 중..." : "로딩중..."}
         </div>
@@ -206,7 +174,7 @@ const LoadGoalTab = () => {
 
           {!isGoalsLoading && goals.length > 0 ? (
             goals.map((goal) => (
-              <div key={goal._id}>
+              <div key={goal.id}>
                 <GoalItemCard
                   goals={goal}
                   onClickOverride={() => handleSelectGoal(goal)}

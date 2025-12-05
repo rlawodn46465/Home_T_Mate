@@ -26,8 +26,8 @@ const Header = () => {
           <p>운동</p>
         </Link>
         <Link to={getPanelLink("goal")} className="menu-item">
-          <img src={goal_icon} alt="루틴" />
-          <p>루틴</p>
+          <img src={goal_icon} alt="목표" />
+          <p>목표</p>
         </Link>
         <Link to={getPanelLink("mypage")} className="menu-item">
           <img src={user_icon} alt="마이페이지" />
