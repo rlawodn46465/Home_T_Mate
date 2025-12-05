@@ -133,8 +133,6 @@ const GoalsDetailPage = ({ goalId }) => {
     ex.days.includes(currentDay)
   );
 
-  console.log(goalDetail)
-
   // 모든 운동의 요일을 취합
   const allGoalDays = [
     ...new Set(currentExercises.flatMap((ex) => ex.days || [])),
@@ -148,9 +146,7 @@ const GoalsDetailPage = ({ goalId }) => {
     <div className="goals-detail-page">
       <GoalsDetailHeader
         title={
-          goalDetail.goalType === "Challenge"
-            ? "챌린지 상세"
-            : "루틴 상세"
+          goalDetail.goalType === "Challenge" ? "챌린지 상세" : "루틴 상세"
         }
         onEdit={handleEdit}
         onGoBack={handleGoBack}
@@ -164,10 +160,7 @@ const GoalsDetailPage = ({ goalId }) => {
           생성일 : {formatCreationDate(goalDetail.createdAt)}
         </p>
         <p className="goal-meta">제작자 : {goalDetail.creator}</p>
-        <GoalsSummary
-          goalDetail={goalDetail}
-          allGoalDays={allGoalDays}
-        />
+        <GoalsSummary goalDetail={goalDetail} allGoalDays={allGoalDays} />
       </div>
       <TabNavigation
         tabs={TABS}

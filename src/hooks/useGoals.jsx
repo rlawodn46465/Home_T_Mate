@@ -12,7 +12,6 @@ export const useGoals = () => {
     setError(null);
     try {
       const data = await fetchGoals();
-      console.log("목표의 데이터: ",data);
       setGoals(data);
     } catch (err) {
       console.error("목표 목록 로드 실패:", err.response?.data || err.message);
