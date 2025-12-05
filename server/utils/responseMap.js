@@ -33,10 +33,10 @@ const calculateGoalProgress = (goal) => {
 // 요일 확인 후 '매일', '주말', '평일', 'n요일', '주 n요일'로 변환
 const mapActiveDaysToDisplay = (days) => {
   const count = days.length;
-  const sortedDays = [...days].sort();
+  const sortedDays = days;
 
   // 모든 요일
-  const allDays = ["월", "화", "수", "목", "금", "토", "일"].sort();
+  const allDays = ["월", "화", "수", "목", "금", "토", "일"];
   const daysStr = sortedDays.join(",");
 
   if (count === 7 && daysStr === allDays.join(",")) {
@@ -45,13 +45,13 @@ const mapActiveDaysToDisplay = (days) => {
 
   // '주말' 조건
   const weekend = ["토", "일"];
-  if (daysStr === weekend.sort().join(",")) {
+  if (daysStr === weekend.join(",")) {
     return "주말";
   }
 
   // '평일' 조건
-  const weekdaysSorted = ["월", "화", "수", "목", "금"].sort();
-  if (count === 5 && sortedDays.join(",") === weekdaysSorted.join(",")) {
+  const weekdays = ["월", "화", "수", "목", "금"];
+  if (count === 5 && sortedDays.join(",") === weekdays.join(",")) {
     return "평일";
   }
 
@@ -66,6 +66,17 @@ const mapActiveDaysToDisplay = (days) => {
   }
 
   return "비활성";
+};
+
+// 요일 순서 정렬
+const sortActiveDays = (days) => {
+  if (!days || days.length === 0) return [];
+
+  const dayOrder = ["월", "화", "수", "목", "금", "토", "일"];
+
+  return days.slice().sort((a, b) => {
+    return dayOrder.indexOf(a) - dayOrder.indexOf(b);
+  });
 };
 
 // 목표 리스트 변환
@@ -89,8 +100,11 @@ const formatUserGoalResponse = (ug) => {
   };
   const progress = calculateGoalProgress(progressInput);
 
+  // 요일 순서 정렬
+  const sortedActiveDays = sortActiveDays(ug.activeDays);
+
   // 요일 라벨 생성 (예: "주 3")
-  const activeDaysLabel = mapActiveDaysToDisplay(ug.activeDays);
+  const activeDaysLabel = mapActiveDaysToDisplay(sortedActiveDays);
 
   return {
     // 식별자 및 상태
@@ -107,7 +121,7 @@ const formatUserGoalResponse = (ug) => {
     durationWeek: ug.durationWeek,
 
     // 요일 정보
-    activeDays: ug.activeDays,
+    activeDays: sortedActiveDays,
     activeDaysLabel: activeDaysLabel,
 
     // 원본 목표 정보
@@ -126,7 +140,7 @@ const formatUserGoalResponse = (ug) => {
         name: exerciseInfo.name || "삭제된 운동",
         targetMuscles: exerciseInfo.targetMuscles || [],
         sets: ce.sets,
-        days: ce.days,
+        days: sortActiveDays(ce.days),
         restTime: ce.restTime,
       };
     }),
@@ -175,7 +189,7 @@ const mapGoalToDetail = (userGoal) => {
   const progress = calculateGoalProgress({
     goalType: originalGoal.goalType,
     durationWeek: userGoal.durationWeek,
-    activeDays: userGoal.activeDays,
+    activeDays: sortActiveDays(userGoal.activeDays),
     completedSessions: userGoal.completedSessions,
     currentWeek: userGoal.currentWeek,
   });
@@ -210,7 +224,7 @@ const mapGoalToDetail = (userGoal) => {
         targetMuscles: exerciseInfo.targetMuscles || [],
 
         // 사용자가 설정한 값
-        days: ex.days,
+        days: sortActiveDays(ex.days),
         restTime: ex.restTime,
         sets: ex.sets.map((s) => ({
           setNumber: s.setNumber,
