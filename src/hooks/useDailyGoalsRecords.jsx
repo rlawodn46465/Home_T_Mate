@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { format } from "date-fns";
-import { fetchDailyExerciseRecords } from "../services/api/routineApi";
+import { fetchDailyExerciseRecords } from "../services/api/goalApi";
 
 // 특정 날짜의 모든 운동 기록 불러오기
 const useDailyExerciseRecords = (selectedDate) => {

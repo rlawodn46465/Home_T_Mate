@@ -73,7 +73,7 @@ const ExerciseCard = ({ record, isMenuSelector = true }) => {
           ))}
         </div>
         <div className="card-time-container">
-          <p className="card-time">{duration}분</p>
+          <p className="card-time">{duration}</p>
           <p className="card-date-time">{record.date}</p>
         </div>
       </div>

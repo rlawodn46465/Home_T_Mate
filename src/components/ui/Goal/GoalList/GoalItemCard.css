@@ -1,0 +1,104 @@
+.goal-card {
+  margin-bottom: 20px;
+  cursor: pointer;
+}
+
+.goal-card__header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.goal-card__type-tag {
+  width: 60px;
+  height: 23px;
+  text-align: center;
+  line-height: 23px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+}
+
+.goal-card__type-tag--루틴 {
+  background-color: rgba(69, 58, 245, 1); /* 루틴 태그 색상 */
+}
+
+.goal-card__type-tag--챌린지 {
+  background-color: rgba(124, 124, 124, 1); /* 챌린지 태그 색상 */
+}
+
+.goal-card__title {
+  width: 230px;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow : ellipsis;
+}
+
+.goal-card__options {
+  position: relative;
+  z-index: 10;
+}
+
+.goal-card__options-btn {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  opacity: 0.5;
+}
+
+.goal-card__options-btn .dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  background-color: #777;
+  border-radius: 50%;
+}
+
+.goal-card__info>p {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.goal-card__info-progress{
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  margin-bottom: 4px;
+  align-items: center;
+}
+
+.goal-card__progress-bar-wrapper {
+  display: flex;
+  align-items: center;
+  width: 250px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(220, 220, 220, 1);
+}
+
+.goal-card__progress-bar {
+  height: 100%;
+  background-color: rgba(75, 179, 89, 1); /* 진행 막대 색상 */
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.goal-card__progress-bottom{
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+}
+
+.goal-card__progress-label {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(152, 152, 152, 1);
+  margin-left: 5px;
+}

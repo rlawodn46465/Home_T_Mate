@@ -4,7 +4,7 @@ import TabNavigation from "../../components/common/TabNavigation";
 import "./ExerciseDetail.css";
 import ExerciseInfoSection from "../../components/ui/Exercise/ExerciseInfoSection";
 import ExerciseRecordSection from "../../components/ui/Exercise/ExerciseRecordSection";
-import { fetchExerciseDetail } from "../../services/api/routineApi";
+import { fetchExerciseDetail } from "../../services/api/goalApi";
 import PageHeader from "../../components/common/PageHeader";
 
 const ExerciseDetail = ({ exerciseId }) => {
@@ -70,7 +70,7 @@ const ExerciseDetail = ({ exerciseId }) => {
 
   //   recentLogs: [
   //     {
-  //       type: "routine",
+  //       type: "goal",
   //       sourceName: "하체 루틴 A",
   //       date: "2025-10-29T18:30:00Z",
   //       sets: [

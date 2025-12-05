@@ -14,7 +14,7 @@ const CommunityListItem = ({
   title,
   user,
   commentCount,
-  routine,
+  goal,
   like,
   date,
 }) => {
@@ -43,7 +43,7 @@ const CommunityListItem = ({
               />
               <p className="community-list-item__icon-text">{commentCount}</p>
             </li>
-            {routine && (
+            {goal && (
               <li className="community-list-item__meta-item">
                 <img
                   src={training_icon}

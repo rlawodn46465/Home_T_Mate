@@ -2,11 +2,11 @@ import { useLocation } from "react-router-dom";
 import LoginPage from "./Login/LoginPage";
 import OnboardingPage from "./Onboarding/OnboardingPage";
 import DashboardPage from "./Dashboard/DashboardPage";
-import RoutineListPage from "./Routine/RoutineListPage";
-import RoutineDetailPage from "./Routine/RoutineDetailPage";
-import ExerciseDetail from "./Exercise/ExerciseDetail";
-import RoutineFormPage from "./Routine/RoutineFormPage";
+import GoalsListPage from "./Goal/GoalsListPage";
+import GoalsFormPage from "./Goal/GoalsFormPage";
+import GoalsDetailPage from "./Goal/GoalsDetailPage";
 import ExerciseListPage from "./Exercise/ExerciseListPage";
+import ExerciseDetail from "./Exercise/ExerciseDetail";
 import ExerciseFormPage from "./Exercise/ExerciseFormPage";
 
 const RightPanel = () => {
@@ -14,7 +14,7 @@ const RightPanel = () => {
   const searchParams = new URLSearchParams(location.search);
 
   const panelType = searchParams.get("panel") || "login";
-  const routineId = searchParams.get("routineId");
+  const goalId = searchParams.get("goalId");
   const exerciseId = searchParams.get("exerciseId");
 
   let content;
@@ -29,8 +29,8 @@ const RightPanel = () => {
     case "dashboard":
       content = <DashboardPage />;
       break;
-    case "routine":
-      content = <RoutineListPage />;
+    case "goal":
+      content = <GoalsListPage />;
       break;
     case "record":
       content = <ExerciseListPage />;
@@ -38,11 +38,11 @@ const RightPanel = () => {
     case "record-detail":
       content = <ExerciseDetail />;
       break;
-    case "routine-detail":
-      content = <RoutineDetailPage routineId={routineId} />;
+    case "goals-detail":
+      content = <GoalsDetailPage goalId={goalId} />;
       break;
-    case "routine-form":
-      content = <RoutineFormPage routineId={routineId} />;
+    case "goals-form":
+      content = <GoalsFormPage goalId={goalId} />;
       break;
     case "exercise-detail":
       content = <ExerciseDetail exerciseId={exerciseId}/>;

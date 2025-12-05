@@ -1,4 +1,4 @@
-import "../../../Routine/GoalList/GoalItemCard.css";
+import "../../../Goal/GoalList/GoalItemCard.css";
 
 const SelectedGoalHeader = ({ goal, onClose }) => {
   return (
@@ -6,7 +6,7 @@ const SelectedGoalHeader = ({ goal, onClose }) => {
       <div className="goal-card-header">
         <span
           className={`badge ${
-            goal.goalType === "루틴" ? "routine" : "challenge"
+            goal.goalType === "루틴" ? "goal" : "challenge"
           }`}
         >
           {goal.goalType === "루틴" ? "루틴" : "챌린지"}

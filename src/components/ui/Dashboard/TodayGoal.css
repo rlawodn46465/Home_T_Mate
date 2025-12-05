@@ -1,0 +1,16 @@
+.today-goal{
+  margin-bottom: 10px;
+}
+
+.today-goal-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.today-goal-title{
+  text-align: center;
+  font-size: 12px;
+  font-weight: 400;
+}

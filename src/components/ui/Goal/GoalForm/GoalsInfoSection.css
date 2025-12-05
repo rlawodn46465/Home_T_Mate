@@ -1,0 +1,31 @@
+.goal-info-section{
+  margin-bottom: 5px;
+}
+
+.goal-info-section__name-input{
+  margin-bottom: 5px;
+}
+
+.goal-info-section__toggle {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.goal-info-section__goal-weeks{
+  font-size: 14px;
+}
+.goal-week-label {
+  font-weight: 500;
+}
+
+.goal-week-input {
+  width: 45px;
+  background-color: transparent;
+  border-bottom: 1px solid rgba(79, 70, 229, 1);
+  text-align: center;
+}
+
+.goal-week-unit {
+  font-weight: 500;
+}

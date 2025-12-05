@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchExercises } from "../services/api/routineApi";
+import { fetchExercises } from "../services/api/goalApi";
 
 // 운동 마스터 목록 관리
 export const useExercises = (filters) => {

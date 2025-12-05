@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { fetchGoalsAndDailyRecords } from "../services/api/routineApi";
+import { fetchGoalsAndDailyRecords } from "../services/api/goalApi";
 
 // 목표 목록의 운동 기록을 불러오는 커스텀 훅
 const useGoalsAndDailyRecords = () => {

@@ -1,0 +1,10 @@
+.today-goal-item{
+  width: 200px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: rgba(104, 80, 251, 1);
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+}

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import "./Header.css";
 import list_icon from "../assets/images/list_icon.svg";
 import training_icon from "../assets/images/training_icon.svg";
-import routine_icon from "../assets/images/routine_icon.svg";
+import goal_icon from "../assets/images/goal_icon.svg";
 import user_icon from "../assets/images/user_icon.svg";
 import { useAuth } from "../hooks/useAuth";
 
@@ -25,8 +25,8 @@ const Header = () => {
           <img src={training_icon} alt="운동" />
           <p>운동</p>
         </Link>
-        <Link to={getPanelLink("routine")} className="menu-item">
-          <img src={routine_icon} alt="루틴" />
+        <Link to={getPanelLink("goal")} className="menu-item">
+          <img src={goal_icon} alt="루틴" />
           <p>루틴</p>
         </Link>
         <Link to={getPanelLink("mypage")} className="menu-item">

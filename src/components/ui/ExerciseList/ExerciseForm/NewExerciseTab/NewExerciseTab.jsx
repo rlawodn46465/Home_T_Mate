@@ -1,6 +1,6 @@
 import { useCallback, useMemo, useState } from "react";
 import { format, subYears } from "date-fns";
-import useRoutineForm from "../../../../../hooks/useRoutineForm";
+import useGoalForm from "../../../../../hooks/useGoalForm";
 import { useCreateHistory } from "../../../../../hooks/useHistory";
 import NewExerciseList from "./NewExerciseList";
 import ExerciseSelectModal from "../../../ExerciseSelect/ExerciseSelectModal";
@@ -72,14 +72,14 @@ const NewExerciseTab = () => {
 
   const { isSaving, saveError, createHistory } = useCreateHistory();
   const {
-    routineForm,
+    goalForm,
     handleAddExercise,
     handleRemoveExercise,
     handleExerciseUpdate,
     handleSetUpdate,
     handleAddSet,
     handleRemoveSet,
-  } = useRoutineForm();
+  } = useGoalForm();
 
   const veryOldDate = useMemo(() => subYears(new Date(), 5), []);
   const today = useMemo(() => new Date(), []);
@@ -105,13 +105,13 @@ const NewExerciseTab = () => {
   }, []);
 
   const handleSave = async () => {
-    if (routineForm.exercises.length === 0 || !selectedDate || isSaving) {
+    if (goalForm.exercises.length === 0 || !selectedDate || isSaving) {
       alert("추가할 운동이 없거나 날짜가 선택되지 않았습니다.");
       return;
     }
 
     // 데이터 가공
-    const processedExercises = calculateExerciseStats(routineForm.exercises);
+    const processedExercises = calculateExerciseStats(goalForm.exercises);
     // totalTime 계산 (임시)
     const estimatedTotalTime = processedExercises.length * 10 * 60;
 
@@ -187,7 +187,7 @@ const NewExerciseTab = () => {
 
       {/* 운동 목록 입력 */}
       <NewExerciseList
-        exercises={routineForm.exercises}
+        exercises={goalForm.exercises}
         onOpenModal={handleOpenSelectModal}
         onRemoveExercise={handleRemoveExercise}
         onExerciseUpdate={handleExerciseUpdate}

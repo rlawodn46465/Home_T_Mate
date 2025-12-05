@@ -1,0 +1,14 @@
+.goals-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.goals-detail-header__menu{
+  display: flex;
+  gap: 5px;
+}
+
+.goals-detail__icon{
+  width: 30px;
+  cursor: pointer;
+}

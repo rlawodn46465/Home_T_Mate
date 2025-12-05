@@ -6,9 +6,9 @@ import Calendar from "../../../../common/Calendar";
 import DailyExerciseList from "./DailyExerciseList";
 
 import "./LoadGoalTab.css";
-import GoalItemCard from "../../../Routine/GoalList/GoalItemCard";
+import GoalItemCard from "../../../Goal/GoalList/GoalItemCard";
 import useGoalsAndDailyRecords from "../../../../../hooks/useGoalsAndDailyRecords";
-import useRoutineForm from "../../../../../hooks/useRoutineForm";
+import useGoalForm from "../../../../../hooks/useGoalForm";
 
 const calculateExerciseStats = (exercises) => {
   return exercises.map((ex) => {
@@ -69,7 +69,7 @@ const LoadGoalTab = () => {
     if (!selectedGoal) return null;
     return {
       name: selectedGoal.name,
-      routineType: selectedGoal.goalType,
+      goalType: selectedGoal.goalType,
       goalWeeks: selectedGoal.durationWeek,
       exercises: selectedGoal.customExercises.map((ex) => ({
         ...ex,
@@ -83,12 +83,12 @@ const LoadGoalTab = () => {
   }, [selectedGoal]);
 
   const {
-    routineForm,
+    goalForm,
     handleExerciseUpdate,
     handleSetUpdate,
     handleAddSet,
     handleRemoveSet,
-  } = useRoutineForm(true, initialGoalData);
+  } = useGoalForm(true, initialGoalData);
 
   const {
     allGoals: allGoalsFromHook,
@@ -145,7 +145,7 @@ const LoadGoalTab = () => {
     if (!selectedGoal || !selectedDate || isSaving) return;
 
     // 데이터 가공
-    const processedExercises = calculateExerciseStats(routineForm.exercises);
+    const processedExercises = calculateExerciseStats(goalForm.exercises);
 
     // totalTime 계산(임시)
     const estimatedTotalTime = processedExercises.length * 10 * 60; // 운동당 10분 가정
@@ -184,7 +184,7 @@ const LoadGoalTab = () => {
   const goalForRender = selectedGoal
     ? {
         ...selectedGoal,
-        customExercises: routineForm.exercises,
+        customExercises: goalForm.exercises,
       }
     : null;
 
