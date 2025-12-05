@@ -1,44 +1,62 @@
 import "./InstructionList.css";
 
 const InstructionList = ({ description }) => {
-  // if (!Array.isArray(items) || items.length === 0) {
-  //   return null;
-  // }
+  const isListValid = (list) => {
+    return list && list[0].text !== "" && list[0] !== "";
+  };
+
+  const { setup, movement, breathing, tips } = description;
 
   return (
     <div className="instruction-list">
-      <h4>준비</h4>
-      <ul>
-        {description.setup.map((item) => (
-          <li key={`${item.step}-${item.text}`}>
-            <span>{item.step}.</span> {item.text}
-          </li>
-        ))}
-      </ul>
-      <h4>움직임</h4>
-      <ul>
-        {description.movement.map((item) => (
-          <li key={`${item.step}-${item.text}`}>
-            <span>{item.step}.</span> {item.text}
-          </li>
-        ))}
-      </ul>
-      <h4>호흡법</h4>
-      <ul>
-        {description.breathing.map((item) => (
-          <li key={`${item.step}-${item.text}`}>
-            <span>{item.step}.</span> {item.text}
-          </li>
-        ))}
-      </ul>
-      <h4>팁</h4>
-      <ul>
-        {description.tips.map((item, index) => (
-          <li key={`${index}-${item}`}>
-            <span>{index + 1}.</span> {item}
-          </li>
-        ))}
-      </ul>
+      {isListValid(setup) && (
+        <>
+          <h4>준비</h4>
+          <ul>
+            {setup.map((item) => (
+              <li key={`setup-${item.step}`}>
+                <span>{item.step}.</span> {item.text}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {isListValid(movement) && (
+        <>
+          <h4>움직임</h4>
+          <ul>
+            {movement.map((item) => (
+              <li key={`movement-${item.step}`}>
+                <span>{item.step}.</span> {item.text}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {isListValid(breathing) && (
+        <>
+          <h4>호흡법</h4>
+          <ul>
+            {breathing.map((item) => (
+              <li key={`breathing-${item.step}`}>
+                <span>{item.step}.</span> {item.text}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
+      {isListValid(tips) && (
+        <>
+          <h4>팁</h4>
+          <ul>
+            {tips.map((item, index) => (
+              <li key={`tip-${index}`}>
+                <span>{index + 1}.</span> {item}
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 };
