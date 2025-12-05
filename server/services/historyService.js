@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const ExerciseHistory = require("../models/ExerciseHistory");
 const UserGoal = require("../models/UserGoal");
+const { checkDailySessionCompleted, calculateGoalProgress } = require("../utils/responseMap");
 
 // 운동 기록 추가
 const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
@@ -34,35 +35,53 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
 
 // 운동 기록 저장 (운동 완료 시 호출)
 const saveWorkoutSession = async (userId, workoutData) => {
-  const { date, userGoalId, type, exercises, title, totalTime } = workoutData;
+  const { date, userGoalId, exercises, ...workoutMeta } = workoutData;
+  const workoutInfo = { date, userGoalId, ...workoutMeta };
 
   // 입력 유효성 검사
   if (!exercises || !Array.isArray(exercises) || exercises.length === 0) {
     throw new Error("저장할 운동 기록이 누락되었습니다.");
   }
 
-  const workoutMeta = { date, userGoalId, type, title, totalTime };
+  let goal;
+
+  // 세션 카운트 증가 여부 결정 (하루 1회 제한)
+  let shouldIncrementSession = false;
+  if (userGoalId) {
+    const sessionCompletedToday = await checkDailySessionCompleted(
+      userId,
+      userGoalId,
+      date
+    );
+    if (!sessionCompletedToday) {
+      shouldIncrementSession = true;
+    }
+  }
 
   // ExerciseHistory 업데이트
   await Promise.all(
-    exercises.map((ex) => createExerciseHistory(userId, ex, workoutMeta))
+    exercises.map((ex) => createExerciseHistory(userId, ex, workoutInfo))
   );
 
   // UserGoal 진행도 업데이트
   if (userGoalId) {
-    const goal = await UserGoal.findByIdAndUpdate(
-      userGoalId,
-      { $inc: { completedSessions: 1 } },
-      { new: true } // 업데이트된 문서를 반환받기 위해
-    );
+    if (shouldIncrementSession) { // 하루 운동 제한
+      goal = await UserGoal.findByIdAndUpdate(
+        userGoalId,
+        { $inc: { completedSessions: 1 } },
+        { new: true } // 업데이트된 문서를 반환받기 위해
+      );
+    } else {
+      goal = await UserGoal.findById(userGoalId);
+    }
 
-    if (
-      goal &&
-      goal.durationWeek &&
-      goal.completedSessions >= goal.durationWeek
-    ) {
-      // 챌린지 주차를 세션 수로 대체한다고 가정하고 단순 비교
-      await UserGoal.findByIdAndUpdate(userGoalId, { status: "완료" });
+    // 목표 완료 처리
+    if(goal && goal.goalType === "CHALLENGE"){
+      const progress = calculateGoalProgress(goal);
+
+      if(progress >= 1){
+        await UserGoal.findByIdAndUpdate(userGoalId, {status: "완료"});
+      }
     }
   }
 };
@@ -108,8 +127,8 @@ const getMonthlyHistory = async (userId, year, month) => {
     {
       $unwind: {
         path: "$exerciseInfo.targetMuscles",
-        preserveNullAndEmptyArrays: true
-      }
+        preserveNullAndEmptyArrays: true,
+      },
     },
 
     // 날짜별 + 세션별 그룹화 (재조립)
@@ -191,7 +210,7 @@ const getMonthlyHistory = async (userId, year, month) => {
         },
       },
     },
-    { $sort: { "date": -1 } },
+    { $sort: { date: -1 } },
   ]);
 
   return rawHistory;

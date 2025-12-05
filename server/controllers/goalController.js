@@ -2,14 +2,14 @@
 
 const asyncHandler = require("../utils/asyncHandler");
 const goalService = require("../services/goalService");
-const { mapGoalToListItem, mapGoalToDetail } = require("../utils/responseMap");
+const { mapGoalToDetail } = require("../utils/responseMap");
 const { BadRequestError } = require("../utils/errorHandler");
 
 // GET /api/v1/goals (목표 목록)
 const getGoals = asyncHandler(async (req, res) => {
   const goals = await goalService.getUserGoals(req.user._id);
 
-  res.status(200).json({ success: true, data: goals.map(mapGoalToListItem) });
+  res.status(200).json({ success: true, count: goals.length, data: goals });
 });
 
 // GET /api/v1/goals/records?date=YYYY-MM-DD (특정 날짜 목표 불러오기)
@@ -30,18 +30,6 @@ const getExerciseRecords = asyncHandler(async (req, res) => {
   const records = await goalService.getDailyExerciseRecords(userId, date);
   console.log(records);
   res.status(200).json({ success: true, data: records });
-});
-
-// GET /api/v1/goals/all
-const getGoalsAndRecords = asyncHandler(async (req, res) => {
-
-  const userId = req.user._id;
-  const goals = await goalService.getGoalsAndDailyRecords(userId);
-  console.log(goals.customExercises);
-  res.status(200).json({
-    success: true,
-    data: goals,
-  });
 });
 
 // GET /api/v1/goals/:id (상세)
@@ -81,5 +69,4 @@ module.exports = {
   updateGoal,
   deleteGoal,
   getExerciseRecords,
-  getGoalsAndRecords,
 };

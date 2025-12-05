@@ -3,7 +3,7 @@
 const Goal = require("../models/Goal");
 const UserGoal = require("../models/UserGoal");
 const ExerciseHistory = require("../models/ExerciseHistory");
-const { calculateGoalProgress } = require("../utils/responseMap");
+const { formatUserGoalResponse } = require("../utils/responseMap");
 const { parseISO, startOfDay, endOfDay } = require("date-fns");
 
 const {
@@ -21,96 +21,15 @@ const getUserGoals = async (userId) => {
       select: "name goalType parts creatorId",
       populate: { path: "creatorId", select: "nickname" },
     })
-    .sort({ createdAt: -1 });
-
-  const combinedGoals = userGoals
-    .map((ug) => {
-      const goalInfo = ug.goalId;
-      if (!goalInfo) return null;
-
-      return {
-        _id: ug._id,
-        userId: ug.userId,
-        status: ug.status,
-        startDate: ug.startDate,
-        currentWeek: ug.currentWeek,
-        completedSessions: ug.completedSessions,
-        activeDays: ug.activeDays,
-        customExercises: ug.customExercises,
-
-        originalGoalId: goalInfo._id, // 원본 ID 보존
-        name: goalInfo.name, // 루틴 이름
-        goalType: goalInfo.goalType, // 타입
-        parts: goalInfo.parts, // 운동 부위
-        creator: goalInfo.creatorId, // 제작자 정보
-
-        createdAt: ug.createdAt,
-      };
-    })
-    .filter((item) => item !== null);
-
-  return combinedGoals;
-};
-
-// 사용자 목표 목록 조회(운동 기록쪽)
-const getGoalsAndDailyRecords = async (userId) => {
-  const typeMap = {
-    ROUTINE: "루틴",
-    CHALLENGE: "챌린지",
-  };
-
-  const userGoals = await UserGoal.find({ userId: userId })
-    .populate({
-      path: "goalId",
-      select: "name goalType parts creatorId",
-      populate: { path: "creatorId", select: "nickname" },
-    })
     .populate({
       path: "customExercises.exerciseId",
       select: "name targetMuscles",
     })
     .sort({ createdAt: -1 });
 
-  const combinedGoals = userGoals.map((ug) => {
-    const goalInfo = ug.goalId;
-    if (!goalInfo) return null;
-    const progress = calculateGoalProgress({
-      goalType: goalInfo.goalType,
-      durationWeek: ug.durationWeek,
-      activeDays: ug.activeDays,
-      completedSessions: ug.completedSessions,
-      currentWeek: ug.currentWeek,
-    });
-
-    return {
-      _id: ug._id,
-      userId: ug.userId,
-      status: ug.status,
-      activeDays: ug.activeDays,
-      startDate: ug.startDate,
-      createdAt: ug.createdAt,
-      customExercises: ug.customExercises.map((ce) => {
-        const exerciseInfo = ce.exerciseId || {};
-        return {
-          exerciseId: exerciseInfo._id,
-          days: ce.days,
-          restTime: ce.restTime,
-          sets: ce.sets,
-          name: exerciseInfo.name || "이름 없음",
-          targetMuscles: exerciseInfo.targetMuscles,
-        };
-      }),
-      durationWeek: ug.durationWeek,
-
-      progress: progress,
-
-      originalGoalId: goalInfo._id,
-      creator: goalInfo.creatorId?.nickname || "Unknown",
-      name: goalInfo.name,
-      goalType: typeMap[goalInfo.goalType] || goalInfo.goalType,
-      parts: goalInfo.parts,
-    };
-  });
+  const combinedGoals = userGoals
+    .map(formatUserGoalResponse)
+    .filter((item) => item !== null);
 
   return combinedGoals;
 };
@@ -372,5 +291,4 @@ module.exports = {
   updateGoal,
   deleteGoal,
   getDailyExerciseRecords,
-  getGoalsAndDailyRecords,
 };

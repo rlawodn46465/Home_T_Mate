@@ -1,6 +1,8 @@
 // utils/responseMap.js
 
-// 루틴/챌린지의 진행도를 계산하여 프론트엔드 형식에 맞게 반환
+const ExerciseHistory = require("../models/ExerciseHistory");
+
+// 루틴/챌린지의 진행도를 계산
 const calculateGoalProgress = (goal) => {
   // 주당 운동 횟수
   const activeDaysCount = goal.activeDays ? goal.activeDays.length : 0;
@@ -28,12 +30,13 @@ const calculateGoalProgress = (goal) => {
 };
 
 // 요일 변환 헬퍼 함수
+// 요일 확인 후 '매일', '주말', '평일', 'n요일', '주 n요일'로 변환
 const mapActiveDaysToDisplay = (days) => {
   const count = days.length;
   const sortedDays = [...days].sort();
 
   // 모든 요일
-  const allDays = ["일", "월", "화", "수", "목", "금", "토"].sort();
+  const allDays = ["월", "화", "수", "목", "금", "토", "일"].sort();
   const daysStr = sortedDays.join(",");
 
   if (count === 7 && daysStr === allDays.join(",")) {
@@ -41,7 +44,7 @@ const mapActiveDaysToDisplay = (days) => {
   }
 
   // '주말' 조건
-  const weekend = ["일", "토"];
+  const weekend = ["토", "일"];
   if (daysStr === weekend.sort().join(",")) {
     return "주말";
   }
@@ -65,26 +68,103 @@ const mapActiveDaysToDisplay = (days) => {
   return "비활성";
 };
 
-// 목표 리스트 아이템 변환
-const mapGoalToListItem = (goal) => {
+// 목표 리스트 변환
+const formatUserGoalResponse = (ug) => {
+  const goalInfo = ug.goalId;
+  if (!goalInfo) return null;
+
   const typeMap = {
     ROUTINE: "루틴",
     CHALLENGE: "챌린지",
+    PERSONAL: "개별운동",
   };
-  // 진행도 계산 유틸리티 사용
-  const progress = calculateGoalProgress(goal);
+
+  // 진행도 계산
+  const progressInput = {
+    goalType: goalInfo.goalType,
+    durationWeek: ug.durationWeek,
+    activeDays: ug.activeDays,
+    completedSessions: ug.completedSessions,
+    currentWeek: ug.currentWeek,
+  };
+  const progress = calculateGoalProgress(progressInput);
+
+  // 요일 라벨 생성 (예: "주 3")
+  const activeDaysLabel = mapActiveDaysToDisplay(ug.activeDays);
+
   return {
-    id: goal._id,
-    name: goal.name,
-    goalType: typeMap[goal.goalType] || goal.goalType,
-    activeDays: mapActiveDaysToDisplay(goal.activeDays),
-    creator: goal.creator?.nickname || "Unknown",
-    status: goal.status,
-    parts: goal.parts || [],
-    downloadCount: goal.downloadCount,
-    isPublic: goal.isUserPublic,
+    // 식별자 및 상태
+    id: ug._id,
+    userId: ug.userId,
+    status: ug.status,
+    startDate: ug.startDate,
+    createdAt: ug.createdAt,
+
+    // 진행도 및 목표 관련 데이터
     progress: progress,
+    currentWeek: ug.currentWeek,
+    completedSessions: ug.completedSessions,
+    durationWeek: ug.durationWeek,
+
+    // 요일 정보
+    activeDays: ug.activeDays,
+    activeDaysLabel: activeDaysLabel,
+
+    // 원본 목표 정보
+    originalGoalId: goalInfo._id,
+    name: goalInfo.name,
+    goalType: goalInfo.goalType,
+    goalTypeLabel: typeMap[goalInfo.goalType] || goalInfo.goalType,
+    parts: goalInfo.parts,
+    creator: goalInfo.creatorId?.nickname || "Unknown",
+
+    // 커스텀 운동 목록
+    customExercises: ug.customExercises.map((ce) => {
+      const exerciseInfo = ce.exerciseId || {};
+      return {
+        exerciseId: exerciseInfo._id,
+        name: exerciseInfo.name || "삭제된 운동",
+        targetMuscles: exerciseInfo.targetMuscles || [],
+        sets: ce.sets,
+        days: ce.days,
+        restTime: ce.restTime,
+      };
+    }),
   };
+};
+
+// userGoalId에 대해 오늘 운동 기록이 있는지 확인
+const checkDailySessionCompleted = async (userId, userGoalId, dateString) => {
+  // 날짜를 하루 단위 범위
+  const today = new Date(dateString);
+  const startOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  const endOfDay = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate() + 1
+  );
+
+  const existingRecord = await ExerciseHistory.findOne(
+    {
+      userId: userId,
+      records: {
+        $elemMatch: {
+          relatedUserGoalId: userGoalId,
+          date: {
+            $gte: startOfDay,
+            $lt: endOfDay,
+          },
+        },
+      },
+    },
+    { _id: 1 }
+  );
+
+  return !!existingRecord;
 };
 
 // 목표 상세 정보 변환
@@ -153,7 +233,7 @@ const mapHistoryToCalendar = (aggregatedData) => {
     return {
       date: item._id.date,
       sessionType: item._id.type, // ROUTINE, CHALLENGE, PERSONAL
-      title: item.title || "개인 운동",
+      title: item.title || "개별운동",
       totalTime: Math.round(item.totalTime / 60), // 분 단위 변환
       targetMuscles: item.targetMuscles.flat(),
       summaryText:
@@ -167,8 +247,9 @@ const mapHistoryToCalendar = (aggregatedData) => {
 };
 
 module.exports = {
-  mapGoalToListItem,
   mapGoalToDetail,
   mapHistoryToCalendar,
   calculateGoalProgress,
+  checkDailySessionCompleted,
+  formatUserGoalResponse,
 };
