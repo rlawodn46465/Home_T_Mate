@@ -1,8 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import "./RoutineDetailPage.css";
-import RoutineDetailHeader from "../../components/ui/Routine/GoalList/RoutineDetailHeader"
+import RoutineDetailHeader from "../../components/ui/Routine/GoalList/RoutineDetailHeader";
 import ExerciseList from "../../components/ui/Routine/GoalList/ExerciseList";
 import RoutineSummary from "../../components/ui/Routine/GoalList/RoutineSummary";
 import TabNavigation from "../../components/common/TabNavigation";
@@ -19,7 +19,6 @@ const RoutineDetailPage = ({ routineId }) => {
     routine: routineDetail,
     loading: detailLoading,
     error: detailError,
-    refetchDetail,
   } = useRoutineDetail(routineId, true);
 
   const { isDeleting, deleteRoutineHandler } = useRoutineDelete();
@@ -139,6 +138,10 @@ const RoutineDetailPage = ({ routineId }) => {
     ...new Set(currentExercises.flatMap((ex) => ex.days || [])),
   ];
 
+  const handleExerciseDetailNavigation = (exerciseId) => {
+    navigate(`/?panel=exercise-detail&exerciseId=${exerciseId}`);
+  };
+
   return (
     <div className="routine-detail-page">
       <RoutineDetailHeader
@@ -158,9 +161,7 @@ const RoutineDetailPage = ({ routineId }) => {
         <p className="routine-meta">
           생성일 : {formatCreationDate(routineDetail.createdAt)}
         </p>
-        <p className="routine-meta">
-          제작자 : {routineDetail.creator}
-        </p>
+        <p className="routine-meta">제작자 : {routineDetail.creator}</p>
         <RoutineSummary
           routineDetail={routineDetail}
           allRoutineDays={allRoutineDays}
@@ -174,10 +175,16 @@ const RoutineDetailPage = ({ routineId }) => {
 
       <div className="exercise-content">
         {activeTab === "오늘 운동" && (
-          <ExerciseList exercises={todayExercises} />
+          <ExerciseList
+            exercises={todayExercises}
+            onSelectExercise={handleExerciseDetailNavigation}
+          />
         )}
         {activeTab === "리스트" && (
-          <ExerciseList exercises={routineDetail.exercises} />
+          <ExerciseList
+            exercises={routineDetail.exercises}
+            onSelectExercise={handleExerciseDetailNavigation}
+          />
         )}
       </div>
       <div className="routine-actions">

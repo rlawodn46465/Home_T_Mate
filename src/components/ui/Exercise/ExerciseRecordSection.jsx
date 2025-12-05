@@ -1,8 +1,7 @@
 import "./ExerciseRecordSection.css";
-import ExerciseListItem from "./ExerciseListItem";
+import ExerciseCard from "../../common/ExerciseCard";
 
 const ExerciseRecordSection = ({ myStats, recentLogs }) => {
-  console.log(recentLogs);
   return (
     <div className="exercise-record-section">
       <h4>최고 기록</h4>
@@ -39,7 +38,7 @@ const ExerciseRecordSection = ({ myStats, recentLogs }) => {
       <h4>최근 기록</h4>
       <ul className="exercise-record-section__recent-logs">
         {recentLogs.map((data, index) => (
-          <ExerciseListItem key={index} data={data} />
+          <ExerciseCard key={index} record={data} isMenuSelector={false}/>
         ))}
       </ul>
     </div>

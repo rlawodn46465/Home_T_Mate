@@ -1,7 +1,7 @@
 import { format } from "date-fns";
 import { ko } from "date-fns/locale";
 import ExerciseCard from "../../common/ExerciseCard";
-import './ExerciseDayGroup.css';
+import "./ExerciseDayGroup.css";
 
 const formatDisplayDate = (dateString) => {
   const date = new Date(dateString);

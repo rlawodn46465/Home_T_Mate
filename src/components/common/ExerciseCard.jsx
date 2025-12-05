@@ -2,8 +2,12 @@ import { useState } from "react";
 import "./ExerciseCard.css";
 import DotsMenuToggle from "./DotsMenuToggle";
 import DropdownMenu from "./DropdownMenu";
+import { useNavigate } from "react-router-dom";
 
-const ExerciseCard = ({ record }) => {
+const ExerciseCard = ({ record, isMenuSelector = true }) => {
+  const navigate = useNavigate();
+  const exerciseId = record.exerciseId;
+
   const { type, name, category, duration, completed, sets } = record;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -21,12 +25,24 @@ const ExerciseCard = ({ record }) => {
     }
     setIsMenuOpen((prev) => !prev);
   };
+  const handleCardClick = (e) => {
+    if (isMenuOpen) return;
+    if (e.target.closest(".card-toggle")) return;
+
+    // 상세 페이지로 이동
+    if (exerciseId) {
+      navigate(`?panel=exercise-detail&exerciseId=${exerciseId}`);
+    } else {
+      console.error("운동 ID가 없어 상세 페이지로 이동할 수 없습니다.", record);
+    }
+  };
 
   return (
     <div
       className={`exercise-card card-${type.toLowerCase()} ${
         completed ? "is-completed" : ""
       }`}
+      onClick={handleCardClick}
     >
       {/* 타입 */}
       {type === "개별운동" ? (
@@ -37,7 +53,9 @@ const ExerciseCard = ({ record }) => {
       <div className="card-header">
         <h4 className="card-name">{name}</h4>
         <div className="card-toggle">
-          <DotsMenuToggle onClick={handleToggle} isActive={isMenuOpen} />
+          {isMenuSelector && (
+            <DotsMenuToggle onClick={handleToggle} isActive={isMenuOpen} />
+          )}
           {isMenuOpen && (
             <DropdownMenu position="right">
               <div onClick={() => handleMenuItemClick("시작")}>시작</div>
@@ -55,7 +73,7 @@ const ExerciseCard = ({ record }) => {
           ))}
         </div>
         <div className="card-time-container">
-          <p className="card-time">{duration}</p>
+          <p className="card-time">{duration}분</p>
           <p className="card-date-time">{record.date}</p>
         </div>
       </div>

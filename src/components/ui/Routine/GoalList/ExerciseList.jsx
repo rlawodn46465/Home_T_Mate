@@ -1,6 +1,6 @@
-import "./ExerciseList.css"; // 상세 페이지 CSS 재활용
+import "./ExerciseList.css";
 
-const ExerciseList = ({ exercises }) => {
+const ExerciseList = ({ exercises, onSelectExercise }) => {
   if (!exercises || exercises.length === 0) {
     return <p className="no-exercises">표시할 운동이 없습니다.</p>;
   }
@@ -8,7 +8,16 @@ const ExerciseList = ({ exercises }) => {
   return (
     <div className="exercise-list">
       {exercises.map((exercise, index) => (
-        <div key={`${exercise.name}${index}`} className="exercise-item">
+        <div
+          key={`${exercise.name}${index}`}
+          className="exercise-item"
+          onClick={() => {
+            const id = exercise.exerciseId;
+            if (id && onSelectExercise) {
+              onSelectExercise(id);
+            }
+          }}
+        >
           <div className="exercise-item-info">
             <div className="exercise-item-info__top">
               <h4>{exercise.name}</h4>
@@ -32,7 +41,7 @@ const ExerciseList = ({ exercises }) => {
             </div>
 
             <div className="exercise-item-info__bottom">
-              {exercise.days.map((day,index) => (
+              {exercise.days.map((day, index) => (
                 <p key={`${day}${index}`}>{day}</p>
               ))}
             </div>

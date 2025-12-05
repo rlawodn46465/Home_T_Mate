@@ -5,9 +5,9 @@ import "./ExerciseList.css";
 
 //
 const transformDataForCard = (backendRecord) => {
-
   return backendRecord.exercises.map((ex, index) => ({
-    id: `${backendRecord.date}-${index}`,
+    id: `${backendRecord.id}${index}`,
+    exerciseId: ex.exerciseId,
     date: backendRecord.date,
     type: backendRecord.recordType, // 예: 'ROUTINE' -> 매핑 필요할 수 있음
     name: ex.name,
@@ -18,19 +18,6 @@ const transformDataForCard = (backendRecord) => {
     // 필요한 추가 필드 매핑
   }));
 };
-
-// 운동 기록 배열을 날짜를 기준으로 그룹화 후 객체 반환
-// const groupRecordsByDate = (records) => {
-//   if (!Array.isArray(records)) return {};
-//   return records.reduce((acc, record) => {
-//     const dateKey = record.date;
-//     if (dateKey) {
-//       if (!acc[dateKey]) acc[dateKey] = [];
-//       acc[dateKey].push(record);
-//     }
-//     return acc;
-//   }, {});
-// };
 
 const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
   const [displayData, setDisplayData] = useState([]);
@@ -45,9 +32,7 @@ const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
     );
 
     if (!targetDayData) return [];
-
     const transformedList = transformDataForCard(targetDayData);
-    
     // 탭(카테고리) 필터링
     if (activeTab === "전체") return transformedList;
 

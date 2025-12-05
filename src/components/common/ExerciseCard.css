@@ -3,6 +3,7 @@
   border: 1px solid rgba(47, 47, 47, 1);
   border-radius: 15px;
   padding: 7px 10px;
+  cursor: pointer;
 }
 
 .card-type-box{
@@ -58,6 +59,7 @@
 .card-time-container{
   display: flex;
   flex-direction: column;
+  justify-content: end;
   align-items: end;
 }
 

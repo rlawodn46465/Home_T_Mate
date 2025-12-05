@@ -44,6 +44,9 @@ const RightPanel = () => {
     case "routine-form":
       content = <RoutineFormPage routineId={routineId} />;
       break;
+    case "exercise-detail":
+      content = <ExerciseDetail exerciseId={exerciseId}/>;
+      break;
     case "exercise-form":
       content = <ExerciseFormPage exerciseId={exerciseId} />;
       break;

@@ -57,12 +57,19 @@ export const deleteRoutine = async (id) => {
 };
 
 // --------------------------
-// 운동 마스터 데이터 관련 API
+// 운동 데이터 관련 API
 // --------------------------
 
-// 운동 마스터 목록 조회
+// 운동 목록 조회
 export const fetchExercises = async (filters = {}) => {
   const params = new URLSearchParams(filters).toString();
   const response = await api.get(`${API_EXERCISE_PATH}?${params}`);
+  return response.data.data;
+};
+
+// 특정 운동 상세 정보 조회
+export const fetchExerciseDetail = async (exerciseId) => {
+  if (!exerciseId) throw new Error("운동 ID가 필요합니다.");
+  const response = await api.get(`${API_EXERCISE_PATH}/${exerciseId}`);
   return response.data.data;
 };
