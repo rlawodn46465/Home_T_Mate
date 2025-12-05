@@ -14,11 +14,6 @@ const SCREEN = {
   SELECT: "select",
 };
 
-const RECORD_TYPE = {
-  INDIVIDUAL: "PERSONAL",
-  TITLE: "개별 운동",
-};
-
 // 운동 통계 계산 함수
 const calculateExerciseStats = (exercises) => {
   return exercises.map((ex) => {
@@ -118,8 +113,8 @@ const NewExerciseTab = () => {
     // 서버 전송 데이터 구성
     const planData = {
       date: format(selectedDate, "yyyy-MM-dd"),
-      type: RECORD_TYPE.INDIVIDUAL,
-      title: RECORD_TYPE.TITLE,
+      type: "개별운동",
+      title: "개별운동",
       totalTime: estimatedTotalTime,
       exercises: processedExercises,
     };
