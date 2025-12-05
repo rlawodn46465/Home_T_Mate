@@ -1,0 +1,15 @@
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.page-header h2 {
+  margin: 0;
+}
+
+.page-header p {
+  cursor: pointer;
+  color: rgba(231, 46, 40, 1);
+}
