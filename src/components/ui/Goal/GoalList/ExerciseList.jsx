@@ -4,7 +4,7 @@ const ExerciseList = ({ exercises, onSelectExercise }) => {
   if (!exercises || exercises.length === 0) {
     return <p className="no-exercises">표시할 운동이 없습니다.</p>;
   }
-
+  console.log(exercises);
   return (
     <div className="exercise-list">
       {exercises.map((exercise, index) => (

@@ -133,6 +133,8 @@ const GoalsDetailPage = ({ goalId }) => {
     ex.days.includes(currentDay)
   );
 
+  console.log(goalDetail)
+
   // 모든 운동의 요일을 취합
   const allGoalDays = [
     ...new Set(currentExercises.flatMap((ex) => ex.days || [])),

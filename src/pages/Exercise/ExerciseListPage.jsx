@@ -12,7 +12,7 @@ import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
 import "./ExerciseListPage.css";
 
 const TABS = ["전체", "개별운동", "루틴", "챌린지"];
-const ALL_DAYS = ["일", "월", "화", "수", "목", "금", "토"];
+const ALL_DAYS = ["월", "화", "수", "목", "금", "토", "일"];
 
 // 부위별 색상 매핑
 const BODY_PART_COLORS = {

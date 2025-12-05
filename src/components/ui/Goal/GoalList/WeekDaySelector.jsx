@@ -1,7 +1,7 @@
 import './WeekDaySelector.css'
 
 const WeekDaySelector = ({ selectedDays }) => {
-  const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+  const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
 
   return (
     <div className="weekday-selector">

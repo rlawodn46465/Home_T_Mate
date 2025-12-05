@@ -6,7 +6,7 @@ import MuscleMap from "./MuscleMap";
 
 import "./DailyExerciseItem.css";
 
-const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
 
 const DailyExerciseItem = ({
   exercise,
