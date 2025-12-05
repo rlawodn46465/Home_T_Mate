@@ -13,7 +13,7 @@ const transformDataForCard = (backendRecord) => {
     name: ex.name,
     category: ex.targetMuscles,
     sets: ex.sets, // 세트 수 문자열 변환
-    duration: `${Math.floor(ex.totalTime / 60)}분`, // 초 -> 분 변환
+    duration: ex.totalTime,
     completed: true, // 로직에 따라 변경
     // 필요한 추가 필드 매핑
   }));

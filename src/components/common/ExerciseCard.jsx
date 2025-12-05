@@ -4,12 +4,40 @@ import DotsMenuToggle from "./DotsMenuToggle";
 import DropdownMenu from "./DropdownMenu";
 import { useNavigate } from "react-router-dom";
 
-const ExerciseCard = ({ record, isMenuSelector = true }) => {
+// "분 초" 단위로 변환
+const formatDuration = (seconds) => {
+  if (typeof seconds !== "number" || seconds < 0) return "0초";
+
+  const minutes = Math.floor(seconds / 60);
+  const remainingSeconds = seconds % 60;
+
+  if (seconds === 0) {
+    return "0초";
+  }
+
+  if (minutes > 0) {
+    if (remainingSeconds === 0) {
+      return `${minutes}분`;
+    }
+    return `${minutes}분 ${remainingSeconds}초`;
+  }
+  return `${remainingSeconds}초`;
+};
+
+const ExerciseCard = ({
+  record,
+  isMenuSelector = true,
+  isDetailSelector = true,
+}) => {
   const navigate = useNavigate();
   const exerciseId = record.exerciseId;
 
-  const { type, name, category, duration, completed, sets } = record;
+  const { type, name, category, completed, sets } = record;
+  const durationSeconds = record.duration;
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // 시간 변환
+  const formattedDuration = formatDuration(durationSeconds);
 
   // 메뉴 토글
   const handleMenuItemClick = (action) => {
@@ -29,11 +57,16 @@ const ExerciseCard = ({ record, isMenuSelector = true }) => {
     if (isMenuOpen) return;
     if (e.target.closest(".card-toggle")) return;
 
-    // 상세 페이지로 이동
-    if (exerciseId) {
-      navigate(`?panel=exercise-detail&exerciseId=${exerciseId}`);
-    } else {
-      console.error("운동 ID가 없어 상세 페이지로 이동할 수 없습니다.", record);
+    if (isDetailSelector) {
+      // 상세 페이지로 이동
+      if (exerciseId) {
+        navigate(`?panel=exercise-detail&exerciseId=${exerciseId}`);
+      } else {
+        console.error(
+          "운동 ID가 없어 상세 페이지로 이동할 수 없습니다.",
+          record
+        );
+      }
     }
   };
 
@@ -73,7 +106,7 @@ const ExerciseCard = ({ record, isMenuSelector = true }) => {
           ))}
         </div>
         <div className="card-time-container">
-          <p className="card-time">{duration}</p>
+          <p className="card-time">{formattedDuration}</p>
           <p className="card-date-time">{record.date}</p>
         </div>
       </div>

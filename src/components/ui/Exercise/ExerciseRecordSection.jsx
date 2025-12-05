@@ -1,6 +1,17 @@
 import "./ExerciseRecordSection.css";
 import ExerciseCard from "../../common/ExerciseCard";
 
+// "분 초" 단위로 변환
+const formatDuration = (seconds) => {
+  if (typeof seconds !== "number" || seconds < 0) {
+    return "0.0";
+  }
+
+  const minutes = seconds / 60;
+
+  return minutes.toFixed(1);
+};
+
 const ExerciseRecordSection = ({ myStats, recentLogs }) => {
   return (
     <div className="exercise-record-section">
@@ -29,7 +40,7 @@ const ExerciseRecordSection = ({ myStats, recentLogs }) => {
         </li>
         <li>
           <div>
-            {myStats.total.time ? myStats.total.time : "- "}
+            {myStats.total.time ? formatDuration(myStats.total.time) : "- "}
             <span> 분</span>
           </div>
           <p>총 시간</p>
@@ -38,7 +49,7 @@ const ExerciseRecordSection = ({ myStats, recentLogs }) => {
       <h4>최근 기록</h4>
       <ul className="exercise-record-section__recent-logs">
         {recentLogs.map((data, index) => (
-          <ExerciseCard key={index} record={data} isMenuSelector={false}/>
+          <ExerciseCard key={index} record={data} isMenuSelector={false} isDetailSelector={false}/>
         ))}
       </ul>
     </div>
