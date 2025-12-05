@@ -18,13 +18,6 @@ const getExerciseListController = asyncHandler(async (req, res) => {
 
 // 특정 운동 상세 정보[운동 정보, 사용자 통계, 최근 로그] (GET /api/v1/exercises/:id)
 const getExerciseDetailController = asyncHandler(async (req, res) => {
-  // const exerciseId = req.params.id;
-  // const userId = req.user._id;
-
-  // if (!exerciseId) {
-  //   throw new BadRequestError("운동 ID가 필요합니다.");
-  // }
-
   const data = await exerciseService.getExerciseDetail(
     req.params.id,
     req.user._id

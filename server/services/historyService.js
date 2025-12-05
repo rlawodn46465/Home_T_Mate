@@ -132,6 +132,7 @@ const getMonthlyHistory = async (userId, year, month) => {
 
         exercises: {
           $push: {
+            exerciseId: "$exerciseId",
             name: "$exerciseInfo.name",
             targetMuscles: "$exerciseInfo.targetMuscles",
             totalTime: "$records.totalTime",
