@@ -26,14 +26,10 @@ const calculateExerciseStats = (exercises) => {
     const setsWithCompletion = setsArray.map((set, index) => {
       const weight = set.weight || 0;
       const reps = set.reps || 0;
-
       const volume = weight * reps;
       totalVolume += volume;
       totalReps += reps;
-
-      if (weight > maxWeight) {
-        maxWeight = weight;
-      }
+      if (weight > maxWeight) maxWeight = weight;
 
       return {
         setNumber: set.setNumber || index + 1,
@@ -50,6 +46,7 @@ const calculateExerciseStats = (exercises) => {
       maxWeight: maxWeight,
       totalVolume: totalVolume,
       totalReps: totalReps,
+      duration: (ex.duration || 0) * 60,
     };
   });
 };
@@ -106,14 +103,22 @@ const NewExerciseTab = () => {
     // 데이터 가공
     const processedExercises = calculateExerciseStats(goalForm.exercises);
     // totalTime 계산 (임시)
-    const estimatedTotalTime = processedExercises.length * 10 * 60;
+    const calculatedTotalSeconds = processedExercises.reduce(
+      (acc, curr) => acc + (curr.duration || 0),
+      0
+    );
+
+    const finalTotalTime =
+      calculatedTotalSeconds > 0
+        ? calculatedTotalSeconds
+        : processedExercises.length * 10 * 60;
 
     // 서버 전송 데이터 구성
     const planData = {
       date: format(selectedDate, "yyyy-MM-dd"),
       type: "개별운동",
       title: "개별운동",
-      totalTime: estimatedTotalTime,
+      totalTime: finalTotalTime,
       exercises: processedExercises,
     };
 

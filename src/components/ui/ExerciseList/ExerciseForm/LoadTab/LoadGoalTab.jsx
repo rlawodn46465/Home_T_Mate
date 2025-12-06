@@ -44,6 +44,7 @@ const calculateExerciseStats = (exercises) => {
       maxWeight: maxWeight,
       totalVolume: totalVolume,
       totalReps: totalReps,
+      duration: (ex.duration || 0) * 60,
     };
   });
 };
@@ -67,6 +68,7 @@ const LoadGoalTab = () => {
       exercises: selectedGoal.customExercises.map((ex) => ({
         ...ex,
         id: ex.exerciseId,
+        duration: ex.duration || 0,
         sets: ex.sets.map((set) => ({
           ...set,
           id: set._id || Date.now() + Math.random(),
@@ -117,14 +119,22 @@ const LoadGoalTab = () => {
     const processedExercises = calculateExerciseStats(goalForm.exercises);
 
     // totalTime 계산(임시)
-    const estimatedTotalTime = processedExercises.length * 10 * 60; // 운동당 10분 가정
+    const calculatedTotalSeconds = processedExercises.reduce(
+      (acc, curr) => acc + (curr.duration || 0),
+      0
+    );
+
+    const finalTotalTime =
+      calculatedTotalSeconds > 0
+        ? calculatedTotalSeconds
+        : processedExercises.length * 10 * 60;
 
     const planData = {
       date: format(selectedDate, "yyyy-MM-dd"),
       userGoalId: selectedGoal._id,
       type: selectedGoal.goalType.toUpperCase(),
       title: selectedGoal.name,
-      totalTime: estimatedTotalTime,
+      totalTime: finalTotalTime,
       exercises: processedExercises,
     };
 

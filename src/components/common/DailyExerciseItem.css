@@ -56,7 +56,7 @@ input:focus {
 }
 
 .remove-exercise-button:hover {
-    color: rgba(231, 46, 40, 1)
+  color: rgba(231, 46, 40, 1);
 }
 
 .item-details {
@@ -90,20 +90,18 @@ input:focus {
 
 .item-info-container {
   display: flex;
+  flex-direction: column;
   justify-content: space-between;
 }
 
-.item-info-container svg {
-  position: relative;
-  right: 10px;
+.time-settings-row {
+  border-bottom: 2px solid rgba(189, 189, 189, 1);
 }
 
 .rest-time-group {
   display: flex;
   align-items: center;
-  border-bottom: 2px solid rgba(189, 189, 189, 1);
   gap: 5px;
-  padding: 0 5px;
 }
 
 .rest-time-label {
@@ -118,6 +116,21 @@ input:focus {
   text-align: center;
   background-color: transparent;
   border-bottom: 2px solid rgba(81, 85, 163, 1);
+}
+
+.rest-time-unit{
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.item-info-box {
+  display: flex;
+  justify-content: space-between;
+}
+
+.item-info-container svg {
+  position: relative;
+  right: 10px;
 }
 
 .set-list {
