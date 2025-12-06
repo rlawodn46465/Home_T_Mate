@@ -1,11 +1,17 @@
 const mongoose = require("mongoose");
 const ExerciseHistory = require("../models/ExerciseHistory");
 const UserGoal = require("../models/UserGoal");
-const { checkDailySessionCompleted, calculateGoalProgress } = require("../utils/responseMap");
+const {
+  checkDailySessionCompleted,
+  calculateGoalProgress,
+} = require("../utils/responseMap");
+const { mapRecordTypeToKorean } = require("../utils/constants");
 
 // 운동 기록 추가
 const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
   const { date, userGoalId, type, title, totalTime } = workoutMeta;
+
+  const koreanRecordType = mapRecordTypeToKorean(type);
 
   const updateDoc = {
     $max: { personalBestWeight: exerciseLog.maxWeight || 0 },
@@ -16,7 +22,7 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
         date: new Date(date),
         relatedUserGoalId: userGoalId || null,
         goalName: title,
-        recordType: type,
+        recordType: koreanRecordType,
         totalTime: totalTime,
         sets: exerciseLog.sets,
         maxWeight: exerciseLog.maxWeight,
@@ -65,7 +71,8 @@ const saveWorkoutSession = async (userId, workoutData) => {
 
   // UserGoal 진행도 업데이트
   if (userGoalId) {
-    if (shouldIncrementSession) { // 하루 운동 제한
+    if (shouldIncrementSession) {
+      // 하루 운동 제한
       goal = await UserGoal.findByIdAndUpdate(
         userGoalId,
         { $inc: { completedSessions: 1 } },
@@ -76,11 +83,11 @@ const saveWorkoutSession = async (userId, workoutData) => {
     }
 
     // 목표 완료 처리
-    if(goal && goal.goalType === "CHALLENGE"){
+    if (goal && goal.goalType === "CHALLENGE") {
       const progress = calculateGoalProgress(goal);
 
-      if(progress >= 1){
-        await UserGoal.findByIdAndUpdate(userGoalId, {status: "완료"});
+      if (progress >= 1) {
+        await UserGoal.findByIdAndUpdate(userGoalId, { status: "완료" });
       }
     }
   }
