@@ -1,9 +1,9 @@
-input:focus{
+input:focus {
   background-color: transparent;
   caret-color: rgba(81, 85, 163, 1);
 }
 
-.exercise-item-card{
+.exercise-item-card {
   position: relative;
   padding: 10px 15px;
   background-color: rgb(230, 230, 230);
@@ -11,18 +11,18 @@ input:focus{
   cursor: pointer;
 }
 
-.item-header{
+.item-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
-.item-header-left{
+.item-header-left {
   display: flex;
   gap: 20px;
 }
 
-.exercise-title{
+.exercise-title {
   display: flex;
   align-items: end;
   gap: 4px;
@@ -31,38 +31,50 @@ input:focus{
   color: rgba(47, 47, 47, 1);
 }
 
-.exercise-title span{
+.exercise-title span {
   line-height: 18px;
 }
 
-.set-count{
+.set-count {
   font-size: 12px;
   font-weight: 400;
-  color: rgba(152, 152, 152, 1)
+  color: rgba(152, 152, 152, 1);
 }
 
-.dots-menu-wrapper {
-  position: relative;
+.remove-button-wrapper {
   display: flex;
   align-items: center;
 }
 
-.item-details{
+.remove-exercise-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(47, 47, 47, 1);
+  font-size: 24px;
+  transition: color 0.2s;
+}
+
+.remove-exercise-button:hover {
+    color: rgba(231, 46, 40, 1)
+}
+
+.item-details {
   padding: 10px 10px 10px;
 }
 
-.day-selection-group{
+.day-selection-group {
   display: flex;
   justify-content: space-around;
   margin-bottom: 20px;
 }
 
-.day-buttons{
+.day-buttons {
   display: flex;
   gap: 5px;
 }
 
-.day-button{
+.day-button {
   width: 23px;
   height: 23px;
   border-radius: 50%;
@@ -76,17 +88,17 @@ input:focus{
   color: white;
 }
 
-.item-info-container{
+.item-info-container {
   display: flex;
   justify-content: space-between;
 }
 
-.item-info-container svg{
+.item-info-container svg {
   position: relative;
   right: 10px;
 }
 
-.rest-time-group{
+.rest-time-group {
   display: flex;
   align-items: center;
   border-bottom: 2px solid rgba(189, 189, 189, 1);
@@ -94,12 +106,12 @@ input:focus{
   padding: 0 5px;
 }
 
-.rest-time-label{
+.rest-time-label {
   font-size: 14px;
   font-weight: 400;
 }
 
-.item-input{
+.item-input {
   position: relative;
   bottom: 2px;
   width: 40px;
@@ -108,13 +120,13 @@ input:focus{
   border-bottom: 2px solid rgba(81, 85, 163, 1);
 }
 
-.set-list{
+.set-list {
   display: flex;
   flex-direction: column;
   gap: 3px;
 }
 
-.set-row{
+.set-row {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -123,18 +135,18 @@ input:focus{
   border-radius: 6px;
 }
 
-.set-number{
+.set-number {
   font-size: 18px;
   font-weight: 700;
   color: rgba(81, 85, 163, 1);
 }
 
-.unit-label{
+.unit-label {
   color: rgba(152, 152, 152, 1);
   font-weight: 400;
 }
 
-.remove-set-button{
+.remove-set-button {
   font-size: 12px;
   background-color: transparent;
   color: rgba(231, 46, 40, 1);
@@ -142,7 +154,7 @@ input:focus{
   cursor: pointer;
 }
 
-.add-set-button{
+.add-set-button {
   color: rgba(152, 152, 152, 1);
   font-weight: 400;
   height: 30px;

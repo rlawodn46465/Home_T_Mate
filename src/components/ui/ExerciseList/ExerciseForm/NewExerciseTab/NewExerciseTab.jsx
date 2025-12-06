@@ -35,13 +35,11 @@ const calculateExerciseStats = (exercises) => {
         maxWeight = weight;
       }
 
-      const isCompleted = true;
-
       return {
         setNumber: set.setNumber || index + 1,
         weight: weight,
         reps: reps,
-        isCompleted: isCompleted,
+        isCompleted: true,
       };
     });
 

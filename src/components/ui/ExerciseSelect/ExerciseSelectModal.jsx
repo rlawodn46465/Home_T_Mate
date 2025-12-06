@@ -1,4 +1,4 @@
-import { useMemo, useEffect, useState } from "react";
+import { useMemo, useState } from "react";
 import { useExercises } from "../../../hooks/useExercises";
 import { useDragScroll } from "../../../hooks/useDragScroll";
 
@@ -169,7 +169,7 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
 
               return (
                 <div
-                  key={ex.id}
+                  key={ex._id}
                   className={`exercise-item-row ${
                     isSelected ? "selected" : ""
                   }`}

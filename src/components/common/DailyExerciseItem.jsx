@@ -1,7 +1,5 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import ToggleComponents from "./ToggleComponents";
-import DotsMenuToggle from "./DotsMenuToggle";
-import DropdownMenu from "./DropdownMenu";
 import MuscleMap from "./MuscleMap";
 
 import "./DailyExerciseItem.css";
@@ -19,21 +17,7 @@ const DailyExerciseItem = ({
 }) => {
   const { id, name, sets, restTime, days, targetMuscles } = exercise;
   const [isExpanded, setIsExpanded] = useState(true);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const containerRef = useRef(null);
-
-  useEffect(() => {
-    const handleClickOutside = (e) => {
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, []);
 
   // 세트 간 휴식 시간 업데이트
   const handleRestTimeChange = (e) => {
@@ -42,21 +26,6 @@ const DailyExerciseItem = ({
     if (rawValue === "" || !isNaN(numValue)) {
       onExerciseUpdate(id, "restTime", rawValue === "" ? 0 : numValue);
     }
-  };
-
-  const handleToggle = (e) => {
-    if (e) {
-      e.stopPropagation();
-    }
-    setIsMenuOpen((prev) => !prev);
-  };
-
-  const handleMenuItemClick = (action) => {
-    if (action === "삭제") {
-      onRemove(id);
-    }
-    console.log(`${action} 버튼이 클릭되었습니다.`);
-    setIsMenuOpen(false);
   };
 
   // 요일 토글
@@ -114,15 +83,16 @@ const DailyExerciseItem = ({
             <span className="set-count">{sets.length}세트</span>
           </h3>
         </div>
-        <div className="dots-menu-wrapper">
-          <DotsMenuToggle onClick={handleToggle} isActive={isMenuOpen} />
-          {isMenuOpen && (
-            <DropdownMenu position="right">
-              <div onClick={() => handleMenuItemClick("시작")}>시작</div>
-              <div onClick={() => handleMenuItemClick("수정")}>수정</div>
-              <div onClick={() => handleMenuItemClick("삭제")}>삭제</div>
-            </DropdownMenu>
-          )}
+        <div className="remove-button-wrapper">
+          <button
+            className="remove-exercise-button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(id);
+            }}
+          >
+            &times;
+          </button>
         </div>
       </div>
 
