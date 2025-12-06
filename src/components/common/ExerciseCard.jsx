@@ -39,6 +39,11 @@ const ExerciseCard = ({
   // 시간 변환
   const formattedDuration = formatDuration(durationSeconds);
 
+  // 카테고리 변환 로직
+  const formattedCategory = Array.isArray(category)
+    ? category.join(", ")
+    : category;
+
   // 메뉴 토글
   const handleMenuItemClick = (action) => {
     if (action === "삭제") {
@@ -100,7 +105,7 @@ const ExerciseCard = ({
       </div>
       <div className="card-meta">
         <div className="card-info-container">
-          <p className="card-category">{category}</p>
+          <p className="card-category">{formattedCategory}</p>
           {sets.map((st, index) => (
             <div key={`${st}${index}`}>{`${st.weight}kg ${st.reps}회`}</div>
           ))}
