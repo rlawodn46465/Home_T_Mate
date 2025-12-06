@@ -130,14 +130,6 @@ const getMonthlyHistory = async (userId, year, month) => {
     },
     { $unwind: "$exerciseInfo" },
 
-    // 운동부위
-    {
-      $unwind: {
-        path: "$exerciseInfo.targetMuscles",
-        preserveNullAndEmptyArrays: true,
-      },
-    },
-
     // 날짜별 + 세션별 그룹화 (재조립)
     {
       $group: {
@@ -152,7 +144,7 @@ const getMonthlyHistory = async (userId, year, month) => {
         recordType: { $first: "$records.recordType" },
         totalSessionTime: { $max: "$records.totalTime" },
 
-        rawMuscles: { $addToSet: "$exerciseInfo.targetMuscles" },
+        rawMusclesArray: { $addToSet: "$exerciseInfo.targetMuscles" },
 
         exercises: {
           $push: {
@@ -178,7 +170,13 @@ const getMonthlyHistory = async (userId, year, month) => {
         // 6개 그룹 카테고리 생성 로직: rawMuscles 배열을 순회하며 매핑
         categoryGroup: {
           $reduce: {
-            input: "$rawMuscles",
+            input: {
+              $reduce: {
+                input: "$rawMusclesArray",
+                initialValue: [],
+                in: { $concatArrays: ["$$value", "$$this"] },
+              },
+            },
             initialValue: [],
             in: {
               $let: {
