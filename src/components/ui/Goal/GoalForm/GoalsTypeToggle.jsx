@@ -1,7 +1,7 @@
 import "./GoalsTypeToggle.css";
 
 const GoalsTypeToggle = ({ goalType, onTypeChange }) => {
-  const isGoal = goalType === "goal";
+  const isGoal = goalType === "routine";
 
   return (
     <div className="goal-type-toggle">
@@ -9,7 +9,7 @@ const GoalsTypeToggle = ({ goalType, onTypeChange }) => {
       <button
         className="toggle-button"
         data-active={isGoal}
-        onClick={() => onTypeChange("goal")}
+        onClick={() => onTypeChange("routine")}
       >
         루틴
       </button>
