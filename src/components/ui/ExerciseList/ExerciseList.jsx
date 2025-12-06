@@ -21,22 +21,25 @@ const transformDataForCard = (backendRecord) => {
 
 const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
   const [displayData, setDisplayData] = useState([]);
-
   // 선택된 날짜와 탭에 따라 데이터 필터
   const filteredRecords = useMemo(() => {
     if (!selectedDate || monthlyData.length === 0) return [];
 
     // 선택된 날짜의 데이터 찾기
-    const targetDayData = monthlyData.find((data) =>
+    const targetDayRecords = monthlyData.filter((data) =>
       isSameDay(new Date(data.date), selectedDate)
     );
 
-    if (!targetDayData) return [];
-    const transformedList = transformDataForCard(targetDayData);
-    // 탭(카테고리) 필터링
-    if (activeTab === "전체") return transformedList;
+    if (targetDayRecords.length === 0) return [];
 
-    return transformedList.filter((record) => {
+    const allTransformedExercises = targetDayRecords.flatMap((record) =>
+      transformDataForCard(record)
+    );
+
+    // 탭(카테고리) 필터링
+    if (activeTab === "전체") return allTransformedExercises;
+
+    return allTransformedExercises.filter((record) => {
       if (activeTab === "개별운동")
         return record.type === "PERSONAL" || record.type === "개별운동";
       if (activeTab === "루틴")

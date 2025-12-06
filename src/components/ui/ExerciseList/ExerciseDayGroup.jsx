@@ -13,8 +13,8 @@ const ExerciseDayGroup = ({ date, records }) => {
     <section className="exercise-day-group">
       <h3 className="day-header">{formatDisplayDate(date)}</h3>
       <div className="day-records-container">
-        {records.map((record) => (
-          <ExerciseCard key={record.id} record={record} isDetailSelector={true}/>
+        {records.map((record, index) => (
+          <ExerciseCard key={`${record.date}${index}`} record={record} isDetailSelector={true}/>
         ))}
       </div>
     </section>
