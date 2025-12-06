@@ -49,6 +49,12 @@ const calculateExerciseStats = (exercises) => {
   });
 };
 
+// 요일 이름을 가져오는 함수
+const getDayOfWeekKorean = (date) => {
+  const days = ["월", "화", "수", "목", "금", "토", "일"];
+  return days[date.getDay()];
+};
+
 const LoadGoalTab = () => {
   const { goals, loading: isGoalsLoading, error: goalsError } = useGoals();
 
@@ -111,12 +117,31 @@ const LoadGoalTab = () => {
     setIsCalendarExpanded((prev) => !prev);
   };
 
+  // 운동 목록 계산
+  const exercisesForSelectedDay = useMemo(() => {
+    if (!selectedDate || !goalForm.exercises) return [];
+
+    const currentDay = getDayOfWeekKorean(selectedDate);
+
+    return goalForm.exercises.filter(
+      (ex) => ex.days && ex.days.includes(currentDay)
+    );
+  }, [selectedDate, goalForm.exercises]);
+
   // 저장하기
   const handleSave = async () => {
     if (!selectedGoal || !selectedDate || isSaving) return;
 
+    // 필터된 운동 목록
+    const exercisesToSave = exercisesForSelectedDay;
+
+    if (exercisesToSave.length === 0) {
+      alert("⚠️ 선택한 날짜에 해당하는 운동 루틴이 없습니다.");
+      return;
+    }
+
     // 데이터 가공
-    const processedExercises = calculateExerciseStats(goalForm.exercises);
+    const processedExercises = calculateExerciseStats(exercisesToSave);
 
     // totalTime 계산(임시)
     const calculatedTotalSeconds = processedExercises.reduce(
@@ -158,13 +183,6 @@ const LoadGoalTab = () => {
     selectedGoal?.goalTypeLabel === "챌린지" && selectedGoal.durationWeek
       ? addWeeks(new Date(selectedGoal.startDate), selectedGoal.durationWeek)
       : null;
-
-  const goalForRender = selectedGoal
-    ? {
-        ...selectedGoal,
-        customExercises: goalForm.exercises,
-      }
-    : null;
 
   return (
     <div className="load-goal-container">
@@ -234,7 +252,7 @@ const LoadGoalTab = () => {
           {/* 운동 목록 */}
           {selectedDate && (
             <DailyExerciseList
-              goal={goalForRender}
+              exercises={exercisesForSelectedDay}
               date={selectedDate}
               onExerciseUpdate={handleExerciseUpdate}
               onSetUpdate={handleSetUpdate}

@@ -2,22 +2,15 @@ import { getDay } from "date-fns";
 import DailyExerciseItem from "../../../../common/DailyExerciseItem";
 
 const DailyExerciseList = ({
-  goal,
+  exercises,
   date,
   onExerciseUpdate,
   onSetUpdate,
   onAddSet,
   onRemoveSet,
 }) => {
-  // 선택된 날짜의 요일 (예: "월")
-  const dayMap = ["월", "화", "수", "목", "금", "토", "일"];
-  const currentDayStr = dayMap[getDay(date)];
+  const todaysExercises = exercises;
 
-  // 해당 요일에 배정된 운동만 필터링
-  // (실제 데이터 구조에 맞춰 수정 필요)
-  const todaysExercises = goal.customExercises.filter(
-    (ex) => ex.days && ex.days.includes(currentDayStr)
-  );
   return (
     <div className="daily-exercise-list">
       <div className="list-title">운동 목록</div>
