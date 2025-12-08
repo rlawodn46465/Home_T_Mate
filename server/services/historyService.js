@@ -3,7 +3,6 @@ const ExerciseHistory = require("../models/ExerciseHistory");
 const UserGoal = require("../models/UserGoal");
 const {
   checkDailySessionCompleted,
-  calculateGoalProgress,
   mapRecordToSingleRecordResponse,
 } = require("../utils/responseMap");
 const { mapRecordTypeToKorean } = require("../utils/constants");
@@ -15,7 +14,6 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
   const koreanRecordType = mapRecordTypeToKorean(type);
 
   const updateDoc = {
-    $max: { personalBestWeight: exerciseLog.maxWeight || 0 },
     $inc: { totalExerciseCount: 1 },
 
     $push: {
@@ -85,9 +83,10 @@ const saveWorkoutSession = async (userId, workoutData) => {
 
     // 목표 완료 처리
     if (goal && goal.goalType === "CHALLENGE") {
-      const progress = calculateGoalProgress(goal);
-
-      if (progress >= 1) {
+      if (
+        goal.completedSessions >=
+        goal.activeDays.length * goal.durationWeek
+      ) {
         await UserGoal.findByIdAndUpdate(userGoalId, { status: "완료" });
       }
     }
