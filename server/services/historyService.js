@@ -4,6 +4,7 @@ const UserGoal = require("../models/UserGoal");
 const {
   checkDailySessionCompleted,
   calculateGoalProgress,
+  mapRecordToSingleRecordResponse,
 } = require("../utils/responseMap");
 const { mapRecordTypeToKorean } = require("../utils/constants");
 
@@ -93,6 +94,155 @@ const saveWorkoutSession = async (userId, workoutData) => {
   }
 };
 
+// 단일 운동 기록 조회
+const getWorkoutRecordById = async (userId, recordId) => {
+  // ObjectId로 변환
+  const objectId = new mongoose.Types.ObjectId(recordId);
+
+  const historyDoc = await ExerciseHistory.findOne(
+    {
+      userId: userId,
+      "records._id": objectId,
+    },
+    {
+      userId: 1,
+      exerciseId: 1,
+      records: {
+        $elemMatch: { _id: objectId },
+      },
+    }
+  )
+    .populate("exerciseId", "name category targetMuscles")
+    .populate({
+      path: "records.relatedUserGoalId",
+      select: "name goalType startDate activeDays durationWeek customExercises",
+    });
+
+  if (!historyDoc || !historyDoc.records || historyDoc.records.length === 0) {
+    return null;
+  }
+
+  const singleRecord = historyDoc.records[0];
+
+  const mappedRecord = mapRecordToSingleRecordResponse(
+    singleRecord,
+    historyDoc.exerciseId
+  );
+
+  return mappedRecord;
+};
+
+// 운동 기록 삭제
+const deleteWorkoutRecord = async (userId, recordId) => {
+  const historyDoc = await ExerciseHistory.findOne({
+    userId: userId,
+    "records._id": new mongoose.Types.ObjectId(recordId),
+  });
+
+  if (!historyDoc) {
+    throw new Error("삭제할 기록을 찾을 수 없거나 소유권이 없습니다.", 404);
+  }
+
+  const recordToDelete = historyDoc.records.find(
+    (r) => r._id.toString() === recordId
+  );
+
+  if (!recordToDelete) {
+    throw new Error("삭제할 기록을 찾을 수 없습니다.", 404);
+  }
+
+  const sessionGoalId = recordToDelete.relatedUserGoalId;
+  const sessionDate = recordToDelete.date.toISOString(); // 3. records 배열에서 해당 요소를 삭제합니다.
+
+  await ExerciseHistory.updateOne(
+    { _id: historyDoc._id },
+    { $pull: { records: { _id: recordId } } }
+  );
+
+  if (sessionGoalId) {
+    // 이 세션이 하루의 첫 세션이었는지 다시 확인해야 합니다. (복잡하지만 가장 안전함)
+    // 여기서는 간소화를 위해, 해당 기록이 속했던 날짜에 UserGoalID로 기록된 다른 레코드가 없으면
+    // completedSessions를 감소시킨다고 가정합니다.
+    // **주의:** 현재 로직은 '오늘' 처음 완료했을 때만 카운트를 증가시켰으므로,
+    // 해당 세션을 삭제했을 때, 그날의 다른 세션이 남아있는지 확인해야 합니다.
+    const dayHasOtherSessions = await checkDailySessionCompleted(
+      userId,
+      sessionGoalId,
+      sessionDate
+    );
+
+    if (!dayHasOtherSessions) {
+      await UserGoal.findByIdAndUpdate(sessionGoalId, {
+        $inc: { completedSessions: -1 },
+      });
+    }
+  }
+  const updatedDoc = await ExerciseHistory.findOne({ _id: historyDoc._id });
+  if (updatedDoc && updatedDoc.records.length === 0) {
+    await ExerciseHistory.deleteOne({ _id: historyDoc._id });
+  }
+};
+
+// 운동 기록 수정 (PUT)
+const updateWorkoutRecord = async (userId, recordId, updatedData) => {
+  let exerciseData = updatedData.exercises
+    ? updatedData.exercises[0]
+    : updatedData;
+
+  exerciseData = {
+    ...exerciseData,
+    date: updatedData.date,
+    totalTime: updatedData.totalTime,
+  };
+
+  const allowedUpdates = [
+    "duration",
+    "totalVolume",
+    "maxWeight",
+    "totalReps",
+    "sets",
+    "totalTime",
+    "date",
+  ];
+
+  const updatePayload = {};
+
+  if (exerciseData) {
+    Object.keys(exerciseData).forEach((key) => {
+      if (allowedUpdates.includes(key)) {
+        updatePayload[key] = exerciseData[key];
+      }
+    });
+  }
+
+  if (Object.keys(updatePayload).length === 0) {
+    throw new Error(
+      "유효한 운동 기록 수정 데이터가 포함되어 있지 않습니다.",
+      400
+    );
+  }
+
+  const setUpdates = {};
+  Object.keys(updatePayload).forEach((key) => {
+    setUpdates[`records.$.${key}`] = updatePayload[key];
+  });
+
+  const result = await ExerciseHistory.findOneAndUpdate(
+    {
+      userId: userId,
+      "records._id": new mongoose.Types.ObjectId(recordId),
+    },
+    {
+      $set: setUpdates,
+    },
+    { new: true }
+  );
+
+  if (!result) {
+    throw new Error("수정할 기록을 찾을 수 없거나 소유권이 없습니다.", 404);
+  }
+};
+
 // 운동 목록 조회
 const getWorkoutSession = async (userId) => {
   // 내 운동 기록 조회
@@ -148,6 +298,7 @@ const getMonthlyHistory = async (userId, year, month) => {
 
         exercises: {
           $push: {
+            id: "$records._id",
             exerciseId: "$exerciseId",
             name: "$exerciseInfo.name",
             targetMuscles: "$exerciseInfo.targetMuscles",
@@ -225,5 +376,8 @@ module.exports = {
   createExerciseHistory,
   getWorkoutSession,
   saveWorkoutSession,
+  getWorkoutRecordById,
   getMonthlyHistory,
+  deleteWorkoutRecord,
+  updateWorkoutRecord,
 };

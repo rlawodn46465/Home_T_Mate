@@ -1,5 +1,6 @@
 // utils/responseMap.js
 
+const { default: mongoose } = require("mongoose");
 const ExerciseHistory = require("../models/ExerciseHistory");
 
 // 루틴/챌린지의 진행도를 계산
@@ -79,6 +80,59 @@ const sortActiveDays = (days) => {
   });
 };
 
+// 단일 운동 기록 응답을 형식에 맞게 변환
+const mapRecordToSingleRecordResponse = (singleRecord, exerciseMaster) => {
+  if (!singleRecord) return null;
+
+  const goal = singleRecord.relatedUserGoalId;
+
+  const goalMeta = goal
+    ? {
+        userGoalId: goal._id.toString(),
+        startDate: goal.startDate, // 챌린지 시작일
+        activeDays: goal.activeDays || [], // 활동 요일
+        durationWeek: goal.durationWeek || 0, // 챌린지 기간
+      }
+    : {
+        userGoalId: null,
+        startDate: null,
+        activeDays: [],
+        durationWeek: 0,
+      };
+
+  return {
+    // 1. 기록 메타 정보
+    recordId: singleRecord._id.toString(),
+    date: singleRecord.date.toISOString(),
+    type: singleRecord.recordType, // ROUTINE, CHALLENGE, PERSONAL
+    title: singleRecord.goalName,
+    totalTime: singleRecord.totalTime,
+
+    // 2. 목표 메타 정보 병합
+    ...goalMeta,
+
+    // 3. 운동 상세 정보 (수정 페이지에서 필요한 형식)
+    exercises: [
+      {
+        exerciseId: exerciseMaster._id.toString(),
+        name: exerciseMaster.name,
+        targetMuscles: exerciseMaster.targetMuscles,
+
+        // 기록된 세트 데이터
+        sets: singleRecord.sets || [],
+
+        // 기록 당시 설정된 값 (없으면 0 또는 빈 값으로 대체)
+        restTime: 0,
+        days: goal
+          ? goal.customExercises.find(
+              (ce) => ce.exerciseId.toString() === exerciseMaster._id.toString()
+            )?.days || []
+          : [],
+      },
+    ],
+  };
+};
+
 // 목표 리스트 변환
 const formatUserGoalResponse = (ug) => {
   const goalInfo = ug.goalId;
@@ -148,7 +202,12 @@ const formatUserGoalResponse = (ug) => {
 };
 
 // userGoalId에 대해 오늘 운동 기록이 있는지 확인
-const checkDailySessionCompleted = async (userId, userGoalId, dateString) => {
+const checkDailySessionCompleted = async (
+  userId,
+  userGoalId,
+  dateString,
+  recordIdToExclude = null
+) => {
   // 날짜를 하루 단위 범위
   const today = new Date(dateString);
   const startOfDay = new Date(
@@ -161,6 +220,18 @@ const checkDailySessionCompleted = async (userId, userGoalId, dateString) => {
     today.getMonth(),
     today.getDate() + 1
   );
+
+  const matchQuery = {
+    relatedUserGoalId: userGoalId,
+    date: {
+      $gte: startOfDay,
+      $lt: endOfDay,
+    },
+  };
+
+  if (recordIdToExclude) {
+    matchQuery._id = { $ne: new mongoose.Types.ObjectId(recordIdToExclude) };
+  }
 
   const existingRecord = await ExerciseHistory.findOne(
     {
@@ -266,4 +337,5 @@ module.exports = {
   calculateGoalProgress,
   checkDailySessionCompleted,
   formatUserGoalResponse,
+  mapRecordToSingleRecordResponse,
 };
