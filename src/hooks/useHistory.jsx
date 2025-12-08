@@ -1,5 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchHistorys, saveExerciseSession } from "../services/api/historyApi";
+import {
+  fetchHistorys,
+  saveExerciseSession,
+  updateExerciseSession,
+} from "../services/api/historyApi";
 
 // 루틴 목록 상태 관리, API 통신 훅
 export const useHistorys = () => {
@@ -65,4 +69,36 @@ export const useCreateHistory = () => {
   };
 
   return { isSaving, saveError, createHistory };
+};
+
+// 운동 기록 수정
+export const useUpdateHistory = (recordId) => {
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateError, setUpdateError] = useState(null);
+
+  const updateHistory = useCallback(
+    async (data) => {
+      if (!recordId) {
+        setUpdateError("수정할 기록 ID가 누락되었습니다.");
+        return false;
+      }
+
+      setIsUpdating(true);
+      setUpdateError(null);
+
+      try {
+        await updateExerciseSession(recordId, data);
+        return true;
+      } catch (err) {
+        console.error("운동 기록 수정 중 오류 발생:", err);
+        setUpdateError(err.message || "기록 수정에 실패했습니다.");
+        return false;
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [recordId]
+  );
+
+  return { isUpdating, updateError, updateHistory };
 };

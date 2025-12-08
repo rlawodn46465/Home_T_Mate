@@ -16,6 +16,7 @@ const RightPanel = () => {
   const panelType = searchParams.get("panel") || "login";
   const goalId = searchParams.get("goalId");
   const exerciseId = searchParams.get("exerciseId");
+  const recordId = searchParams.get("recordId");
 
   let content;
 
@@ -45,10 +46,13 @@ const RightPanel = () => {
       content = <GoalsFormPage goalId={goalId} />;
       break;
     case "exercise-detail":
-      content = <ExerciseDetail exerciseId={exerciseId}/>;
+      content = <ExerciseDetail exerciseId={exerciseId} />;
       break;
     case "exercise-form":
-      content = <ExerciseFormPage exerciseId={exerciseId} />;
+      content = <ExerciseFormPage/>;
+      break;
+    case "exercise-edit":
+      content = <ExerciseFormPage recordId={recordId} />;
       break;
     default:
       content = <div>요청하신 페이지를 찾을 수 없습니다.</div>;

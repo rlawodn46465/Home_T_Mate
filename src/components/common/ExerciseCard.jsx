@@ -28,9 +28,12 @@ const ExerciseCard = ({
   record,
   isMenuSelector = true,
   isDetailSelector = true,
+  onEdit,
+  onDelete,
 }) => {
   const navigate = useNavigate();
   const exerciseId = record.exerciseId;
+  const recordId = record.id;
 
   const { type, name, category, completed, sets } = record;
   const durationSeconds = record.duration;
@@ -46,10 +49,19 @@ const ExerciseCard = ({
 
   // 메뉴 토글
   const handleMenuItemClick = (action) => {
-    if (action === "삭제") {
-      console.log("삭제");
-    }
     setIsMenuOpen(false);
+
+    if (recordId) {
+      if (action === "수정" && typeof onEdit === "function") {
+        onEdit(record);
+      } else if (action === "삭제" && typeof onDelete === "function") {
+        if (window.confirm(`정말로 '${name}' 운동 기록을 삭제하시겠습니까?}`)) {
+          onDelete(recordId);
+        }
+      }
+    } else {
+      console.error("기록 ID가 없어 수정/삭제를 처리할 수 없습니다.", record);
+    }
   };
 
   const handleToggle = (e) => {
@@ -96,9 +108,22 @@ const ExerciseCard = ({
           )}
           {isMenuOpen && (
             <DropdownMenu position="right">
-              <div onClick={() => handleMenuItemClick("시작")}>시작</div>
-              <div onClick={() => handleMenuItemClick("수정")}>수정</div>
-              <div onClick={() => handleMenuItemClick("삭제")}>삭제</div>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleMenuItemClick("수정");
+                }}
+              >
+                수정
+              </div>
+              <div
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleMenuItemClick("삭제");
+                }}
+              >
+                삭제
+              </div>
             </DropdownMenu>
           )}
         </div>

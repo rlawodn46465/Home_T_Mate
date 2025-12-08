@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+import { useMemo } from "react";
 import {
   format,
   startOfMonth,
@@ -30,6 +30,8 @@ const Calendar = ({
   renderDayContents, // 점(Dot)을 그리기 위한 함수 prop
   currentMonth, // [수정] 부모에게서 받음
   onMonthChange, // [수정] 월 변경 핸들러
+  isEditMode = false, // 기본값 false
+  editDate = null, // 수정해야 할 고정 날짜
 }) => {
   // 오늘 날짜 (시간 제외하고 날짜만 비교하기 위함)
   const today = useMemo(() => startOfDay(new Date()), []);
@@ -72,7 +74,16 @@ const Calendar = ({
   const getDateStatus = (date) => {
     const checkDate = startOfDay(date);
 
-    // 1. 범위 체크: 시작일 이전이거나, 오늘 이후거나, 종료일 이후면 아예 선택 불가
+    // 수정 모드일 경우의 로직
+    if (isEditMode && editDate) {
+      // 수정 대상 날짜와 같은 날이면 활성화, 아니면 모두 비활성화
+      if (isSameDay(checkDate, startOfDay(editDate))) {
+        return { disabled: false, opacity: 1 };
+      }
+      return { disabled: true, opacity: 0.2 }; // 흐리게 처리
+    }
+
+    //  수정모드 X: 시작일 이전이거나, 오늘 이후거나, 종료일 이후면 아예 선택 불가
     const isTooEarly =
       validStartDate && isBefore(checkDate, startOfDay(validStartDate));
     const isFuture = isAfter(checkDate, today);

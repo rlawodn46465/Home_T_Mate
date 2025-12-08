@@ -1,66 +1,64 @@
 import { useCallback, useMemo, useState } from "react";
 import { format, subYears } from "date-fns";
 import useGoalForm from "../../../../../hooks/useGoalForm";
-import { useCreateHistory } from "../../../../../hooks/useHistory";
+import {
+  useCreateHistory,
+  useUpdateHistory,
+} from "../../../../../hooks/useHistory";
 import NewExerciseList from "./NewExerciseList";
 import ExerciseSelectModal from "../../../ExerciseSelect/ExerciseSelectModal";
 import Calendar from "../../../../common/Calendar";
 
 import "./NewExerciseTab.css";
 import { useNavigate } from "react-router-dom";
+import { calculateExerciseStats } from "../../../../../utils/exerciseStats";
 
 const SCREEN = {
   FORM: "form",
   SELECT: "select",
 };
 
-// 운동 통계 계산 함수
-const calculateExerciseStats = (exercises) => {
-  return exercises.map((ex) => {
-    let maxWeight = 0;
-    let totalVolume = 0;
-    let totalReps = 0;
-
-    const setsArray = ex.sets && Array.isArray(ex.sets) ? ex.sets : [];
-
-    const setsWithCompletion = setsArray.map((set, index) => {
-      const weight = set.weight || 0;
-      const reps = set.reps || 0;
-      const volume = weight * reps;
-      totalVolume += volume;
-      totalReps += reps;
-      if (weight > maxWeight) maxWeight = weight;
-
-      return {
-        setNumber: set.setNumber || index + 1,
-        weight: weight,
-        reps: reps,
-        isCompleted: true,
-      };
-    });
-
-    return {
-      exerciseId: ex._id || ex.exerciseId, // ID는 _id 또는 exerciseId 사용
-      name: ex.name,
-      sets: setsWithCompletion,
-      maxWeight: maxWeight,
-      totalVolume: totalVolume,
-      totalReps: totalReps,
-      duration: (ex.duration || 0) * 60,
-    };
-  });
-};
-
-const NewExerciseTab = () => {
+const NewExerciseTab = ({ recordId, initialData, initialDate }) => {
   const navigate = useNavigate();
 
+  // 초기 날짜 설정
+  const initialSelectedDate = initialDate || new Date();
+
   // 캘린더 상태
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
+  const [selectedDate, setSelectedDate] = useState(initialSelectedDate);
+  const [currentMonthDate, setCurrentMonthDate] = useState(initialSelectedDate);
   const [isCalendarExpanded, setIsCalendarExpanded] = useState(true);
   const [currentScreen, setCurrentScreen] = useState(SCREEN.FORM);
 
-  const { isSaving, saveError, createHistory } = useCreateHistory();
+  const {
+    isSaving: isCreating,
+    saveError: createError,
+    createHistory,
+  } = useCreateHistory();
+  const { isUpdating, updateError, updateHistory } = useUpdateHistory(recordId);
+
+  const isSaving = recordId ? isUpdating : isCreating;
+  const currentError = recordId ? updateError : createError;
+
+  // useGoalForm 초기 데이터 설정 로직
+  const initialGoalData = useMemo(() => {
+    if (recordId && initialData) {
+      // 수정 모드: 기존 기록 데이터를 기반으로 폼 초기화
+      return {
+        exercises: initialData.exercises.map((ex) => ({
+          ...ex,
+          id: ex.exerciseId,
+          duration: (ex.totalTime || 0) / 60,
+          sets: ex.sets.map((set, index) => ({
+            ...set,
+            id: set._id || index + 1,
+          })),
+        })),
+      };
+    }
+    return { exercises: [] }; // 추가 모드 초기값
+  }, [recordId, initialData]);
+
   const {
     goalForm,
     handleAddExercise,
@@ -69,10 +67,63 @@ const NewExerciseTab = () => {
     handleSetUpdate,
     handleAddSet,
     handleRemoveSet,
-  } = useGoalForm();
+  } = useGoalForm(true, initialGoalData);
 
   const veryOldDate = useMemo(() => subYears(new Date(), 5), []);
   const today = useMemo(() => new Date(), []);
+
+  // ⭐️ 저장/수정하기
+  const handleSave = async () => {
+    if (goalForm.exercises.length === 0 || !selectedDate || isSaving) {
+      alert("추가할 운동이 없거나 날짜가 선택되지 않았습니다.");
+      return;
+    }
+
+    const processedExercises = calculateExerciseStats(goalForm.exercises);
+    const calculatedTotalSeconds = processedExercises.reduce(
+      (acc, curr) => acc + (curr.duration || 0),
+      0
+    );
+
+    const finalTotalTime =
+      calculatedTotalSeconds > 0
+        ? calculatedTotalSeconds
+        : processedExercises.length * 10 * 60;
+
+    const planData = {
+      date: format(selectedDate, "yyyy-MM-dd"),
+      type: "개별운동",
+      title: "개별운동",
+      totalTime: finalTotalTime,
+      exercises: processedExercises,
+    };
+
+    let success = false;
+    if (recordId) {
+      // 수정 모드
+      success = await updateHistory(planData);
+    } else {
+      // 추가 모드
+      success = await createHistory(planData);
+    }
+
+    if (success) {
+      alert(
+        `✅ 개별 운동 기록이 성공적으로 ${
+          recordId ? "수정" : "저장"
+        }되었습니다!`
+      );
+      setSelectedDate(new Date());
+      setCurrentMonthDate(new Date());
+      navigate("?panel=record", { replace: true });
+    } else {
+      alert(
+        `❌ 운동 기록 ${recordId ? "수정" : "저장"}에 실패했습니다: ${
+          currentError || "알 수 없는 오류"
+        }`
+      );
+    }
+  };
 
   // 날짜 선택 핸들러
   const handleSelectDate = (date) => {
@@ -94,51 +145,6 @@ const NewExerciseTab = () => {
     setCurrentScreen(SCREEN.SELECT);
   }, []);
 
-  const handleSave = async () => {
-    if (goalForm.exercises.length === 0 || !selectedDate || isSaving) {
-      alert("추가할 운동이 없거나 날짜가 선택되지 않았습니다.");
-      return;
-    }
-
-    // 데이터 가공
-    const processedExercises = calculateExerciseStats(goalForm.exercises);
-    // totalTime 계산 (임시)
-    const calculatedTotalSeconds = processedExercises.reduce(
-      (acc, curr) => acc + (curr.duration || 0),
-      0
-    );
-
-    const finalTotalTime =
-      calculatedTotalSeconds > 0
-        ? calculatedTotalSeconds
-        : processedExercises.length * 10 * 60;
-
-    // 서버 전송 데이터 구성
-    const planData = {
-      date: format(selectedDate, "yyyy-MM-dd"),
-      type: "개별운동",
-      title: "개별운동",
-      totalTime: finalTotalTime,
-      exercises: processedExercises,
-    };
-
-    console.log("서버로 전송할 개별 운동 기록 데이터:", planData);
-
-    // API 호출
-    const success = await createHistory(planData);
-
-    if (success) {
-      alert("✅ 개별 운동 기록이 성공적으로 저장되었습니다!");
-      setSelectedDate(new Date());
-      setCurrentMonthDate(new Date());
-      navigate("?panel=record", { replace: true });
-    } else {
-      alert(
-        `❌ 운동 기록 저장에 실패했습니다: ${saveError || "알 수 없는 오류"}`
-      );
-    }
-  };
-
   // 운동 선택 모달 렌더링
   if (currentScreen === SCREEN.SELECT) {
     return (
@@ -153,7 +159,7 @@ const NewExerciseTab = () => {
     <div className="new-exercise-tab">
       {isSaving && (
         <div className="loading-overlay">
-          {isSaving ? "운동 기록 저장 중..." : "로딩중..."}
+          {isSaving ? `${recordId ? "수정" : "저장"} 중...` : "로딩중..."}
         </div>
       )}
 

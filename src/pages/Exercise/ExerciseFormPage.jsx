@@ -1,9 +1,9 @@
 import ExerciseFormContainer from "../../components/ui/ExerciseList/ExerciseForm/ExerciseFormContainer";
 
-const ExerciseFormPage = ({ exerciseId }) => {
+const ExerciseFormPage = ({ recordId }) => {
   return (
     <div>
-      <ExerciseFormContainer exerciseId={exerciseId} />
+      <ExerciseFormContainer recordId={recordId} />
     </div>
   );
 };

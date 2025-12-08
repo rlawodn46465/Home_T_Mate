@@ -10,6 +10,7 @@ import ExerciseList from "../../components/ui/ExerciseList/ExerciseList";
 import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
 
 import "./ExerciseListPage.css";
+import { useHistoryActions } from "../../hooks/useHistoryActions";
 
 const TABS = ["전체", "개별운동", "루틴", "챌린지"];
 const ALL_DAYS = ["월", "화", "수", "목", "금", "토", "일"];
@@ -33,10 +34,14 @@ const ExerciseListPage = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
 
   // 데이터 불러오기
-  const { historyData, isLoading, error } = useMonthlyHistory(
+  const { historyData, isLoading, error, refetch } = useMonthlyHistory(
     currentMonthDate.getFullYear(),
     currentMonthDate.getMonth() + 1
   );
+
+  // 삭제/수정 액션 훅
+  const { isProcessing, handleDelete } =
+    useHistoryActions(refetch);
 
   // 캘린더 전달 데이터 가공
   const monthlyDots = useMemo(() => {
@@ -82,6 +87,23 @@ const ExerciseListPage = () => {
     );
   };
 
+  // 기록 삭제 핸들러
+  const handleDeleteRecord = async (recordId) => {
+    const success = await handleDelete(recordId);
+    if (success) {
+      alert("✅ 운동 기록이 삭제되었습니다!");
+    } else {
+      alert("❌ 운동 기록 삭제에 실패했습니다.");
+    }
+  };
+
+  // 기록 수정 핸들러 (수정 모달/페이지 이동 로직)
+  const handleEditRecord = (recordData) => {
+    navigate(
+      `${location.pathname}?panel=exercise-edit&recordId=${recordData.id}`
+    ); // 실제 수정 API 호출(handleUpdate)은 수정 폼에서 데이터를 저장할 때 실행
+  };
+
   return (
     <div className="exercise-list-page">
       <div className="exercise-list-header">
@@ -116,8 +138,10 @@ const ExerciseListPage = () => {
         onTabChange={setActiveTab}
       />
       <div className="exercise-list-box">
-        {isLoading ? (
-          <div className="loading-message">데이터를 불러오는 중입니다...</div>
+        {isLoading || isProcessing ? (
+          <div className="loading-message">
+            {isProcessing ? "처리 중..." : "데이터를 불러오는 중입니다..."}
+          </div>
         ) : error ? (
           <div className="error-message">데이터 로딩 실패</div>
         ) : (
@@ -125,6 +149,8 @@ const ExerciseListPage = () => {
             activeTab={activeTab}
             selectedDate={selectedDate}
             monthlyData={historyData}
+            onEdit={handleEditRecord}
+            onDelete={handleDeleteRecord}
           />
         )}
       </div>

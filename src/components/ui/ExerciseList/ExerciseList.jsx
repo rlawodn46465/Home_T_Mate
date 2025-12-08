@@ -1,28 +1,33 @@
-import { useState, useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { format, isSameDay } from "date-fns";
 import ExerciseDayGroup from "./ExerciseDayGroup";
+import { RECORD_TYPE } from "../../../utils/recordType";
 import "./ExerciseList.css";
 
 //
 const transformDataForCard = (backendRecord) => {
-  return backendRecord.exercises.map((ex, index) => ({
-    id: `${backendRecord.id}${index}`,
+  return backendRecord.exercises.map((ex) => ({
+    id: ex.id,
     exerciseId: ex.exerciseId,
     date: backendRecord.date,
-    type: backendRecord.recordType, // 예: 'ROUTINE' -> 매핑 필요할 수 있음
+    type: backendRecord.recordType,
     name: ex.name,
     category: ex.targetMuscles,
-    sets: ex.sets, // 세트 수 문자열 변환
+    sets: ex.sets,
     duration: ex.totalTime,
-    completed: true, // 로직에 따라 변경
-    // 필요한 추가 필드 매핑
+    completed: true,
   }));
 };
 
-const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
-  const [displayData, setDisplayData] = useState([]);
+const ExerciseList = ({
+  activeTab,
+  selectedDate,
+  monthlyData = [],
+  onEdit,
+  onDelete,
+}) => {
   // 선택된 날짜와 탭에 따라 데이터 필터
-  const filteredRecords = useMemo(() => {
+  const displayData = useMemo(() => {
     if (!selectedDate || monthlyData.length === 0) return [];
 
     // 선택된 날짜의 데이터 찾기
@@ -32,27 +37,24 @@ const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
 
     if (targetDayRecords.length === 0) return [];
 
-    const allTransformedExercises = targetDayRecords.flatMap((record) =>
-      transformDataForCard(record)
-    );
+    const allExercises = targetDayRecords.flatMap(transformDataForCard);
 
     // 탭(카테고리) 필터링
-    if (activeTab === "전체") return allTransformedExercises;
+    if (activeTab === "전체") return allExercises;
 
-    return allTransformedExercises.filter((record) => {
-      if (activeTab === "개별운동")
-        return record.type === "PERSONAL" || record.type === "개별운동";
-      if (activeTab === "루틴")
-        return record.type === "ROUTINE" || record.type === "루틴";
-      if (activeTab === "챌린지")
-        return record.type === "CHALLENGE" || record.type === "챌린지";
-      return true;
+    return allExercises.filter((record) => {
+      switch (activeTab) {
+        case "개별운동":
+          return record.type === RECORD_TYPE.PERSONAL;
+        case "루틴":
+          return record.type === RECORD_TYPE.ROUTINE;
+        case "챌린지":
+          return record.type === RECORD_TYPE.CHALLENGE;
+        default:
+          return true;
+      }
     });
   }, [selectedDate, monthlyData, activeTab]);
-
-  useEffect(() => {
-    setDisplayData(filteredRecords);
-  }, [filteredRecords]);
 
   if (monthlyData.length > 0 && displayData.length === 0) {
     return (
@@ -90,6 +92,8 @@ const ExerciseList = ({ activeTab, selectedDate, monthlyData = [] }) => {
       <ExerciseDayGroup
         date={format(selectedDate, "yyyy-MM-dd")}
         records={displayData}
+        onEdit={onEdit}
+        onDelete={onDelete}
       />
     </div>
   );

@@ -1,6 +1,9 @@
 import { addWeeks, format } from "date-fns";
 import { useState, useMemo } from "react";
-import { useCreateHistory } from "../../../../../hooks/useHistory";
+import {
+  useCreateHistory,
+  useUpdateHistory,
+} from "../../../../../hooks/useHistory";
 import SelectedGoalHeader from "./SelectedGoalHeader";
 import Calendar from "../../../../common/Calendar";
 import DailyExerciseList from "./DailyExerciseList";
@@ -9,63 +12,77 @@ import "./LoadGoalTab.css";
 import GoalItemCard from "../../../Goal/GoalList/GoalItemCard";
 import useGoalForm from "../../../../../hooks/useGoalForm";
 import { useGoals } from "../../../../../hooks/useGoals";
+import { useNavigate } from "react-router-dom";
+import { calculateExerciseStats } from "../../../../../utils/exerciseStats";
 
-const calculateExerciseStats = (exercises) => {
-  return exercises.map((ex) => {
-    let maxWeight = 0;
-    let totalVolume = 0;
-    let totalReps = 0;
-
-    const setsArray = ex.sets && Array.isArray(ex.sets) ? ex.sets : [];
-
-    // 세트별 통계 계산
-    const setsWithCompletion = setsArray.map((set, index) => {
-      const weight = set.weight || 0;
-      const reps = set.reps || 0;
-
-      const volume = weight * reps;
-      totalVolume += volume;
-      totalReps += reps;
-
-      if (weight > maxWeight) maxWeight = weight;
-
-      return {
-        setNumber: set.setNumber || index + 1,
-        weight: weight,
-        reps: reps,
-        isCompleted: true,
-      };
-    });
-
-    return {
-      exerciseId: ex.exerciseId,
-      name: ex.name,
-      sets: setsWithCompletion,
-      maxWeight: maxWeight,
-      totalVolume: totalVolume,
-      totalReps: totalReps,
-      duration: (ex.duration || 0) * 60,
-    };
-  });
-};
-
-// 요일 이름을 가져오는 함수
 const getDayOfWeekKorean = (date) => {
   const days = ["월", "화", "수", "목", "금", "토", "일"];
   return days[date.getDay()];
 };
 
-const LoadGoalTab = () => {
+const LoadGoalTab = ({ recordId, initialData, initialDate }) => {
   const { goals, loading: isGoalsLoading, error: goalsError } = useGoals();
 
-  const [selectedGoal, setSelectedGoal] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(null);
-  const [isCalendarExpanded, setIsCalendarExpanded] = useState(true);
-  const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
+  const navigate = useNavigate();
 
-  const { isSaving, saveError, createHistory } = useCreateHistory();
+  // 수정 모드 초기 상태 설정
+  const initialGoalValue = useMemo(() => {
+    if (recordId && initialData) {
+      return {
+        id: initialData.userGoalId,
+        name: initialData.title,
+        goalTypeLabel: initialData.type,
+        goalType: initialData.type, // SelectedGoalHeader를 위해 type 필드도 추가
+        durationWeek: initialData.durationWeek,
+        startDate: initialData.startDate,
+        activeDays: initialData.activeDays,
+        parts: initialData.categoryGroup || [], // 서버 응답에 categoryGroup이 있다면 사용
+        creator: "나", // 수정 기록은 사용자가 생성했다고 가정
+      };
+    }
+    return null;
+  }, [recordId, initialData]);
+
+  const initialSelectedDate = initialDate || new Date();
+
+  const [selectedGoal, setSelectedGoal] = useState(initialGoalValue);
+  const [selectedDate, setSelectedDate] = useState(initialSelectedDate);
+  const [isCalendarExpanded, setIsCalendarExpanded] = useState(!recordId);
+  const [currentMonthDate, setCurrentMonthDate] = useState(initialSelectedDate);
+
+  const {
+    isSaving: isCreating,
+    saveError: createError,
+    createHistory,
+  } = useCreateHistory();
+  const { isUpdating, updateError, updateHistory } = useUpdateHistory(recordId);
+
+  const isSaving = recordId ? isUpdating : isCreating;
+  const currentError = recordId ? updateError : createError;
 
   const initialGoalData = useMemo(() => {
+    if (recordId && initialData) {
+      // 수정 모드: 기존 기록 데이터를 기반으로 초기화
+      return {
+        id: initialData.userGoalId,
+        name: initialData.title,
+        goalType: initialData.type,
+        startDate: initialData.startDate,
+        activeDays: initialData.activeDays,
+        durationWeek: initialData.durationWeek,
+        goalWeeks: 0,
+        exercises: initialData.exercises.map((ex) => ({
+          ...ex,
+          id: ex.exerciseId,
+          duration: (ex.totalTime || 0) / 60,
+          sets: ex.sets.map((set, index) => ({
+            ...set,
+            id: set._id || index + 1,
+          })),
+        })),
+      };
+    }
+    // 추가 모드: 목표 선택 시 데이터 로드
     if (!selectedGoal) return null;
     return {
       name: selectedGoal.name,
@@ -81,7 +98,14 @@ const LoadGoalTab = () => {
         })),
       })),
     };
-  }, [selectedGoal]);
+  }, [selectedGoal, recordId, initialData]);
+
+  const initialRecordDate = useMemo(() => {
+    if (recordId && initialData) {
+      return new Date(initialData.date); // 서버에서 받은 기록 날짜
+    }
+    return null;
+  }, [recordId, initialData]);
 
   const {
     goalForm,
@@ -93,6 +117,7 @@ const LoadGoalTab = () => {
 
   // 목표 선택
   const handleSelectGoal = (goalListItem) => {
+    if (recordId) return;
     if (goalListItem) {
       setSelectedGoal(goalListItem);
       setIsCalendarExpanded(true);
@@ -102,12 +127,19 @@ const LoadGoalTab = () => {
 
   // 목표 취소(x버튼)
   const handleDeselectGoal = () => {
+    if (recordId) return navigate("/?panel=record");
     setSelectedGoal(null);
     setSelectedDate(null);
   };
 
   // 날짜 선택
   const handleSelectDate = (date) => {
+    if (
+      recordId &&
+      format(date, "yyyy-MM-dd") !== format(initialRecordDate, "yyyy-MM-dd")
+    ) {
+      return;
+    }
     setSelectedDate(date);
     setIsCalendarExpanded(false);
   };
@@ -119,6 +151,9 @@ const LoadGoalTab = () => {
 
   // 운동 목록 계산
   const exercisesForSelectedDay = useMemo(() => {
+    if (recordId && initialData) {
+      return goalForm.exercises || [];
+    }
     if (!selectedDate || !goalForm.exercises) return [];
 
     const currentDay = getDayOfWeekKorean(selectedDate);
@@ -126,11 +161,21 @@ const LoadGoalTab = () => {
     return goalForm.exercises.filter(
       (ex) => ex.days && ex.days.includes(currentDay)
     );
-  }, [selectedDate, goalForm.exercises]);
+  }, [selectedDate, goalForm.exercises, recordId, initialData]);
 
-  // 저장하기
+  // 저장/수정하기
   const handleSave = async () => {
-    if (!selectedGoal || !selectedDate || isSaving) return;
+    const currentGoal =
+      selectedGoal ||
+      (recordId
+        ? {
+            id: initialData?.userGoalId,
+            goalType: initialData?.type,
+            name: initialData?.title,
+          }
+        : null);
+
+    if (!currentGoal || !selectedDate || isSaving) return;
 
     // 필터된 운동 목록
     const exercisesToSave = exercisesForSelectedDay;
@@ -156,31 +201,47 @@ const LoadGoalTab = () => {
 
     const planData = {
       date: format(selectedDate, "yyyy-MM-dd"),
-      userGoalId: selectedGoal._id,
-      type: selectedGoal.goalType.toUpperCase(),
-      title: selectedGoal.name,
+      userGoalId: currentGoal.id,
+      type: currentGoal.goalType.toUpperCase(),
+      title: currentGoal.name,
       totalTime: finalTotalTime,
       exercises: processedExercises,
     };
 
-    console.log("서버로 전송할 데이터:", planData);
+    console.log(
+      `서버로 전송할 ${recordId ? "수정" : "저장"} 데이터:`,
+      planData
+    );
 
     // API 호출
-    const success = await createHistory(planData);
+    let success = false;
+    if (recordId) {
+      // 수정 모드
+      success = await updateHistory(planData);
+    } else {
+      // 추가 모드
+      success = await createHistory(planData);
+    }
 
     if (success) {
-      alert("✅ 운동 기록이 성공적으로 저장되었습니다!");
+      alert(
+        `✅ 운동 기록이 성공적으로 ${recordId ? "수정" : "저장"}되었습니다!`
+      );
       handleDeselectGoal();
     } else {
       alert(
-        `❌ 운동 기록 저장에 실패했습니다: ${saveError || "알 수 없는 오류"}`
+        `❌ 운동 기록 ${recordId ? "수정" : "저장"}에 실패했습니다: ${
+          currentError || "알 수 없는 오류"
+        }`
       );
     }
   };
 
   // 챌린지 종료일 계산
   const challengeEndDate =
-    selectedGoal?.goalTypeLabel === "챌린지" && selectedGoal.durationWeek
+    selectedGoal &&
+    selectedGoal?.goalTypeLabel === "챌린지" &&
+    selectedGoal.durationWeek
       ? addWeeks(new Date(selectedGoal.startDate), selectedGoal.durationWeek)
       : null;
 
@@ -188,11 +249,11 @@ const LoadGoalTab = () => {
     <div className="load-goal-container">
       {(isGoalsLoading || isSaving) && (
         <div className="loading-overlay">
-          {isSaving ? "운동 기록 저장 중..." : "로딩중..."}
+          {isSaving ? `${recordId ? "수정" : "저장"} 중...` : "로딩중..."}
         </div>
       )}
       {/* 목표 리스트 */}
-      {!selectedGoal && (
+      {!selectedGoal && !recordId && (
         <div className="goal-list-wrapper">
           {goalsError && (
             <div className="error-text">
@@ -216,18 +277,18 @@ const LoadGoalTab = () => {
         </div>
       )}
       {/* 목표 선택 후 화면 */}
-      {selectedGoal && (
+      {(selectedGoal || recordId) && (
         <>
           {/* 상단 고정 헤더 */}
           <SelectedGoalHeader
-            goal={selectedGoal}
+            goal={selectedGoal || initialData}
             onClose={handleDeselectGoal}
           />
           {/* 날짜 선택 */}
           <div className="date-selection-section">
             <div className="section-title">날짜 선택</div>
             {/* 달력(펼친 상태)*/}
-            {isCalendarExpanded ? (
+            {!recordId && isCalendarExpanded ? (
               <Calendar
                 startDate={selectedGoal.startDate}
                 endDate={challengeEndDate}
@@ -236,16 +297,22 @@ const LoadGoalTab = () => {
                 onSelectDate={handleSelectDate}
                 currentMonth={currentMonthDate}
                 onMonthChange={setCurrentMonthDate}
+                isEditMode={!!recordId}
+                editDate={initialRecordDate}
               />
             ) : (
               // 달력(접힌 상태)
-              <div className="collapsed-calendar-view" onClick={toggleCalendar}>
+              <div
+                className="collapsed-calendar-view"
+                onClick={!recordId ? toggleCalendar : undefined}
+                style={{ cursor: recordId ? "default" : "pointer" }}
+              >
                 <span className="selected-date-text">
                   {selectedDate
                     ? format(selectedDate, "yyyy년 MM월 dd일")
                     : "날짜 선택"}
                 </span>
-                <span className="toggle-icon">▼</span>
+                {!recordId && <span className="toggle-icon">▼</span>}
               </div>
             )}
           </div>
