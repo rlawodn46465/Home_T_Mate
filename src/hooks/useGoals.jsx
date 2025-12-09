@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchGoals } from "../services/api/goalApi";
+import { fetchGoals, fetchTodayGoals } from "../services/api/goalApi";
 
 // 루틴 목록 상태 관리, API 통신 훅
 export const useGoals = () => {
@@ -27,4 +27,30 @@ export const useGoals = () => {
   }, [refreshGoals]);
 
   return { goals, loading, error, refreshGoals };
+};
+
+export const useTodayGoals = () => {
+  const [goals, setGoals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const loadTodayGoals = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await fetchTodayGoals();
+      setGoals(data);
+    } catch (err) {
+      setError(err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadTodayGoals();
+  }, [loadTodayGoals]);
+
+  return { goals, isLoading, error, loadTodayGoals };
 };

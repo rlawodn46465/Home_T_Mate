@@ -1,0 +1,18 @@
+.wheel-wrapper {
+  display: flex;
+  justify-content: center;
+  height: 40px; /* ITEM_HEIGHT 와 동일 */
+  overflow: hidden;
+}
+
+.wheel-list {
+  transition: transform 0.3s ease;
+}
+
+.wheel-item {
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}

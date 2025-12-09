@@ -26,6 +26,12 @@ export const fetchDailyExerciseRecords = async (dateString) => {
   return response.data.data;
 };
 
+// 오늘 목표 정보 조회
+export const fetchTodayGoals = async () => {
+  const response = await api.get(`${API_GOALS_PATH}/today`);
+  return response.data.data;
+}
+
 // 특정 루틴/챌린지 상세 정보 조회
 export const fetchGoalDetail = async (id) => {
   const response = await api.get(`${API_GOALS_PATH}/${id}`);
