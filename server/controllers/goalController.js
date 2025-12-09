@@ -39,6 +39,13 @@ const getGoalDetail = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, data: mapGoalToDetail(goal) });
 });
 
+// GET /api/v1/goals/today
+const getTodayGoals = asyncHandler(async (req, res) => {
+  const todayGoals = await goalService.getTodayGoals(req.user.id);
+  
+  res.status(200).json({ success: true, data: todayGoals });
+});
+
 // POST /api/v1/goals (생성)
 const createGoal = asyncHandler(async (req, res) => {
   const newGoal = await goalService.createGoal(req.user._id, req.body);
@@ -69,4 +76,5 @@ module.exports = {
   updateGoal,
   deleteGoal,
   getExerciseRecords,
+  getTodayGoals,
 };

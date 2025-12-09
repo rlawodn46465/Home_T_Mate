@@ -11,6 +11,7 @@ const authRouter = require("./routes/auth");
 const exerciseRouter = require("./routes/exercises");
 const goalRouter = require("./routes/goals");
 const historyRouter = require("./routes/history");
+const statsRouter = require("./routes/stats");
 
 // DB 연결 실행
 connectDB();
@@ -35,6 +36,7 @@ app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/exercises", exerciseRouter);
 app.use("/api/v1/goals", goalRouter);
 app.use("/api/v1/history", historyRouter);
+app.use("/api/v1/stats", statsRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({

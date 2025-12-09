@@ -11,6 +11,7 @@ const {
   UnauthorizedError,
   BadRequestError,
 } = require("../utils/errorHandler");
+const { default: mongoose } = require("mongoose");
 
 // 사용자 목표 목록 조회
 const getUserGoals = async (userId) => {
@@ -135,6 +136,54 @@ const getGoalDetail = async (goalId) => {
   return userGoal;
 };
 
+// 오늘 목표 조회
+const getTodayGoals = async (userId) => {
+  const userIdObj = new mongoose.Types.ObjectId(userId);
+
+  const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
+  const todayString = daysOfWeek[new Date().getDay()];
+
+  // 진행중 상태의 오늘 목표 조회
+  const aggregationResult = await UserGoal.aggregate([
+    {
+      $match: {
+        userId: userIdObj,
+        status: "진행중",
+        activeDays: todayString,
+      },
+    },
+    { $unwind: "$customExercises" },
+    {
+      $match: {
+        "customExercises.days": todayString,
+      },
+    },
+    {
+      $lookup: {
+        from: "goals",
+        localField: "goalId",
+        foreignField: "_id",
+        as: "goalDetails",
+      },
+    },
+    { $unwind: "$goalDetails" },
+    {
+      $group: {
+        _id: "$_id",
+        goalName: { $first: "$goalDetails.name" },
+      },
+    },
+    {
+      $project: {
+        _id: 0,
+        userGoalId: "$_id",
+        name: "$goalName",
+      },
+    },
+  ]);
+  return aggregationResult;
+};
+
 // 목표 생성
 const createGoal = async (userId, goalData) => {
   const { name, goalType, exercises, durationWeek, isUserPublic } = goalData;
@@ -158,20 +207,18 @@ const createGoal = async (userId, goalData) => {
 
   try {
     await UserGoal.create({
-      userId: userId, // 제작자 본인
-      goalId: newGoal._id, // 방금 만든 Goal의 ID 연결
+      userId: userId,
+      goalId: newGoal._id,
 
-      isModified: false, // 막 만들었으므로 원본과 동일함
-      status: "진행중", // 바로 진행 상태로 시작
-      startDate: new Date(), // 시작일은 오늘
+      isModified: false,
+      status: "진행중",
+      startDate: new Date(),
 
-      // 챌린지 관련 정보 매핑
       durationWeek: newGoal.durationWeek,
-      currentWeek: 1, // 1주차부터 시작
-      completedSessions: 0, // 완료 횟수 0
-      activeDays: activeDays, // 위에서 계산한 활동 요일
+      currentWeek: 1,
+      completedSessions: 0,
+      activeDays: activeDays,
 
-      // 운동 목록 복사
       customExercises: exercises.map((ex) => ({
         exerciseId: ex.exerciseId,
         days: ex.days,
@@ -291,4 +338,5 @@ module.exports = {
   updateGoal,
   deleteGoal,
   getDailyExerciseRecords,
+  getTodayGoals,
 };
