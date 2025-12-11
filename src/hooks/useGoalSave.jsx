@@ -1,6 +1,7 @@
 import { useState, useCallback } from "react";
 
 import { createGoal, updateGoal } from "../services/api/goalApi";
+import { parseApiError } from "../utils/parseApiError";
 
 // 루틴 저장(생성/수정)
 export const useGoalSave = (isEditMode, goalId) => {
@@ -11,34 +12,26 @@ export const useGoalSave = (isEditMode, goalId) => {
     async (goalDataToSave) => {
       setIsSaving(true);
       setError(null);
-      let result = null;
-
       try {
         if (isEditMode && goalId) {
           // 수정 (PUT)
           await updateGoal(goalId, goalDataToSave);
-          result = {
+          return {
             success: true,
-            message: "루틴이 성공적으로 수정되었습니다.",
             id: goalId,
           };
         } else {
           // 생성 (POST)
           const newId = await createGoal(goalDataToSave);
-          result = {
+          return {
             success: true,
-            message: "새 루틴이 성공적으로 생성되었습니다.",
             id: newId,
           };
         }
-
-        return result;
       } catch (err) {
-        const errorMessage =
-          err.response?.data?.message || err.message || "알 수 없는 오류";
-        setError(errorMessage);
-
-        throw new Error(`저장 실패: ${errorMessage}`);
+        const msg = parseApiError(err);
+        setError(msg);
+        throw new Error(msg);
       } finally {
         setIsSaving(false);
       }

@@ -1,4 +1,10 @@
-import {createContext, useContext, useState, useCallback, useEffect} from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import {
   handleSocialLoginSuccess,
@@ -7,7 +13,6 @@ import {
 import { clearAuthTokens } from "../services/api/api";
 
 const AuthContext = createContext(null);
-
 export const useAuth = () => useContext(AuthContext);
 
 export const AuthProvider = ({ children }) => {
@@ -17,18 +22,18 @@ export const AuthProvider = ({ children }) => {
 
   // 사용자 정보를 로드하고 상태를 업데이트하는 함수
   const loadUser = useCallback(async (token = null) => {
+    setIsAuthLoading(true);
     try {
-      setIsAuthLoading(true);
       // 토큰을 설정하고 사용자 정보 가져오기
       const data = await handleSocialLoginSuccess(token);
       setUser(data.user);
       return data.user;
-    } catch (error) {
-      console.error("인증 상태 확인/사용자 로드 실패: ", error);
+    } catch (err) {
+      console.error("인증 상태 확인/사용자 로드 실패: ", err);
       // 실패시 토큰 제거 및 상태 초기화
       clearAuthTokens();
       setUser(null);
-      throw error;
+      throw err;
     } finally {
       setIsAuthLoading(false);
     }
@@ -36,34 +41,22 @@ export const AuthProvider = ({ children }) => {
 
   // 로그아웃 함수
   const handleLogout = useCallback(async () => {
+    setIsAuthLoading(true);
     try {
       await logoutUser();
+    } catch (err) {
+      console.error("로그아웃 처리 중 오류 발생: ", err);
+    } finally {
+      clearAuthTokens();
       setUser(null);
-      // 로그아웃 후 로그인 페이지로 이동
-      navigate("/");
-    } catch (error) {
-      console.error("로그아웃 처리 중 오류 발생: ", error);
-      // 서버 로그아웃이 실패해도 클라이언트 상태는 초기화
-      setUser(null);
+      setIsAuthLoading(false);
       navigate("/");
     }
   }, [navigate]);
 
   // 초기 인증 상태 확인
   useEffect(() => {
-    const checkInitialAuth = async () => {
-      try {
-        // 토큰 없이 호출 시, Access Token이 만료되었으면 서버에서 401 반환
-        const data = await handleSocialLoginSuccess();
-        setUser(data.user);
-      } catch (error) {
-        // 갱신 실패 (로그인 필요)
-        setUser(null);
-      } finally {
-        setIsAuthLoading(false);
-      }
-    };
-    checkInitialAuth();
+    loadUser().catch(() => {});
   }, [loadUser]);
 
   const value = {
@@ -72,7 +65,8 @@ export const AuthProvider = ({ children }) => {
     isAuthLoading,
     handleLogout,
     loadUser,
+    setUser,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
