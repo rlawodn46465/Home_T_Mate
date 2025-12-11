@@ -4,54 +4,101 @@ import {
   saveExerciseSession,
   updateExerciseSession,
 } from "../services/api/historyApi";
-import { useApi } from "./useApi";
 
 // 루틴 목록 상태 관리, API 통신 훅
 export const useHistorys = () => {
-  const { data, isLoading, error, execute } = useApi(fetchHistorys, {
-    immediate: true,
-  });
-  return {
-    historys: data || [],
-    loading: isLoading,
-    error,
-    refreshHistorys: () => execute(),
-  };
+  const [historys, setHistorys] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const refreshHistorys = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchHistorys();
+      setHistorys(data);
+    } catch (err) {
+      console.error(
+        "운동 기록 불러오기 실패:",
+        err.response?.data || err.message
+      );
+      setError("운동 기록을 불러오는 데 실패했습니다.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshHistorys();
+  }, [refreshHistorys]);
+
+  return { historys, loading, error, refreshHistorys };
 };
 
 // 운동 기록 저장
 export const useCreateHistory = () => {
-  const { loading, error, execute } = useApi(saveExerciseSession);
+  const [isSaving, setIsSaving] = useState(false);
+  const [saveError, setSaveError] = useState(null);
 
+  // 운동 기록을 서버에 저장
   const createHistory = async (workoutData) => {
-    return execute(workoutData)
-      .then(() => true)
-      .catch(() => false);
+    setIsSaving(true);
+    setSaveError(null);
+    try {
+      const result = await saveExerciseSession(workoutData);
+      console.log("운동 기록 저장 성공:", result.message);
+      return true;
+    } catch (error) {
+      console.error("운동 기록 저장 실패:", error);
+      let errorMessage = "알 수 없는 오류가 발생했습니다.";
+
+      if (error.response) {
+        errorMessage =
+          error.response.data?.message ||
+          `서버 오류 발생 (Status: ${error.response.status})`;
+      } else if (error.request) {
+        errorMessage = "네트워크 연결 오류 또는 서버 응답 없음.";
+      } else {
+        errorMessage = error.message;
+      }
+      setSaveError(errorMessage);
+      return false;
+    } finally {
+      setIsSaving(false);
+    }
   };
 
-  return {
-    isSaving: loading,
-    saveError: error,
-    createHistory,
-  };
+  return { isSaving, saveError, createHistory };
 };
 
 // 운동 기록 수정
 export const useUpdateHistory = (recordId) => {
-  const { loading, error, execute } = useApi((data) =>
-    updateExerciseSession(recordId, data)
+  const [isUpdating, setIsUpdating] = useState(false);
+  const [updateError, setUpdateError] = useState(null);
+
+  const updateHistory = useCallback(
+    async (data) => {
+      if (!recordId) {
+        setUpdateError("수정할 기록 ID가 누락되었습니다.");
+        return false;
+      }
+
+      setIsUpdating(true);
+      setUpdateError(null);
+
+      try {
+        await updateExerciseSession(recordId, data);
+        return true;
+      } catch (err) {
+        console.error("운동 기록 수정 중 오류 발생:", err);
+        setUpdateError(err.message || "기록 수정에 실패했습니다.");
+        return false;
+      } finally {
+        setIsUpdating(false);
+      }
+    },
+    [recordId]
   );
 
-  const updateHistory = async (data) => {
-    if (!recordId) return false;
-    return execute(data)
-      .then(() => true)
-      .catch(() => false);
-  };
-
-  return {
-    isUpdating: loading,
-    updateError: error,
-    updateHistory,
-  };
+  return { isUpdating, updateError, updateHistory };
 };

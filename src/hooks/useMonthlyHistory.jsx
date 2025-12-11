@@ -1,27 +1,36 @@
 // hooks/useMonthlyWorkoutDots.js
 
-import { useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { fetchMonthlyHistory } from "../services/api/historyApi";
-import { useApi } from "./useApi";
 
 export const useMonthlyHistory = (year, month) => {
-  const { data, loading, error, execute, setData } =
-    useApi(fetchMonthlyHistory);
+  const [historyData, setHistoryData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-  const refetch = useCallback(() => {
-    if (!year || !month) return;
-    return execute(year, month);
-  }, [year, month, execute]);
+  const loadData = useCallback(async (y, m) => {
+    if (!y || !m) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const data = await fetchMonthlyHistory(y, m);
+      setHistoryData(data);
+    } catch (err) {
+      console.error("월별 기록 로딩 중 오류 발생:", err);
+      setError("데이터를 불러오는 중 문제가 발생했습니다.");
+      setHistoryData([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    refetch();
-  }, [refetch]);
+    loadData(year, month);
+  }, [year, month, loadData]);
 
-  return {
-    historyData: data || [],
-    isLoading: loading,
-    error,
-    refetch,
-    setHistoryData: setData,
-  };
+  const refetch = () => loadData(year, month);
+
+  return { historyData, isLoading, error, refetch };
 };

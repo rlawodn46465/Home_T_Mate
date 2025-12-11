@@ -1,23 +1,38 @@
-import { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { fetchExercises } from "../services/api/goalApi";
-import { useApi } from "./useApi";
 
 // 운동 마스터 목록 관리
 export const useExercises = (filters) => {
-  const { data, isLoading, error, execute } = useApi(
-    (params) => fetchExercises(params),
-    { immediate: !!filters, defaultParams: filters }
-  );
+  const [exercises, setExercises] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  // 자동 로드가 필요하면 filters가 바뀔 때마다 호출
   useEffect(() => {
-    if (filters) execute(filters).catch(() => {});
+    if (!filters) return;
+
+    let isCancelled = false;
+    const loadExercises = async () => {
+      setIsLoading(true);
+      try {
+        // 필터 없이 전체 운동 마스터 목록 로드 (캐시 필요 시 여기에 로직 추가)
+        const data = await fetchExercises(filters);
+        if (!isCancelled) {
+          setExercises(data);
+        }
+      } catch (err) {
+        console.error("운동 마스터 목록 로드 실패:", err);
+        setExercises([]);
+      }
+
+      if (!isCancelled) {
+        setIsLoading(false);
+      }
+    };
+    loadExercises();
+
+    return () => {
+      isCancelled = true;
+    };
   }, [filters]);
 
-  return {
-    exercises: data || [],
-    isLoading,
-    error,
-    refetch: () => execute(filters),
-  };
+  return { exercises, isLoading };
 };
