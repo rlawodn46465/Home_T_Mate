@@ -1,4 +1,3 @@
-import { useEffect } from "react";
 import { useTodayGoals } from "../../../hooks/useGoals";
 import Spinner from "../../common/Spinner";
 import ErrorMessage from "../../common/ErrorMessage";
@@ -7,10 +6,6 @@ import "./TodayGoal.css";
 
 const TodayGoal = () => {
   const { goals, isLoading, error, loadTodayGoals } = useTodayGoals();
-
-  useEffect(() => {
-    loadTodayGoals();
-  }, [loadTodayGoals]);
 
   if (isLoading) {
     return <Spinner text={"불러오는 중..."} />;

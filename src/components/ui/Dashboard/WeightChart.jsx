@@ -1,24 +1,30 @@
 import "./WeightChart.css";
 import BarGroup from "./BarGroup";
-
-const CHART_DATA = [
-  { part: "등", current: 0, max: 0 },
-  { part: "어깨", current: 0, max: 0 },
-  { part: "팔", current: 0, max: 0 },
-  { part: "가슴", current: 75, max: 90 }, // 이번 주 75, 최대 90
-  { part: "하체", current: 60, max: 70 }, // 이번 주 60, 최대 70
-  { part: "코어", current: 0, max: 0 },
-];
-
-const OVERALL_MAX_WEIGHT = Math.max(...CHART_DATA.map((d) => d.max));
-const MAX_SCALE = OVERALL_MAX_WEIGHT > 0 ? OVERALL_MAX_WEIGHT : 1;
+import { useFetchWeight } from "../../../hooks/useStats";
+import Spinner from "../../common/Spinner";
+import ErrorMessage from "../../common/ErrorMessage";
 
 const WeightChart = () => {
+  const { data, loading, error, refetch } = useFetchWeight();
+
+  if (loading) {
+    return <Spinner text={"불러오는 중..."} />;
+  }
+
+  if (error) {
+    return (
+      <ErrorMessage message="목표를 불러오지 못했습니다." onRetry={refetch} />
+    );
+  }
+
+  const OVERALL_MAX_WEIGHT = Math.max(...data.map((d) => d.max));
+  const MAX_SCALE = OVERALL_MAX_WEIGHT > 0 ? OVERALL_MAX_WEIGHT : 1;
+
   return (
     <div className="weight-chart__container">
       <h4 className="section-title">부위별 무게</h4>
       <div className="weight-chart__chart-container">
-        {CHART_DATA.map((data, index) => (
+        {data.map((data, index) => (
           <BarGroup key={index} data={data} maxScale={MAX_SCALE} />
         ))}
       </div>

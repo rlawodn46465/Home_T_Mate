@@ -1,16 +1,38 @@
-.today-goal{
+.today-goal {
   margin-bottom: 10px;
 }
 
-.today-goal-container{
+.today-goal-container {
   display: flex;
   justify-content: center;
   align-items: center;
   margin-bottom: 5px;
 }
 
-.today-goal-title{
+.today-goal-title {
   text-align: center;
   font-size: 12px;
   font-weight: 400;
+}
+
+.today-goal-item {
+  width: 200px;
+  height: 40px;
+  text-align: center;
+  line-height: 40px;
+  background-color: rgba(104, 80, 251, 1);
+  color: white;
+  font-weight: 600;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.today-goal-item--no-goal {
+  background-color: #6a6a6a;
+  border: 2px dashed #ffffff;
+}
+
+.today-goal-item--no-goal:hover {
+  background-color: #7d7d7d;
 }

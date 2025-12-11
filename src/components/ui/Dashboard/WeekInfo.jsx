@@ -1,31 +1,25 @@
-// import { useState } from "react";
 import MuscleMap from "../../common/MuscleMap";
 import DateCircle from "./DateCircle";
 import "./WeekInfo.css";
-
-const DUMMY_DATA = {
-  currentWeek: [
-    { date: 7, day: "일", minutes: 60, isToday: false, isWorkout: true },
-    { date: 8, day: "월", minutes: 0, isToday: false, isWorkout: false },
-    { date: 9, day: "화", minutes: 120, isToday: false, isWorkout: true },
-    { date: 10, day: "수", minutes: 90, isToday: true, isWorkout: true },
-    { date: 11, day: "목", minutes: 0, isToday: false, isWorkout: false },
-    { date: 12, day: "금", minutes: 0, isToday: false, isWorkout: false },
-    { date: 13, day: "토", minutes: 0, isToday: false, isWorkout: false },
-  ],
-  todayMinutes: 0,
-  weeklyAverageMinutes: 60,
-  weeklyMuscles: ["가슴", "대퇴사두"],
-};
+import { useFetchWeekly } from "../../../hooks/useStats";
+import Spinner from "../../common/Spinner";
+import ErrorMessage from "../../common/ErrorMessage";
 
 const WeekInfo = () => {
-  const { currentWeek, todayMinutes, weeklyAverageMinutes, weeklyMuscles } =
-    DUMMY_DATA;
+  const { data, loading, error, refetch } = useFetchWeekly();
 
-  // 요일 헤더 추출
-  const dayNames = currentWeek.map((item) => item.day);
+  if (loading) {
+    return <Spinner text={"불러오는 중..."} />;
+  }
 
-  const selectedTags = weeklyMuscles;
+  if (error) {
+    return (
+      <ErrorMessage message="목표를 불러오지 못했습니다." onRetry={refetch} />
+    );
+  }
+
+  const { currentWeek, weeklyMuscles, todayMinutes, weeklyAverageMinutes } =
+    data;
 
   return (
     <div className="week-info__container">
@@ -33,24 +27,24 @@ const WeekInfo = () => {
       <div className="week-info__content-wrapper">
         {/* 1. 좌측: 근육 맵 시각화 */}
         <div className="week-info__muscle-map-wrapper">
-          <MuscleMap selectedTags={selectedTags} />
+          <MuscleMap selectedTags={weeklyMuscles} />
         </div>
 
         {/* 2. 우측: 정보 섹션 */}
         <div className="week-info__info-section">
           {/* 요일 헤더 */}
           <div className="week-info__day-header">
-            {dayNames.map((day) => (
-              <div key={day} className="week-info__day-item">
-                {day}
+            {currentWeek.map((day, index) => (
+              <div key={index} className="week-info__day-item">
+                {day.day}
               </div>
             ))}
           </div>
 
           {/* 날짜 원형 */}
           <div className="week-info__date-container">
-            {currentWeek.map((dayData) => (
-              <DateCircle key={dayData.date} data={dayData} />
+            {currentWeek.map((dayData, index) => (
+              <DateCircle key={index} data={dayData} />
             ))}
           </div>
 
