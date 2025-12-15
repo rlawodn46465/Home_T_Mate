@@ -111,6 +111,7 @@ const getWeightStats = async (userId) => {
       },
     },
     { $unwind: "$exerciseInfo" },
+    { $unwind: "$exerciseInfo.category" },
     { $unwind: "$records" },
     {
       $group: {
