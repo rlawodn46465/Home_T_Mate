@@ -21,7 +21,12 @@ const TodayGoal = () => {
   }
 
   if (!goals || goals.length === 0) {
-    return <p className="today-goal-title">목표를 설정해주세요.</p>;
+    return (
+      <div className="today-goal">
+        <h4 className="section-title">오늘 목표</h4>
+        <p className="today-goal-title">목표를 설정해주세요.</p>
+      </div>
+    );
   }
 
   return (
