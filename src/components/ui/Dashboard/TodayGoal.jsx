@@ -26,7 +26,7 @@ const TodayGoal = () => {
 
   return (
     <div className="today-goal">
-      <h4 className="section-title">오늘 운동</h4>
+      <h4 className="section-title">오늘 목표</h4>
       <TodayGoalSlider goals={goals} />
     </div>
   );
