@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import "./PageHeader.css";
 
-const PageHeader = ({ title }) => {
+const PageHeader = ({ title, onGoBack }) => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    navigate(-1);
+    if (onGoBack) {
+      onGoBack();
+    } else {
+      navigate(-1);
+    }
   };
 
   return (

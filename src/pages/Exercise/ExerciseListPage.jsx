@@ -1,6 +1,5 @@
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { format } from "date-fns";
-import { useLocation, useNavigate } from "react-router-dom";
 
 import Button from "../../components/common/Button";
 import TabNavigation from "../../components/common/TabNavigation";
@@ -11,6 +10,7 @@ import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
 
 import "./ExerciseListPage.css";
 import { useHistoryActions } from "../../hooks/useHistoryActions";
+import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 const TABS = ["전체", "개별운동", "루틴", "챌린지"];
 const ALL_DAYS = ["월", "화", "수", "목", "금", "토", "일"];
@@ -26,8 +26,7 @@ const BODY_PART_COLORS = {
 };
 
 const ExerciseListPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { navigateToPanel } = usePersistentPanel();
 
   const [activeTab, setActiveTab] = useState(TABS[0]);
   const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
@@ -40,8 +39,7 @@ const ExerciseListPage = () => {
   );
 
   // 삭제/수정 액션 훅
-  const { isProcessing, handleDelete } =
-    useHistoryActions(refetch);
+  const { isProcessing, handleDelete } = useHistoryActions(refetch);
 
   // 캘린더 전달 데이터 가공
   const monthlyDots = useMemo(() => {
@@ -63,7 +61,7 @@ const ExerciseListPage = () => {
 
   // 운동 추가 페이지 이동
   const handleAddExerciseClick = () => {
-    navigate(`${location.pathname}?panel=exercise-form`);
+    navigateToPanel("?panel=exercise-form");
   };
 
   // 달력 날짜별 렌더링 함수
@@ -99,9 +97,8 @@ const ExerciseListPage = () => {
 
   // 기록 수정 핸들러 (수정 모달/페이지 이동 로직)
   const handleEditRecord = (recordData) => {
-    navigate(
-      `${location.pathname}?panel=exercise-edit&recordId=${recordData.id}`
-    ); // 실제 수정 API 호출(handleUpdate)은 수정 폼에서 데이터를 저장할 때 실행
+    const newQuery = `?panel=exercise-edit&recordId=${recordData.id}`;
+    navigateToPanel(newQuery);
   };
 
   return (

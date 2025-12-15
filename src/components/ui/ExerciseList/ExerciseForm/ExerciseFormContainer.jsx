@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import ExerciseInfoSection from "./ExerciseInfoSection";
 import { fetchSingleRecord } from "../../../../services/api/historyApi";
 import "./ExerciseFormContainer.css";
+import { usePersistentPanel } from "../../../../hooks/usePersistentPanel";
 
 const ExerciseFormContainer = ({ recordId }) => {
-  const navigate = useNavigate();
+  const { navigateToPanel } = usePersistentPanel();
   const [initialData, setInitialData] = useState(null);
   const [isLoading, setIsLoading] = useState(!!recordId);
   const [error, setError] = useState(null);
@@ -28,7 +28,7 @@ const ExerciseFormContainer = ({ recordId }) => {
   }, [recordId]);
 
   const handleCancel = () => {
-    navigate("/?panel=record");
+    navigateToPanel("?panel=record");
   };
 
   if (isLoading) {

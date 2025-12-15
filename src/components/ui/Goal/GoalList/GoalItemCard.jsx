@@ -2,7 +2,7 @@ import { useState } from "react";
 
 import "./GoalItemCard.css";
 import ContextualMenu from "./ContextualMenu";
-import { useNavigate } from "react-router-dom";
+import { usePersistentPanel } from "../../../../hooks/usePersistentPanel";
 
 const GoalItemCard = ({
   goals,
@@ -12,11 +12,12 @@ const GoalItemCard = ({
   hidenMenu = false,
 }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { goalTypeLabel, name, progress, parts, activeDaysLabel, creator } = goals;
+  const { goalTypeLabel, name, progress, parts, activeDaysLabel, creator } =
+    goals;
   // 진행도 바
   const progressPercent = (progress * 100).toFixed(0);
 
-  const navigate = useNavigate();
+  const { navigateToPanel, currentPath } = usePersistentPanel();
 
   const handleCardClick = () => {
     if (isDeleting) return;
@@ -27,7 +28,8 @@ const GoalItemCard = ({
     }
 
     if (!isMenuOpen) {
-      navigate(`/?panel=goals-detail&goalId=${goals.id}`);
+      const newQuery = `?panel=goals-detail&goalId=${goals.id}`;
+      navigateToPanel(newQuery, currentPath);
     }
   };
 
@@ -41,7 +43,8 @@ const GoalItemCard = ({
     setIsMenuOpen(false);
 
     if (action === "수정") {
-      navigate(`/?panel=goals-form&goalId=${goals.id}&isEditMode=true`);
+      const newQuery = `?panel=goals-form&goalId=${goals.id}&isEditMode=true`;
+      navigateToPanel(newQuery, currentPath);
     } else {
       if (onAction) onAction(goals.id, action);
     }

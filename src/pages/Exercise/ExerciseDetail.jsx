@@ -6,6 +6,7 @@ import ExerciseInfoSection from "../../components/ui/Exercise/ExerciseInfoSectio
 import ExerciseRecordSection from "../../components/ui/Exercise/ExerciseRecordSection";
 import { fetchExerciseDetail } from "../../services/api/goalApi";
 import PageHeader from "../../components/common/PageHeader";
+import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 const ExerciseDetail = ({ exerciseId }) => {
   const TABS = ["설명", "나의 기록"];
@@ -66,6 +67,12 @@ const ExerciseDetail = ({ exerciseId }) => {
     console.log("메모 저장 완료 : ", newMemo);
   };
 
+  const { navigateToPanel } = usePersistentPanel();
+
+  const handleGoBackToRecordList = () => {
+    navigateToPanel("?panel=record");
+  };
+
   if (isLoading) {
     return (
       <div className="loading-state">
@@ -84,7 +91,10 @@ const ExerciseDetail = ({ exerciseId }) => {
 
   return (
     <div className="exercise-detail-page">
-      <PageHeader title={"운동 기록 상세"}/>
+      <PageHeader
+        title={"운동 기록 상세"}
+        onGoBack={handleGoBackToRecordList}
+      />
       <div className="exercise-header">
         {detailData.exercise.targetMuscles && (
           <MuscleMap selectedTags={detailData.exercise.targetMuscles} />

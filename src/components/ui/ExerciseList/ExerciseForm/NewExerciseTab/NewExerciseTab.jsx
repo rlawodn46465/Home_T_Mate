@@ -10,8 +10,8 @@ import ExerciseSelectModal from "../../../ExerciseSelect/ExerciseSelectModal";
 import Calendar from "../../../../common/Calendar";
 
 import "./NewExerciseTab.css";
-import { useNavigate } from "react-router-dom";
 import { calculateExerciseStats } from "../../../../../utils/exerciseStats";
+import { usePersistentPanel } from "../../../../../hooks/usePersistentPanel";
 
 const SCREEN = {
   FORM: "form",
@@ -19,7 +19,7 @@ const SCREEN = {
 };
 
 const NewExerciseTab = ({ recordId, initialData, initialDate }) => {
-  const navigate = useNavigate();
+  const { navigateToPanel } = usePersistentPanel();
 
   // 초기 날짜 설정
   const initialSelectedDate = initialDate || new Date();
@@ -72,7 +72,7 @@ const NewExerciseTab = ({ recordId, initialData, initialDate }) => {
   const veryOldDate = useMemo(() => subYears(new Date(), 5), []);
   const today = useMemo(() => new Date(), []);
 
-  // ⭐️ 저장/수정하기
+  // 저장/수정하기
   const handleSave = async () => {
     if (goalForm.exercises.length === 0 || !selectedDate || isSaving) {
       alert("추가할 운동이 없거나 날짜가 선택되지 않았습니다.");
@@ -115,7 +115,7 @@ const NewExerciseTab = ({ recordId, initialData, initialDate }) => {
       );
       setSelectedDate(new Date());
       setCurrentMonthDate(new Date());
-      navigate("?panel=record", { replace: true });
+      navigateToPanel("?panel=record");
     } else {
       alert(
         `❌ 운동 기록 ${recordId ? "수정" : "저장"}에 실패했습니다: ${

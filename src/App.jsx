@@ -1,4 +1,4 @@
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 import Header from "./pages/Header";
 import MainLayout from "./pages/MainLayout";
 import SocialAuthRedirectHandler from "./pages/Login/SocialAuthRedirectHandler";
@@ -19,7 +19,8 @@ const App = () => {
             path="/login/signup-complete"
             element={<SocialAuthRedirectHandler />}
           />
-          <Route path="/*" element={<MainLayout />} />
+          <Route path="/" element={<Navigate to="/community" replace />} />
+          <Route path="/community/*" element={<MainLayout />} />
         </Routes>
       </AuthProvider>
     </div>

@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useCallback, useState } from "react";
 
 import "./GoalsDetailPage.css";
 import GoalsDetailHeader from "../../components/ui/Goal/GoalList/GoalsDetailHeader";
@@ -8,10 +7,11 @@ import GoalsSummary from "../../components/ui/Goal/GoalList/GoalsSummary";
 import TabNavigation from "../../components/common/TabNavigation";
 import { useGoalDetail } from "../../hooks/useGoalDetail";
 import { useGoalDelete } from "../../hooks/useGoalDelete";
+import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 const TABS = ["오늘 운동", "리스트"];
 const GoalsDetailPage = ({ goalId }) => {
-  const navigate = useNavigate();
+  const { navigateToPanel, currentPath } = usePersistentPanel();
 
   const [activeTab, setActiveTab] = useState(TABS[0]);
 
@@ -23,28 +23,63 @@ const GoalsDetailPage = ({ goalId }) => {
 
   const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
+  // 뒤로가기 로직
+  const handleGoBack = useCallback(() => {
+    // 목표 목록 뷰로 전환
+    navigateToPanel("?panel=goal", currentPath);
+  }, [navigateToPanel, currentPath]);
+
+  // 수정 페이지로 이동
+  const handleEdit = useCallback(() => {
+    const newQuery = `?panel=goals-form&goalId=${goalId}&isEditMode=true`; // isEditMode 명시
+    navigateToPanel(newQuery, currentPath);
+  }, [navigateToPanel, goalId, currentPath]);
+
+  // 운동 상세 페이지로 이동
+  const handleExerciseDetailNavigation = useCallback(
+    (exerciseId) => {
+      const newQuery = `?panel=exercise-detail&exerciseId=${exerciseId}`;
+      navigateToPanel(newQuery, currentPath);
+    },
+    [navigateToPanel, currentPath]
+  );
+
+  // 목표 삭제
+  const handleDelete = async () => {
+    if (window.confirm(`${goalDetail.name} 목표를 정말 삭제하시겠습니까?`)) {
+      try {
+        await deleteGoalHandler(goalId);
+        alert("목표가 성공적으로 삭제되었습니다.");
+        navigateToPanel("?panel=goal", currentPath);
+      } catch (error) {
+        alert(error.message);
+      }
+    }
+  };
+
   // 로딩 및 에러 상태 처리
   if (detailLoading || isDeleting) {
     return (
       <div className="goals-detail-page">
         <GoalsDetailHeader
-          title="루틴 상세"
-          onGoBack={() => navigate(-1)}
+          title="목표 상세"
+          onGoBack={handleGoBack}
           showBackButton={true}
         />
         <p className="goals-detail-page__error-message">
-          {isDeleting ? "루틴 삭제 중..." : "루틴 정보를 불러오는 중입니다."}
+          {isDeleting ? "목표 삭제 중..." : "목표 정보를 불러오는 중입니다."}
         </p>
       </div>
     );
   }
 
-  if (detailError) {
+  // 데이터 로딩 실패/없음 처리
+  if (detailError || !goalDetail) {
     return (
       <div className="goals-detail-page">
         <GoalsDetailHeader
-          title="루틴 상세"
-          onGoBack={() => navigate(-1)}
+          title="목표 상세"
+          onGoBack={handleGoBack}
           showBackButton={true}
         />
         <p className="goals-detail-page__error-message">{detailError}</p>
@@ -52,53 +87,15 @@ const GoalsDetailPage = ({ goalId }) => {
     );
   }
 
-  // 데이터 로딩 실패/없음 처리
-  if (!goalDetail) {
-    return (
-      <div className="goals-detail-page">
-        <GoalsDetailHeader
-          title="루틴 상세"
-          onGoBack={() => navigate(-1)}
-          showBackButton={true}
-        />
-        <p className="goals-detail-page__error-message">
-          루틴 정보를 찾을 수 없습니다. (ID: {goalId})
-        </p>
-      </div>
-    );
-  }
-
-  // 수정 페이지로 이동
-  const handleEdit = () => {
-    navigate(`/?panel=goals-form&goalId=${goalId}`);
-  };
-
-  const handleGoBack = () => {
-    navigate(-1);
-  };
-
-  // 루틴 삭제
-  const handleDelete = async () => {
-    if (window.confirm(`${goalDetail.name} 루틴을 정말 삭제하시겠습니까?`)) {
-      try {
-        await deleteGoalHandler(goalId);
-        alert("루틴이 성공적으로 삭제되었습니다.");
-        navigate("/?panel=goal");
-      } catch (error) {
-        alert(error.message);
-      }
-    }
-  };
-
-  // 루틴 시작
+  // 목표 시작
   const handleStartGoal = () => {
-    alert(`루틴 시작: ${goalDetail.name}!`);
-    // 루틴 시작 로직 (타이머 시작, 운동 기록 등)
+    alert(`목표 시작: ${goalDetail.name}!`);
+    // 목표 시작 로직 (타이머 시작, 운동 기록 등)
   };
 
   const handleEndGoal = () => {
-    alert(`루틴 종료: ${goalDetail.name}!`);
-    // 루틴 종료 로직 (결과 저장 등)
+    alert(`목표 종료: ${goalDetail.name}!`);
+    // 목표 종료 로직 (결과 저장 등)
   };
 
   //
@@ -137,10 +134,6 @@ const GoalsDetailPage = ({ goalId }) => {
   const allGoalDays = [
     ...new Set(currentExercises.flatMap((ex) => ex.days || [])),
   ];
-
-  const handleExerciseDetailNavigation = (exerciseId) => {
-    navigate(`/?panel=exercise-detail&exerciseId=${exerciseId}`);
-  };
 
   return (
     <div className="goals-detail-page">
@@ -187,7 +180,7 @@ const GoalsDetailPage = ({ goalId }) => {
           시작
         </button>
         <button className="end-button" onClick={handleEndGoal}>
-          루틴 끝내기
+          목표 끝내기
         </button>
       </div>
     </div>

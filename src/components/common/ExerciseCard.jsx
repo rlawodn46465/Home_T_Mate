@@ -2,7 +2,7 @@ import { useState } from "react";
 import "./ExerciseCard.css";
 import DotsMenuToggle from "./DotsMenuToggle";
 import DropdownMenu from "./DropdownMenu";
-import { useNavigate } from "react-router-dom";
+import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 // "분 초" 단위로 변환
 const formatDuration = (seconds) => {
@@ -31,7 +31,7 @@ const ExerciseCard = ({
   onEdit,
   onDelete,
 }) => {
-  const navigate = useNavigate();
+  const { navigateToPanel, currentPath } = usePersistentPanel();
   const exerciseId = record.exerciseId;
   const recordId = record.id;
 
@@ -77,7 +77,8 @@ const ExerciseCard = ({
     if (isDetailSelector) {
       // 상세 페이지로 이동
       if (exerciseId) {
-        navigate(`?panel=exercise-detail&exerciseId=${exerciseId}`);
+        const newQuery = `?panel=exercise-detail&exerciseId=${exerciseId}`;
+        navigateToPanel(newQuery, currentPath);
       } else {
         console.error(
           "운동 ID가 없어 상세 페이지로 이동할 수 없습니다.",

@@ -1,5 +1,4 @@
 import { useCallback, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import "./GoalsFormContainer.css";
 import GoalsExerciseList from "./GoalsExerciseList";
 import GoalsInfoSection from "./GoalsInfoSection";
@@ -7,6 +6,7 @@ import ExerciseSelectModal from "../../ExerciseSelect/ExerciseSelectModal";
 import { useGoalSave } from "../../../../hooks/useGoalSave";
 import { useGoalDetail } from "../../../../hooks/useGoalDetail";
 import useGoalForm from "../../../../hooks/useGoalForm";
+import { usePersistentPanel } from "../../../../hooks/usePersistentPanel";
 
 const SCREEN = {
   FORM: "form",
@@ -14,7 +14,7 @@ const SCREEN = {
 };
 
 const GoalsFormContainer = ({ goalId, isEditMode }) => {
-  const navigate = useNavigate();
+  const { navigateToPanel } = usePersistentPanel();
   const [currentScreen, setCurrentScreen] = useState(SCREEN.FORM);
 
   // 서버 상세 정보 로딩
@@ -37,10 +37,7 @@ const GoalsFormContainer = ({ goalId, isEditMode }) => {
   } = useGoalForm(isEditMode, initialGoal);
 
   // 저장 로직
-  const { isSaving, saveGoalHandler } = useGoalSave(
-    isEditMode,
-    goalId
-  );
+  const { isSaving, saveGoalHandler } = useGoalSave(isEditMode, goalId);
 
   // 모달 제어 핸들러
   const handleCloseSelectModal = useCallback(() => {
@@ -51,7 +48,7 @@ const GoalsFormContainer = ({ goalId, isEditMode }) => {
     setCurrentScreen(SCREEN.SELECT);
   }, []);
 
-  // 루틴 저장
+  // 목표 저장
   const handleSaveGoal = useCallback(async () => {
     if (isSaving) {
       alert("저장 중이므로 저장을 취소합니다.");
@@ -80,8 +77,8 @@ const GoalsFormContainer = ({ goalId, isEditMode }) => {
       // 저장
       const response = await saveGoalHandler(goalDataToSave);
       alert(response.message);
-      navigate("/?panel=goal");
-      // 저장 성공 후 루틴 목록 페이지로 이동 로직 추가할 것
+      navigateToPanel("?panel=goal");
+      // 저장 성공 후 목표 목록 페이지로 이동 로직 추가할 것
     } catch (error) {
       alert(error.message);
     }
@@ -89,9 +86,13 @@ const GoalsFormContainer = ({ goalId, isEditMode }) => {
     goalForm,
     isSaving,
     saveGoalHandler,
-    navigate,
+    navigateToPanel,
     getGoalDataForSave,
   ]);
+
+  const handleCancel = useCallback(() => {
+    navigateToPanel("?panel=goal");
+  }, [navigateToPanel]);
 
   // 로딩 및 에러 상태 처리
   if (detailLoading) {
@@ -105,7 +106,7 @@ const GoalsFormContainer = ({ goalId, isEditMode }) => {
   if (isEditMode && !initialGoal) {
     return (
       <div className="goals-form-container">
-        루틴 데이터를 불러올 수 없습니다.
+        목표 데이터를 불러올 수 없습니다.
       </div>
     );
   }
@@ -122,9 +123,9 @@ const GoalsFormContainer = ({ goalId, isEditMode }) => {
   return (
     <div className="goals-form-container">
       <div className="goals-form-container__header">
-        <h2>{isEditMode ? "루틴 수정" : "루틴 추가"}</h2>
+        <h2>{isEditMode ? "목표 수정" : "목표 추가"}</h2>
         <div className="goals-form-container__button-box">
-          <button className="cancel-button" onClick={() => navigate(-1)}>
+          <button className="cancel-button" onClick={handleCancel}>
             취소
           </button>
           <button
@@ -136,10 +137,7 @@ const GoalsFormContainer = ({ goalId, isEditMode }) => {
           </button>
         </div>
       </div>
-      <GoalsInfoSection
-        info={goalForm.info}
-        onInfoChange={handleInfoChange}
-      />
+      <GoalsInfoSection info={goalForm.info} onInfoChange={handleInfoChange} />
       <GoalsExerciseList
         exercises={goalForm.exercises}
         onOpenModal={handleOpenSelectModal}
