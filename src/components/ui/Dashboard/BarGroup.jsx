@@ -1,6 +1,5 @@
 import "./BarGroup.css";
 
-
 const BarGroup = ({ data, maxScale }) => {
   const { part, current, max } = data;
 
@@ -14,23 +13,19 @@ const BarGroup = ({ data, maxScale }) => {
 
   return (
     <div className="weight-chart__bar-group">
-      
-
       <div className="weight-chart__bar-wrapper">
-        {/* 최대 무게 막대 */}
-        <div
-          className="weight-chart__bar weight-chart__bar--max"
-          style={{ height: `${maxBarHeight}%` }}
-        ></div>
         {/* 이번주 무게 막대 */}
         <div
           className="weight-chart__bar weight-chart__bar--current"
           style={{ height: `${currentBarHeight}%` }}
         ></div>
+        {/* 최대 무게 막대 */}
+        <div
+          className="weight-chart__bar weight-chart__bar--max"
+          style={{ height: `${maxBarHeight}%` }}
+        ></div>
       </div>
-    <div className="weight-chart__value-label">
-        {formatWeight(current)}
-      </div>
+      <div className="weight-chart__value-label">{formatWeight(current)}</div>
       <div className="weight-chart__part-label">{part}</div>
     </div>
   );
