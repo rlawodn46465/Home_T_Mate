@@ -2,7 +2,7 @@ import { useState, useCallback } from "react";
 
 import { createGoal, updateGoal } from "../services/api/goalApi";
 
-// 루틴 저장(생성/수정)
+// 목표 저장(생성/수정)
 export const useGoalSave = (isEditMode, goalId) => {
   const [isSaving, setIsSaving] = useState(false);
   const [error, setError] = useState(null);
@@ -19,7 +19,7 @@ export const useGoalSave = (isEditMode, goalId) => {
           await updateGoal(goalId, goalDataToSave);
           result = {
             success: true,
-            message: "루틴이 성공적으로 수정되었습니다.",
+            message: "목표가 성공적으로 수정되었습니다.",
             id: goalId,
           };
         } else {
@@ -27,7 +27,7 @@ export const useGoalSave = (isEditMode, goalId) => {
           const newId = await createGoal(goalDataToSave);
           result = {
             success: true,
-            message: "새 루틴이 성공적으로 생성되었습니다.",
+            message: "새 목표가 성공적으로 생성되었습니다.",
             id: newId,
           };
         }

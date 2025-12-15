@@ -28,7 +28,7 @@ const GoalsListPage = () => {
   const { goals, refreshGoals } = useGoals();
   const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
-  // 루틴 리스트 불러올 곳
+  // 목표 리스트 불러올 곳
   const filteredGoals = useMemo(() => {
     return goals.filter((goal) => {
       const typeMatch = activeTab === "전체" || goal.goalTypeLabel === activeTab;
@@ -48,15 +48,15 @@ const GoalsListPage = () => {
     async (id, action) => {
       // 실제 상태 변경, API 호출 등 로직 구현
       if (action === "삭제") {
-        const isConfirmed = window.confirm("정말 루틴을 삭제하시겠습니까?");
+        const isConfirmed = window.confirm("정말 목표를 삭제하시겠습니까?");
 
         if (isConfirmed) {
           try {
             await deleteGoalHandler(id);
-            alert("루틴이 성공적으로 삭제되었습니다.");
+            alert("목표가 성공적으로 삭제되었습니다.");
             refreshGoals();
           } catch (error) {
-            alert(error.message || "루틴 삭제 중 오류가 발생했습니다.");
+            alert(error.message || "목표 삭제 중 오류가 발생했습니다.");
           }
         }
       }
@@ -103,7 +103,7 @@ const GoalsListPage = () => {
           />
         ))}
         {filteredGoals.length === 0 && (
-          <p className="no-results">표시할 루틴이 없습니다.</p>
+          <p className="no-results">표시할 목표가 없습니다.</p>
         )}
       </div>
     </div>

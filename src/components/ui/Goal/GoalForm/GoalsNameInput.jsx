@@ -4,7 +4,7 @@ import "./GoalsNameInput.css";
 
 const GoalsNameInput = ({ initialName, onNameChange }) => {
   const [isEditing, setIsEditing] = useState(false);
-  const [currentName, setCurrentName] = useState(initialName || "새 루틴 이름");
+  const [currentName, setCurrentName] = useState(initialName || "새 목표 이름");
 
   useEffect(() => {
     if(initialName){

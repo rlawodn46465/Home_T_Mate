@@ -9,7 +9,7 @@ const mapServerDataToForm = (serverData) => {
     : "goal";
   return {
     info: {
-      name: serverData.name || "새 루틴",
+      name: serverData.name || "새 목표",
       goalType: goalType,
       goalWeeks: serverData.goalWeeks || 1,
     },
@@ -31,14 +31,14 @@ const mapServerDataToForm = (serverData) => {
 // 폼 초기값 상태
 const getDefaultForm = (isEditMode) => ({
   info: {
-    name: isEditMode ? "기존 루틴 이름" : "새 루틴",
-    goalType: "goal",
+    name: isEditMode ? "기존 목표 이름" : "새 목표",
+    goalType: "routine",
     goalWeeks: 1,
   },
   exercises: [],
 });
 
-// 루틴 폼의 모든 상태와 핸들러 관리
+// 목표 폼의 모든 상태와 핸들러 관리
 const useGoalForm = (isEditMode, initialGoal) => {
   const [goalForm, setGoalForm] = useState(() => {
     if (isEditMode && initialGoal) {
@@ -60,7 +60,7 @@ const useGoalForm = (isEditMode, initialGoal) => {
     }
   }, [isEditMode, initialGoal]);
 
-  // 루틴 정보 업데이트 핸들러
+  // 목표 정보 업데이트 핸들러
   const handleInfoChange = useCallback((field, value) => {
     setGoalForm((prev) => ({
       ...prev,
@@ -91,7 +91,7 @@ const useGoalForm = (isEditMode, initialGoal) => {
       days: [],
     }));
 
-    // 루틴 상태 업데이트
+    // 목표 상태 업데이트
     setGoalForm((prev) => ({
       ...prev,
       exercises: [...prev.exercises, ...exercisesToAdd],

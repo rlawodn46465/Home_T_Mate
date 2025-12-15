@@ -5,7 +5,7 @@ import {
   updateExerciseSession,
 } from "../services/api/historyApi";
 
-// 루틴 목록 상태 관리, API 통신 훅
+// 목표 목록 상태 관리, API 통신 훅
 export const useHistorys = () => {
   const [historys, setHistorys] = useState([]);
   const [loading, setLoading] = useState(true);

@@ -181,7 +181,7 @@ const LoadGoalTab = ({ recordId, initialData, initialDate }) => {
     const exercisesToSave = exercisesForSelectedDay;
 
     if (exercisesToSave.length === 0) {
-      alert("⚠️ 선택한 날짜에 해당하는 운동 루틴이 없습니다.");
+      alert("⚠️ 선택한 날짜에 해당하는 운동 목표가 없습니다.");
       return;
     }
 
@@ -272,7 +272,7 @@ const LoadGoalTab = ({ recordId, initialData, initialDate }) => {
               </div>
             ))
           ) : (
-            <div className="no-data-text">등록된 루틴이 없습니다.</div>
+            <div className="no-data-text">등록된 목표가 없습니다.</div>
           )}
         </div>
       )}

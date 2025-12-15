@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchGoals, fetchTodayGoals } from "../services/api/goalApi";
 
-// 루틴 목록 상태 관리, API 통신 훅
+// 목표 목록 상태 관리, API 통신 훅
 export const useGoals = () => {
   const [goals, setGoals] = useState([]);
   const [loading, setLoading] = useState(true);

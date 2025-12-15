@@ -47,7 +47,7 @@ const CommunityListItem = ({
               <li className="community-list-item__meta-item">
                 <img
                   src={training_icon}
-                  alt="루틴 아이콘"
+                  alt="목표 아이콘"
                   className="community-list-item__icon"
                 />
               </li>
