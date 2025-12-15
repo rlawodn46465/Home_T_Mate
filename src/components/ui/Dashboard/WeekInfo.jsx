@@ -18,8 +18,14 @@ const WeekInfo = () => {
     );
   }
 
-  const { currentWeek, weeklyMuscles, todayMinutes, weeklyAverageMinutes } =
-    data;
+  const {
+    currentWeek,
+    weeklyTargetMuscles,
+    todayMinutes,
+    weeklyAverageMinutes,
+  } = data;
+
+  console.log(weeklyTargetMuscles);
 
   return (
     <div className="week-info__container">
@@ -27,7 +33,7 @@ const WeekInfo = () => {
       <div className="week-info__content-wrapper">
         {/* 1. 좌측: 근육 맵 시각화 */}
         <div className="week-info__muscle-map-wrapper">
-          <MuscleMap selectedTags={weeklyMuscles} />
+          <MuscleMap selectedTags={weeklyTargetMuscles} />
         </div>
 
         {/* 2. 우측: 정보 섹션 */}

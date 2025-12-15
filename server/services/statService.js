@@ -48,7 +48,9 @@ const getWeeklyStats = async (userId) => {
   ]);
 
   // 운동한 근육 부위 목록
-  const muscles = [...new Set(histories.map((h) => h.exerciseInfo.category))];
+  const weeklyTargetMuscles = [
+    ...new Set(histories.flatMap((h) => h.exerciseInfo.targetMuscles)),
+  ];
 
   // 요일별 시간 계산
   const weekData = Array(7)
@@ -87,7 +89,7 @@ const getWeeklyStats = async (userId) => {
     currentWeek: weekData,
     todayMinutes,
     weeklyAverageMinutes: avgMinutes,
-    weeklyMuscles: muscles,
+    weeklyTargetMuscles,
   };
 };
 
