@@ -28,7 +28,6 @@ const getExerciseRecords = asyncHandler(async (req, res) => {
   }
 
   const records = await goalService.getDailyExerciseRecords(userId, date);
-  console.log(records);
   res.status(200).json({ success: true, data: records });
 });
 
@@ -59,7 +58,6 @@ const updateGoal = asyncHandler(async (req, res) => {
     req.user._id,
     req.body
   );
-  console.log(updated);
   res.status(200).json({ success: true, id: updated._id });
 });
 
