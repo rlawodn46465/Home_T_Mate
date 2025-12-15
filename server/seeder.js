@@ -208,7 +208,7 @@ const exercises = [
   },
   {
     name: "바벨 플랫 벤치 프레스",
-    category: "상체",
+    category: ["가슴", "어깨", "팔"],
     targetMuscles: ["가슴", "어깨", "삼두"],
     equipment: ["바벨", "벤치"],
     description: {
@@ -252,7 +252,7 @@ const exercises = [
   },
   {
     name: "시티드 덤벨 숄더 프레스",
-    category: "상체",
+    category: ["어깨", "팔"],
     targetMuscles: ["어깨", "삼두"],
     equipment: ["덤벨"],
     description: {
@@ -293,7 +293,7 @@ const exercises = [
   },
   {
     name: "덤벨 프론트 레이즈",
-    category: "상체",
+    category: ["어깨"],
     targetMuscles: ["어깨"],
     equipment: ["덤벨"],
     description: {
@@ -340,7 +340,7 @@ const exercises = [
   },
   {
     name: "벤치 딥스",
-    category: "상체",
+    category: ["가슴", "어깨", "팔"],
     targetMuscles: ["가슴", "어깨", "삼두"],
     equipment: ["맨몸", "벤치"],
     description: {
@@ -381,7 +381,7 @@ const exercises = [
   },
   {
     name: "덤벨 해머 컬",
-    category: "상체",
+    category: ["팔"],
     targetMuscles: ["이두", "전완"],
     equipment: ["덤벨"],
     description: {
@@ -425,7 +425,7 @@ const exercises = [
   },
   {
     name: "바이씨클 크런치",
-    category: "복부",
+    category: ["코어"],
     targetMuscles: ["복근"],
     equipment: ["맨몸"],
     description: {
@@ -469,7 +469,7 @@ const exercises = [
   },
   {
     name: "크런치",
-    category: "복부",
+    category: ["코어"],
     targetMuscles: ["복근"],
     equipment: ["맨몸"],
     description: {
@@ -509,7 +509,7 @@ const exercises = [
   },
   {
     name: "레그 레이즈",
-    category: "복부",
+    category: ["코어"],
     targetMuscles: ["복근"],
     equipment: ["맨몸"],
     description: {
@@ -550,7 +550,7 @@ const exercises = [
   },
   {
     name: "런지",
-    category: "하체",
+    category: ["하체"],
     targetMuscles: ["대퇴사두", "종아리"],
     equipment: ["맨몸"],
     description: {
@@ -594,7 +594,7 @@ const exercises = [
   },
   {
     name: "스쿼트",
-    category: "하체",
+    category: ["하체"],
     targetMuscles: ["대퇴사두"],
     equipment: ["맨몸"],
     description: {
@@ -642,7 +642,7 @@ const exercises = [
 
   {
     name: "덤벨 업라이트 로우",
-    category: "상체",
+    category: ["어깨", "팔", "등"],
     targetMuscles: ["어깨", "이두", "승모"],
     equipment: ["덤벨"],
     description: {
@@ -684,7 +684,7 @@ const exercises = [
 
   {
     name: "스탠딩 바벨 카프 레이즈",
-    category: "하체",
+    category: ["하체"],
     targetMuscles: ["종아리"],
     equipment: ["바벨"],
     description: {
