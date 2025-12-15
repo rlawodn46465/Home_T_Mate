@@ -25,8 +25,6 @@ const WeekInfo = () => {
     weeklyAverageMinutes,
   } = data;
 
-  console.log(weeklyTargetMuscles);
-
   return (
     <div className="week-info__container">
       <h4 className="section-title">이번주</h4>

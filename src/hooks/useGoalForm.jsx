@@ -168,7 +168,6 @@ const useGoalForm = (isEditMode, initialGoal) => {
 
   // 저장을 위해 서버 전송용 데이터로 가공
   const getGoalDataForSave = useCallback(() => {
-    console.log(goalForm);
     return {
       name: goalForm.info.name,
       // 첫 글자만 대문자로 변환
