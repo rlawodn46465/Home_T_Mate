@@ -6,6 +6,7 @@ import { usePostDetail } from "../../hooks/usePostDetail";
 import { useCallback, useState } from "react";
 import { useComments } from "../../hooks/useComments";
 import CommentList from "../../components/ui/Community/CommentList";
+import Button from "../../components/common/Button";
 
 const HeartIcon = ({ filled }) => (
   <span
@@ -22,7 +23,8 @@ const HeartIcon = ({ filled }) => (
 const PostDetailPage = () => {
   const { postId } = useParams();
   const { navigateWithPanel } = usePersistentPanel();
-  const { post, loading, error, handleToggleLike } = usePostDetail(postId);
+  const { post, loading, error, isAuthor, handleToggleLike, handleDeletePost } =
+    usePostDetail(postId);
 
   const [newCommentContent, setNewCommentContent] = useState("");
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -105,6 +107,17 @@ const PostDetailPage = () => {
             </div>
           )}
         </div>
+
+        {isAuthor && (
+          <div className="post-actions-buttons">
+            <Button
+              text="수정"
+              onClick={() => navigateWithPanel(`/community/edit/${postId}`)}
+              variant="secondary"
+            />
+            <Button text="삭제" onClick={handleDeletePost} variant="danger" />
+          </div>
+        )}
 
         <div className="post-like-section">
           <button className="like-button" onClick={handleToggleLike}>

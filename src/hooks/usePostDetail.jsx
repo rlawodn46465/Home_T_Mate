@@ -1,10 +1,18 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchPostDetail, togglePostLike } from "../services/api/postApi";
+import {
+  fetchPostDetail,
+  togglePostLike,
+  deletePost,
+} from "../services/api/postApi";
+import { usePersistentPanel } from "./usePersistentPanel";
+import { useAuth } from "./useAuth";
 
 export const usePostDetail = (postId) => {
+  const { user } = useAuth();
   const [post, setPost] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const { navigateWithPanel } = usePersistentPanel();
 
   // 게시글 상세 정보 가져오기
   const getPost = useCallback(async () => {
@@ -48,16 +56,44 @@ export const usePostDetail = (postId) => {
     }
   }, [post]);
 
+  // 게시글 삭제 핸들러
+  const handleDeletePost = useCallback(async () => {
+    if (!post) return;
+
+    if (user?.user.id !== post.author.id) {
+      alert("게시글 삭제 권한이 없습니다.");
+      return;
+    }
+
+    if (!window.confirm("정말로 이 게시글을 삭제하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      await deletePost(postId);
+      alert("게시글이 성공적으로 삭제되었습니다.");
+      navigateWithPanel("/community");
+    } catch (err) {
+      console.error("게시글 삭제 실패:", err);
+      alert(err.message || "게시글 삭제에 실패했습니다.");
+    }
+  }, [postId, post, user?.user.id, navigateWithPanel]);
+
   // 마운트 시 데이터 로드
   useEffect(() => {
     getPost();
   }, [getPost]);
+
+  // 게시글 작성자 여부 판단
+  const isAuthor = post && user ? post.author.id === user.user.id : false;
 
   return {
     post,
     loading,
     error,
     handleToggleLike,
-    refreshPost: getPost, // 댓글 작성 후 갱신 등을 위해 노출
+    refreshPost: getPost,
+    handleDeletePost,
+    isAuthor,
   };
 };

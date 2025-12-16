@@ -20,6 +20,12 @@ export const createPost = async (postData) => {
   return response.data.data;
 };
 
+// 게시글 삭제
+export const deletePost = async (postId) => {
+  const response = await api.delete(`${API_POST_PATH}/${postId}`);
+  return response.data;
+};
+
 // 게시글 상세 보기
 export const fetchPostDetail = async (postId) => {
   const response = await api.get(`${API_POST_PATH}/${postId}`);
