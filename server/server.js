@@ -13,6 +13,7 @@ const goalRouter = require("./routes/goals");
 const historyRouter = require("./routes/history");
 const statsRouter = require("./routes/stats");
 const postRouter = require("./routes/posts");
+const commentRouter = require("./routes/comments");
 
 // DB 연결 실행
 connectDB();
@@ -39,6 +40,7 @@ app.use("/api/v1/goals", goalRouter);
 app.use("/api/v1/history", historyRouter);
 app.use("/api/v1/stats", statsRouter);
 app.use("/api/v1/posts", postRouter);
+app.use("/api/v1/comments", commentRouter);
 
 app.get("/", (req, res) => {
   res.status(200).json({
