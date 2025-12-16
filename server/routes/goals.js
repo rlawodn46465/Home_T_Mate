@@ -10,6 +10,7 @@ const {
   deleteGoal,
   getExerciseRecords,
   getTodayGoals,
+  getUserGoalDetail,
 } = require("../controllers/goalController");
 
 // 루틴/챌린지 목록 조회 (GET /api/v1/goals)
@@ -32,5 +33,8 @@ router.put("/:routineId", protect, updateGoal);
 
 // 특정 루틴/챌린지 삭제 (DELETE /api/v1/goals/:routineId)
 router.delete("/:routineId", protect, deleteGoal);
+
+// 다운로드 한 목표 관리
+router.get("/:userGoalId", protect, getUserGoalDetail);
 
 module.exports = router;

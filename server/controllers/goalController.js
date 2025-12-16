@@ -41,7 +41,7 @@ const getGoalDetail = asyncHandler(async (req, res) => {
 // GET /api/v1/goals/today
 const getTodayGoals = asyncHandler(async (req, res) => {
   const todayGoals = await goalService.getTodayGoals(req.user.id);
-  
+
   res.status(200).json({ success: true, data: todayGoals });
 });
 
@@ -67,6 +67,19 @@ const deleteGoal = asyncHandler(async (req, res) => {
   res.status(200).json({ success: true, message: "삭제되었습니다." });
 });
 
+// GET /api/v1/goals/:userGoalId (다운로드한 목표 관리)
+const getUserGoalDetail = asyncHandler(async (req, res) => {
+  const { userGoalId } = req.params;
+  const userId = req.user._id;
+
+  const result = await goalService.getUserGoalDetail(userGoalId, userId);
+
+  res.status(200).json({
+    success: true,
+    data: result,
+  });
+});
+
 module.exports = {
   getGoals,
   getGoalDetail,
@@ -75,4 +88,5 @@ module.exports = {
   deleteGoal,
   getExerciseRecords,
   getTodayGoals,
+  getUserGoalDetail,
 };

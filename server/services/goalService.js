@@ -331,6 +331,52 @@ const deleteGoal = async (userGoalId, userId) => {
   return goal;
 };
 
+// 다운로드 목표 관리
+const getUserGoalDetail = async (userGoalId, userId) => {
+  const userGoal = await UserGoal.findById(userGoalId)
+    .populate("goalId")
+    .populate("customExercises.exerciseId");
+
+  if (!userGoal) {
+    throw new NotFoundError("루틴을 찾을 수 없습니다.");
+  }
+
+  if (userGoal.userId.toString() !== userId.toString()) {
+    throw new BadRequestError("접근 권한이 없습니다.");
+  }
+
+  const goal = userGoal.goalId;
+
+  // 커스텀 우선
+  const exercises = userGoal.isModified
+    ? userGoal.customExercises
+    : goal.exercises;
+
+  return {
+    id: userGoal._id,
+    name: goal.name,
+    goalType: goal.goalType,
+    status: userGoal.status,
+    durationWeek: userGoal.durationWeek,
+    currentWeek: userGoal.currentWeek,
+
+    exercises: exercises.map((ex) => ({
+      exerciseId: ex.exerciseId?._id,
+      name: ex.exerciseId?.name,
+      days: ex.days,
+      restTime: ex.restTime,
+      sets: ex.sets,
+    })),
+
+    progress: {
+      completedSessions: userGoal.completedSessions,
+      activeDays: userGoal.activeDays,
+    },
+
+    createdAt: userGoal.createdAt,
+  };
+};
+
 module.exports = {
   getUserGoals,
   getGoalDetail,
@@ -339,4 +385,5 @@ module.exports = {
   deleteGoal,
   getDailyExerciseRecords,
   getTodayGoals,
+  getUserGoalDetail,
 };
