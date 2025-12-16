@@ -153,7 +153,188 @@ const createPost = async (userId, postData) => {
   return newPost;
 };
 
+// 게시글 상세 조회
+const getPostDetail = async (postId, userId) => {
+  const post = await Post.findById(postId)
+    .populate({
+      path: "author",
+      select: "nickname name details.themMode",
+    })
+    .populate({
+      path: "linkedGoal",
+      select: "name goalType durationWeek parts exercises downloadCount",
+    });
+
+  if (!post) {
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
+  }
+
+  // 조회수 증가
+  post.viewCount += 1;
+  await post.save();
+
+  const isLiked = post.likes.some(
+    (likeUserId) => likeUserId.toString() === userId.toString()
+  );
+
+  return {
+    id: post._id,
+    title: post.title,
+    content: post.content,
+    boardType: post.boardType,
+    createdAt: post.createdAt,
+
+    author: {
+      id: post.author._id,
+      nickname: post.author.nickname,
+    },
+
+    viewCount: post.viewCount,
+    likeCount: post.likes.length,
+    isLiked,
+
+    images: post.images,
+
+    linkedGoal: post.linkedGoal
+      ? {
+          id: post.linkedGoal._id,
+          name: post.linkedGoal.name,
+          goalType: post.linkedGoal.goalType,
+          durationWeek: post.linkedGoal.durationWeek,
+          parts: post.linkedGoal.parts,
+          exercises: post.linkedGoal.exercises,
+          downloadCount: post.linkedGoal.downloadCount,
+        }
+      : null,
+  };
+};
+
+// 게시글 좋아요
+const toggleLike = async (postId, userId) => {
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
+  }
+
+  const likedIndex = post.likes.findIndex(
+    (id) => id.toString() === userId.toString()
+  );
+
+  let isLiked;
+
+  if (likedIndex === -1) {
+    post.likes.push(userId);
+    isLiked = true;
+  } else {
+    post.likes.splice(likedIndex, 1);
+    isLiked = false;
+  }
+
+  await post.save();
+
+  return {
+    postId: post._id,
+    isLiked,
+    likeCount: post.likes.length,
+  };
+};
+
+// 목표 다운로드
+const downloadGoalFromPost = async (postId, userId) => {
+  const post = await Post.findById(postId).populate("linkedGoal");
+
+  if (!post) {
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
+  }
+
+  if (!post.linkedGoal) {
+    throw new BadRequestError("공유된 목표가 없는 게시글입니다.");
+  }
+
+  const goal = post.linkedGoal;
+
+  // 이미 가져간 목표인지 체크
+  const alreadyDownloaded = await UserGoal.findOne({
+    userId,
+    goalId: goal._id,
+  });
+
+  if (alreadyDownloaded) {
+    throw new BadRequestError("이미 가져간 목표입니다.");
+  }
+
+  // UserGoal 생성
+  const userGoal = await UserGoal.create({
+    userId,
+    goalId: goal._id,
+    durationWeek: goal.durationWeek,
+    status: "진행중",
+  });
+
+  // Goal 다운로드 수 증가
+  goal.downloadCount += 1;
+  await goal.save();
+
+  // Post 공유 횟수 증가
+  post.shareCount += 1;
+  await post.save();
+
+  return {
+    userGoalId: userGoal._id,
+    goalId: goal._id,
+    goalName: goal.name,
+    message: "운동 목표를 내 루틴으로 가져왔습니다.",
+  };
+};
+
+// 게시글 수정
+const updatePost = async (postId, userId, data) => {
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
+  }
+
+  if (post.author.toString() !== userId.toString()) {
+    throw new BadRequestError("수정 권한이 없습니다.");
+  }
+
+  const { title, content, images } = data;
+
+  if (title) post.title = title;
+  if (content) post.content = content;
+  if (images) post.images = images;
+
+  await post.save();
+
+  return {
+    postId: post._id,
+    message: "게시글이 수정되었습니다.",
+  };
+};
+
+// 게시글 삭제
+const deletePost = async (postId, userId) => {
+  const post = await Post.findById(postId);
+
+  if (!post) {
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
+  }
+
+  if (post.author.toString() !== userId.toString()) {
+    throw new BadRequestError("삭제 권한이 없습니다.");
+  }
+
+  await post.deleteOne();
+};
+
 module.exports = {
   getPosts,
   createPost,
+  getPostDetail,
+  toggleLike,
+  downloadGoalFromPost,
+  updatePost,
+  deletePost,
 };
