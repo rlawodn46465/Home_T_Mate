@@ -19,3 +19,15 @@ export const createPost = async (postData) => {
 
   return response.data.data;
 };
+
+// 게시글 상세 보기
+export const fetchPostDetail = async (postId) => {
+  const response = await api.get(`${API_POST_PATH}/${postId}`);
+  return response.data.data;
+};
+
+// 게시글 좋아요 토글
+export const togglePostLike = async (postId) => {
+  const response = await api.post(`${API_POST_PATH}/${postId}/like`);
+  return response.data;
+};

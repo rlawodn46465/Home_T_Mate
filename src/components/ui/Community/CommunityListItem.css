@@ -1,6 +1,7 @@
 .community-list-item {
   width: 100%;
   margin-bottom: 20px;
+  cursor: pointer;
 }
 
 .community-list-item__category {

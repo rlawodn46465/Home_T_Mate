@@ -55,7 +55,7 @@ const PostCreatePage = () => {
 
           <div className="header-right">
             <Button
-              text="글쓰기"
+              text="작성"
               onClick={handleSubmit}
               disabled={isCreating}
             />

@@ -1,6 +1,7 @@
 import { Route, Routes } from "react-router-dom";
 import CommunityPage from "./Community/CommunityPage";
 import PostCreatePage from "./Community/PostCreatePage";
+import PostDetailPage from "./Community/PostDetailPage";
 import RightPanel from "./RightPanel";
 import "./MainLayout.css";
 
@@ -11,6 +12,7 @@ const MainLayout = () => {
         <Routes>
           <Route path="/" element={<CommunityPage />} />
           <Route path="/write" element={<PostCreatePage />} />
+          <Route path="/:postId" element={<PostDetailPage />} />
         </Routes>
       </div>
       <div className="right-content">

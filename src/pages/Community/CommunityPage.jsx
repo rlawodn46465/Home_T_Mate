@@ -3,11 +3,13 @@ import CommunityList from "../../components/ui/Community/CommunityList";
 import CommunityControls from "../../components/ui/Community/CommunityControls";
 import { usePosts } from "../../hooks/usePosts";
 import "./CommunityPage.css";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useCallback } from "react";
+import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 const CommunityPage = () => {
-  const navigate = useNavigate();
-  const location = useLocation();
+  const { navigateWithPanel, setQueryParams: setPanelParams } =
+    usePersistentPanel();
+
   const initialBoardType = null;
 
   const { posts, pagination, isLoading, error, queryParams, setQueryParams } =
@@ -25,9 +27,16 @@ const CommunityPage = () => {
 
   // 글쓰기 버튼 클릭 핸들러
   const handleWriteClick = () => {
-    const currentSearch = location.search;
-    navigate(`write${currentSearch}`);
+    navigateWithPanel("/community/write");
   };
+
+  // 게시글 클릭 핸들러
+  const handlePostClick = useCallback(
+    (postId) => {
+      navigateWithPanel(`/community/${postId}`);
+    },
+    [navigateWithPanel]
+  );
 
   return (
     <div className="community-container">
@@ -45,6 +54,7 @@ const CommunityPage = () => {
         isLoading={isLoading}
         error={error}
         onPageChange={handlePageChange}
+        onItemClick={handlePostClick}
       />
     </div>
   );

@@ -13,6 +13,7 @@ const CommunityList = ({
   isLoading,
   error,
   onPageChange,
+  onItemClick,
 }) => {
   // const listItem = [
   //   {
@@ -97,6 +98,7 @@ const CommunityList = ({
           goal={item.hasGoal}
           like={item.likeCount}
           date={new Date(item.createdAt).toLocaleDateString()}
+          onClick={() => onItemClick(item.id)}
         />
       ))}
 

@@ -17,11 +17,12 @@ const CommunityListItem = ({
   goal,
   like,
   date,
+  onClick,
 }) => {
   const tagText = TAG_MAP[tag] || "카테고리 없음";
 
   return (
-    <div className="community-list-item">
+    <div className="community-list-item" onClick={onClick}>
       <p className="community-list-item__category">{tagText}</p>
       <div className="community-list-item__content-wrap">
         <div className="community-list-item__main-info">
