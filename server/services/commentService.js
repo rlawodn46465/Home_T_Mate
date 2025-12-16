@@ -5,7 +5,7 @@ const { BadRequestError, NotFoundError } = require("../utils/errorHandler");
 // 댓글 목록 조회
 const getCommentsByPost = async (postId) => {
   const comments = await Comment.find({ post: postId })
-    .populate("author", "nickname")
+    .populate("author", "nickname _id")
     .sort({ createdAt: 1 })
     .lean();
 
