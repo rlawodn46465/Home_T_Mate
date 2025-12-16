@@ -12,3 +12,10 @@ export const fetchPost = async (params = {}) => {
     pagination: response.data.pagination,
   };
 };
+
+// 게시글 작성
+export const createPost = async (postData) => {
+  const response = await api.post(API_POST_PATH, postData);
+
+  return response.data.data;
+};

@@ -1,0 +1,126 @@
+/* ------------------------------------------- */
+/* 1. 전체 컨테이너 및 반응형 레이아웃 */
+/* ------------------------------------------- */
+
+.post-create-page-container {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto; /* 중앙 정렬 */
+}
+
+.post-create-page {
+  width: 100%;
+  max-width: 1024px;
+  padding: 0 16px;
+  background-color: white;
+  box-shadow: none;
+}
+
+@media (min-width: 1024px) {
+  .post-create-page {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* ------------------------------------------- */
+/* 2. 헤더 및 기능 옵션 스타일링 */
+/* ------------------------------------------- */
+
+.post-create-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.post-create-header .header-left {
+  flex-grow: 1;
+}
+
+.post-create-header .header-right {
+  flex-shrink: 0;
+  min-width: 80.33px;
+}
+
+.post-create-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.board-type-select-wrap {
+  border-bottom: 1px solid rgba(189, 189, 189, 1);
+}
+
+@media (min-width: 1024px) {
+  .post-create-box {
+    flex-direction: row;
+    gap: 30px;
+  }
+
+  .board-type-select-wrap {
+    flex-grow: 1;
+  }
+
+  .feature-options {
+    flex-grow: 1;
+  }
+}
+
+/* 기능 옵션 영역 (이미지/루틴 추가하기) */
+.feature-options {
+  display: flex;
+  align-items: center;
+  padding: 15px 0 10px 0;
+  border-bottom: 1px solid rgba(189, 189, 189, 1);
+}
+
+.feature-item {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  color: #333;
+  font-size: 15px;
+}
+
+.feature-item-icon {
+  width: 18px;
+}
+
+/* ------------------------------------------- */
+/* 3. 입력 필드 스타일링 */
+/* ------------------------------------------- */
+
+/* 제목 입력 필드 */
+.title-input {
+  width: 100%;
+  padding: 10.5px 0;
+  padding-left: 10px;
+  border-bottom: 1px solid rgba(189, 189, 189, 1);
+  font-size: 18px;
+  font-weight: 600;
+  outline: none;
+  background-color: white;
+}
+
+.title-input::placeholder {
+  color: #aaa;
+}
+
+/* 내용 입력 영역 */
+.content-textarea {
+  width: 100%;
+  min-height: 500px;
+  padding: 10.5px 0;
+  padding-left: 10px;
+  border: none;
+  font-size: 16px;
+  resize: none;
+  outline: none;
+  caret-color: rgba(47, 47, 47, 1)
+}
+
+.content-textarea::placeholder {
+  color: #aaa;
+}
