@@ -13,7 +13,7 @@ const getPosts = asyncHandler(async (req, res) => {
   });
 });
 
-// POST /api/v1/posts
+// POST /api/v1/posts (게시글 작성)
 const createPost = asyncHandler(async (req, res) => {
   const userId = req.user._id;
   const newPost = await postService.createPost(userId, req.body);
