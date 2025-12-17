@@ -1,30 +1,33 @@
 import { useState, useCallback } from "react";
-import { createPost } from "../services/api/postApi";
+import { createPost, updatePost } from "../services/api/postApi";
 
 export const usePostCreate = () => {
-  const [isCreating, setIsCreating] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  const createPosting = useCallback(async (postData) => {
-    if (isCreating) return null;
+  const savePost = useCallback(
+    async (postData, postId = null) => {
+      if (isProcessing) return null;
 
-    setIsCreating(true);
-    try {
-      const result = await createPost(postData);
-
-      return result;
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.message ||
-        "게시글 작성 중 알 수 없는 오류가 발생했습니다.";
-      alert(errorMessage);
-      return null;
-    } finally {
-      setIsCreating(false);
-    }
-  }, [isCreating]);
+      setIsProcessing(true);
+      try {
+        const result = postId
+          ? await updatePost(postId, postData)
+          : await createPost(postData);
+        return result;
+      } catch (err) {
+        const errorMessage =
+          err.response?.data?.message || "저장 중 오류가 발생했습니다.";
+        alert(errorMessage);
+        return null;
+      } finally {
+        setIsProcessing(false);
+      }
+    },
+    [isProcessing]
+  );
 
   return {
-    createPosting,
-    isCreating,
+    savePost,
+    isProcessing,
   };
 };

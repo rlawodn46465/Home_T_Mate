@@ -5,6 +5,8 @@
 }
 
 .left-content {
+  display: flex;
+  justify-content: center;
   width: 100%;
   padding: 20px;
   box-shadow: inset -2px 2px 8px rgba(189, 189, 189, 1);

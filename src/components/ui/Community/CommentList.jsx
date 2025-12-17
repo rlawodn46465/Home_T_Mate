@@ -29,11 +29,11 @@ const CommentList = ({ comments, isLoading, onDelete }) => {
           <div className="comment-author-section">
             <span className="comment-icon">👤</span>
             <span className="comment-author">
-              {comment.author || "알 수 없음"}
+              {comment.author?.nickname || "알 수 없는 사용자"}
             </span>
             {isAuthenticated &&
               !comment.isDeleted &&
-              currentUserId === comment.author.id && (
+              currentUserId === comment.author?.id && (
                 <button
                   className="comment-delete-btn"
                   onClick={() => {

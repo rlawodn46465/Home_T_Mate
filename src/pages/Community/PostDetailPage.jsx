@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import { useComments } from "../../hooks/useComments";
 import CommentList from "../../components/ui/Community/CommentList";
 import Button from "../../components/common/Button";
+import training_icon from "../../assets/images/training_icon.svg";
 
 const HeartIcon = ({ filled }) => (
   <span
@@ -78,7 +79,9 @@ const PostDetailPage = () => {
         <div className="post-meta-info">
           <div className="meta-left">
             <span className="author-icon">👤</span>
-            <span className="author-name">{post.author.nickname}</span>
+            <span className="author-name">
+              {post.author?.nickname || "알 수 없는 사용자"}
+            </span>
           </div>
           <div className="meta-right">
             <span>조회수 : {post.viewCount}</span>
@@ -99,10 +102,16 @@ const PostDetailPage = () => {
           <p className="post-text">{post.content}</p>
           {post.linkedGoal && (
             <div className="linked-goal-card">
-              <h3>🏋️ {post.linkedGoal.name}</h3>
-              <p>{post.linkedGoal.durationWeek}주차 프로그램</p>
+              <h3>
+                <img
+                  src={training_icon}
+                  alt="목표 아이콘"
+                  className="community-list-item__icon"
+                />{" "}
+                {post.linkedGoal.name}
+              </h3>
               <button onClick={() => alert("루틴 다운로드 기능 구현 필요")}>
-                루틴 가져오기 ({post.linkedGoal.downloadCount})
+                목표 가져오기 ({post.linkedGoal.downloadCount})
               </button>
             </div>
           )}

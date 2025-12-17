@@ -26,6 +26,12 @@ export const deletePost = async (postId) => {
   return response.data;
 };
 
+// 게시글 수정
+export const updatePost = async (postId, postData) => {
+  const response = await api.put(`${API_POST_PATH}/${postId}`, postData);
+  return response.data.data;
+};
+
 // 게시글 상세 보기
 export const fetchPostDetail = async (postId) => {
   const response = await api.get(`${API_POST_PATH}/${postId}`);

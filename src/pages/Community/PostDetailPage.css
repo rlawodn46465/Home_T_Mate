@@ -1,6 +1,7 @@
 /* PostDetailPage.css */
 
 .post-detail-container {
+  max-width: 1024px;
   width: 100%;
   min-height: 100vh;
   background-color: #fff;
@@ -35,11 +36,6 @@
   font-weight: bold;
   color: #333;
   margin: 0 0 10px 0;
-  /* 이미지처럼 제목 밑에 파란 줄 포인트 */
-  text-decoration: underline; 
-  text-decoration-color: #a3e635; /* 연두색 형광펜 느낌 */
-  text-decoration-thickness: 3px;
-  text-underline-offset: 3px;
 }
 
 /* 메타 정보 (작성자, 조회수) */
@@ -93,13 +89,20 @@
   margin-bottom: 15px;
 }
 
-/* 공유 루틴 카드 */
+/* 공유 목표 카드 */
 .linked-goal-card {
+  max-width: 300px;
   margin-top: 20px;
   padding: 15px;
   background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
+  border: 1px solid #b5bac0;
   border-radius: 8px;
+}
+
+.linked-goal-card button{
+  border: none;
+  cursor: pointer;
+  color: #3b82f6;
 }
 
 .post-actions-buttons{

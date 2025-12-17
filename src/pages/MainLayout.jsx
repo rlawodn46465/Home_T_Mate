@@ -12,6 +12,7 @@ const MainLayout = () => {
         <Routes>
           <Route path="/" element={<CommunityPage />} />
           <Route path="/write" element={<PostCreatePage />} />
+          <Route path="/edit/:postId" element={<PostCreatePage />} />
           <Route path="/:postId" element={<PostDetailPage />} />
         </Routes>
       </div>
