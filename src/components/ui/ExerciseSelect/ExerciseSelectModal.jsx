@@ -4,6 +4,7 @@ import { useDragScroll } from "../../../hooks/useDragScroll";
 
 import "./ExerciseSelectModal.css";
 import MuscleMap from "../../common/MuscleMap";
+import Spinner from "../../common/Spinner";
 
 const MUSCLE_PARTS = [
   "전체",
@@ -156,7 +157,7 @@ const ExerciseSelectModal = ({ onClose, onSelect }) => {
         </div>
         <div className="exercise-list-container">
           {isLoading ? (
-            <p className="loading-state">운동 목록을 불러오는 중...</p>
+            <Spinner text={"운동 목록을 불러오는 중..."}/>
           ) : exercises.length === 0 ? (
             <p className="no-result">결과가 없습니다.</p>
           ) : (

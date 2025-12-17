@@ -11,6 +11,8 @@ import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
 import "./ExerciseListPage.css";
 import { useHistoryActions } from "../../hooks/useHistoryActions";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
+import Spinner from "../../components/common/Spinner";
+import ErrorMessage from "../../components/common/ErrorMessage";
 
 const TABS = ["전체", "개별운동", "루틴", "챌린지"];
 const ALL_DAYS = ["월", "화", "수", "목", "금", "토", "일"];
@@ -136,11 +138,11 @@ const ExerciseListPage = () => {
       />
       <div className="exercise-list-box">
         {isLoading || isProcessing ? (
-          <div className="loading-message">
-            {isProcessing ? "처리 중..." : "데이터를 불러오는 중입니다..."}
-          </div>
+          <Spinner
+            text={isProcessing ? "처리 중..." : "데이터를 불러오는 중입니다..."}
+          />
         ) : error ? (
-          <div className="error-message">데이터 로딩 실패</div>
+          <ErrorMessage message="데이터 로딩 실패" />
         ) : (
           <ExerciseList
             activeTab={activeTab}

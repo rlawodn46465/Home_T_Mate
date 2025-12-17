@@ -1,4 +1,5 @@
 import { useAuth } from "../../../hooks/useAuth"; // 로그인된 사용자 ID를 가져오기 위해 필요
+import Spinner from "../../common/Spinner";
 import "./CommentList.css";
 const formatDate = (dateString) => {
   const date = new Date(dateString);
@@ -15,7 +16,7 @@ const CommentList = ({ comments, isLoading, onDelete }) => {
   const currentUserId = user?.user.id;
 
   if (isLoading) {
-    return <div className="comment-loading">댓글 로딩 중...</div>;
+    return <Spinner text={"댓글 로딩 중..."}/>;
   }
 
   if (!comments || comments.length === 0) {

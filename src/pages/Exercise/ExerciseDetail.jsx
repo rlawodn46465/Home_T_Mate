@@ -7,6 +7,8 @@ import ExerciseRecordSection from "../../components/ui/Exercise/ExerciseRecordSe
 import { fetchExerciseDetail } from "../../services/api/goalApi";
 import PageHeader from "../../components/common/PageHeader";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
+import Spinner from "../../components/common/Spinner";
+import ErrorMessage from "../../components/common/ErrorMessage";
 
 const ExerciseDetail = ({ exerciseId }) => {
   const TABS = ["설명", "나의 기록"];
@@ -74,15 +76,11 @@ const ExerciseDetail = ({ exerciseId }) => {
   };
 
   if (isLoading) {
-    return (
-      <div className="loading-state">
-        🏃‍♂️ 운동 상세 정보를 불러오는 중입니다...
-      </div>
-    );
+    return <Spinner text={"🏃‍♂️ 운동 상세 정보를 불러오는 중입니다..."} />;
   }
 
   if (error) {
-    return <div className="error-state">❌ 오류: {error}</div>;
+    return <ErrorMessage message={`❌ 오류: ${error}`} />;
   }
 
   if (!detailData) {

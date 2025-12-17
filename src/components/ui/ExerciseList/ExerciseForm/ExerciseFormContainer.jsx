@@ -3,6 +3,8 @@ import ExerciseInfoSection from "./ExerciseInfoSection";
 import { fetchSingleRecord } from "../../../../services/api/historyApi";
 import "./ExerciseFormContainer.css";
 import { usePersistentPanel } from "../../../../hooks/usePersistentPanel";
+import Spinner from "../../../common/Spinner";
+import ErrorMessage from "../../../common/ErrorMessage";
 
 const ExerciseFormContainer = ({ recordId }) => {
   const { navigateToPanel } = usePersistentPanel();
@@ -33,12 +35,12 @@ const ExerciseFormContainer = ({ recordId }) => {
 
   if (isLoading) {
     return (
-      <div className="loading-message">기록 데이터를 로드 중입니다...</div>
+      <Spinner text={"기록 데이터를 로드 중입니다..."}/>
     );
   }
 
   if (error) {
-    return <div className="error-message">{error}</div>;
+    return <ErrorMessage message="기록을 불러오지 못했습니다."/>
   }
 
   // 헤더 제목 변경
