@@ -12,8 +12,34 @@ export const usePersistentPanel = () => {
 
   // 특정 경로로 이동할 때 현재 쿼리 파라미터 자동 유지
   const navigateWithPanel = (to) => {
-    const search = location.search;
-    navigate(`${to}${search}`);
+    const currentParams = new URLSearchParams(location.search);
+
+    let targetPath = location.pathname;
+    let newParamsString = "";
+
+    if (to.startsWith("?")) {
+      newParamsString = to;
+    } else if (to.includes("?")) {
+      const parts = to.split("?");
+      targetPath = parts[0];
+      newParamsString = "?" + parts[1];
+    } else {
+      targetPath = to;
+    }
+
+    const newParams = new URLSearchParams(newParamsString);
+
+    newParams.forEach((value, key) => {
+      currentParams.set(key, value);
+    });
+
+    if (newParams.has("panel")) {
+      currentParams.delete("goalId");
+      currentParams.delete("exerciseId");
+      currentParams.delete("recordId");
+    }
+
+    navigate(`${targetPath}?${currentParams.toString()}`);
   };
 
   // 패널 쿼리값만 변경
