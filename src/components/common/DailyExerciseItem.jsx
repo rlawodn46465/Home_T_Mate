@@ -14,6 +14,8 @@ const DailyExerciseItem = ({
   onAddSet,
   onRemoveSet,
   isDaySelector = true,
+  isReadOnly = false,
+  isDurationVisible = true,
 }) => {
   const { id, name, sets, restTime, days, targetMuscles, duration } = exercise;
   const [isExpanded, setIsExpanded] = useState(true);
@@ -79,29 +81,34 @@ const DailyExerciseItem = ({
   );
 
   return (
-    <div className="exercise-item-card" ref={containerRef}>
+    <div
+      className={`exercise-item-card ${isReadOnly ? "readonly" : ""}`}
+      ref={containerRef}
+    >
       <div className="item-header" onClick={() => setIsExpanded(!isExpanded)}>
         <div className="item-header-left">
           <ToggleComponents isUp={isExpanded} />
           <h3 className="exercise-title">
             {name}
             <span className="set-count">{sets.length}세트</span>
-            {duration > 0 && (
+            {!isReadOnly && duration && isDurationVisible > 0 && (
               <span className="duration-preview"> · {duration}분</span>
             )}
           </h3>
         </div>
-        <div className="remove-button-wrapper">
-          <button
-            className="remove-exercise-button"
-            onClick={(e) => {
-              e.stopPropagation();
-              if (typeof onRemove === "function") onRemove(id);
-            }}
-          >
-            &times;
-          </button>
-        </div>
+        {!isReadOnly && (
+          <div className="remove-button-wrapper">
+            <button
+              className="remove-exercise-button"
+              onClick={(e) => {
+                e.stopPropagation();
+                if (typeof onRemove === "function") onRemove(id);
+              }}
+            >
+              &times;
+            </button>
+          </div>
+        )}
       </div>
 
       {isExpanded && (
@@ -116,24 +123,25 @@ const DailyExerciseItem = ({
                 <span className="rest-time-label">휴식(세트간)</span>
                 <input
                   type="text"
-                  inputMode="numeric"
+                  readOnly={isReadOnly}
                   className="item-input"
                   value={restTime}
-                  onChange={handleRestTimeChange}
+                  onChange={!isReadOnly ? handleRestTimeChange : undefined}
                 />
                 <span className="rest-time-unit">초</span>
               </div>
-              <div className="duration-group">
-                <span className="rest-time-label">운동 시간</span>
-                <input
-                  type="text"
-                  inputMode="numeric"
-                  className="item-input"
-                  value={duration || 0}
-                  onChange={handleDurationChange}
-                />
-                <span className="rest-time-unit">분</span>
-              </div>
+              {!isReadOnly && isDurationVisible && (
+                <div className="duration-group">
+                  <span className="rest-time-label">운동 시간</span>
+                  <input
+                    type="text"
+                    className="item-input"
+                    value={duration || 0}
+                    onChange={handleDurationChange}
+                  />
+                  <span className="rest-time-unit">분</span>
+                </div>
+              )}
             </div>
             <div className="item-info-box">
               <MuscleMap selectedTags={targetMuscles?.join(", ")} />
@@ -162,7 +170,7 @@ const DailyExerciseItem = ({
                         }
                       />
                       <span className="unit-label">회</span>
-                      {sets.length > 1 && (
+                      {!isReadOnly && sets.length > 1 && (
                         <button
                           className="remove-set-button"
                           onClick={() => handleRemoveSet(set.id)}
@@ -172,9 +180,11 @@ const DailyExerciseItem = ({
                       )}
                     </div>
                   ))}
-                  <button className="add-set-button" onClick={handleAddSet}>
-                    + 세트 추가
-                  </button>
+                  {!isReadOnly && (
+                    <button className="add-set-button" onClick={handleAddSet}>
+                      + 세트 추가
+                    </button>
+                  )}
                 </div>
               </div>
             </div>
