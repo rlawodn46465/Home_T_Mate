@@ -1,5 +1,5 @@
 import { useAuth } from "../../../hooks/useAuth"; // 로그인된 사용자 ID를 가져오기 위해 필요
-import "./CommentList.css"
+import "./CommentList.css";
 const formatDate = (dateString) => {
   const date = new Date(dateString);
   return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(
@@ -12,7 +12,7 @@ const formatDate = (dateString) => {
 
 const CommentList = ({ comments, isLoading, onDelete }) => {
   const { user, isAuthenticated } = useAuth();
-  const currentUserId = user?._id;
+  const currentUserId = user?.user.id;
 
   if (isLoading) {
     return <div className="comment-loading">댓글 로딩 중...</div>;
@@ -21,8 +21,6 @@ const CommentList = ({ comments, isLoading, onDelete }) => {
   if (!comments || comments.length === 0) {
     return <div className="comment-no-data">첫 댓글을 작성해보세요!</div>;
   }
-
-  console.log(comments);
 
   return (
     <div className="comment-list">

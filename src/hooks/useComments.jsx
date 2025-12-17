@@ -50,31 +50,36 @@ export const useComments = (postId, initialCommentCount = 0) => {
   );
 
   // 3. 댓글 삭제
-  const handleDeleteComment = useCallback(async (commentId, authorId) => {
-    if (!user || user._id !== authorId) {
-      alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
-      return;
-    }
+  const handleDeleteComment = useCallback(
+    async (commentId, authorId) => {
+      const currentUserId = user?.user.id || user?.user._id;
 
-    try {
-      await deleteComment(commentId);
+      if (!user || String(currentUserId) !== String(authorId)) {
+        alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
+        return;
+      }
 
-      // 소프트 삭제 처리 (UI에서 바로 "삭제된 댓글입니다"로 변경)
-      setComments((prev) =>
-        prev.map((c) =>
-          c.id === commentId
-            ? { ...c, content: "삭제된 댓글입니다.", isDeleted: true }
-            : c
-        )
-      );
-      setCommentCount((prev) => prev - 1); // 캐시된 댓글 수 감소
+      try {
+        await deleteComment(commentId);
 
-      alert("댓글이 삭제되었습니다.");
-    } catch (err) {
-      alert(err.message || "댓글 삭제에 실패했습니다.");
-      console.error("댓글 삭제 실패:", err);
-    }
-  }, []);
+        // 소프트 삭제 처리 (UI에서 바로 "삭제된 댓글입니다"로 변경)
+        setComments((prev) =>
+          prev.map((c) =>
+            c.id === commentId
+              ? { ...c, content: "삭제된 댓글입니다.", isDeleted: true }
+              : c
+          )
+        );
+        setCommentCount((prev) => prev - 1); // 캐시된 댓글 수 감소
+
+        alert("댓글이 삭제되었습니다.");
+      } catch (err) {
+        alert(err.message || "댓글 삭제에 실패했습니다.");
+        console.error("댓글 삭제 실패:", err);
+      }
+    },
+    [user, deleteComment]
+  );
 
   useEffect(() => {
     loadComments();
