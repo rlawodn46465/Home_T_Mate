@@ -5,7 +5,7 @@ const asyncHandler = require("../utils/asyncHandler");
 const router = express.Router();
 const authService = require("../services/authService");
 const { CustomError } = require("../utils/errorHandler");
-const {protect} = require("../middlewares/authMiddleware");
+const { protect } = require("../middlewares/authMiddleware");
 
 const FRONTEND_LOGIN_REDIRECT_URL = process.env.FRONTEND_LOGIN_REDIRECT_URL;
 
@@ -20,10 +20,13 @@ const sendAuthResponse = (res, result) => {
   });
 
   // 신규 가입 여부에 따라 리다이렉트 경로 분리 / 신규 : 기존
-  const redirectPath = result.isNewUser ? '/login/signup-complete' : '/login/success';
+  const redirectPath = result.isNewUser
+    ? "/login/signup-complete"
+    : "/login/success"; // 프론트 특정 경로로 리다이렉트
 
-  // 프론트 특정 경로로 리다이렉트
-  res.redirect(`${FRONTEND_LOGIN_REDIRECT_URL}${redirectPath}?token=${result.token}`);
+  res.redirect(
+    `${FRONTEND_LOGIN_REDIRECT_URL}${redirectPath}?token=${result.token}`
+  );
 };
 
 // 구글 로그인 라우트 (GET /api/v1/auth/google)
@@ -116,41 +119,52 @@ router.get(
 );
 
 // 인증/토큰 관리 라우트 (POST /api/v1/auth/refresh)
-router.post('/refresh', asyncHandler(async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
+router.post(
+  "/refresh",
+  asyncHandler(async (req, res) => {
+    const refreshToken = req.cookies.refreshToken;
 
-  if(!refreshToken){
-    throw new CustomError('리프레시 토큰이 없습니다.', 401);
-  }
+    if (!refreshToken) {
+      throw new CustomError("리프레시 토큰이 없습니다.", 401);
+    }
 
-  const newAccessToken = await authService.refreshToken(refreshToken);
+    const newAccessToken = await authService.refreshToken(refreshToken);
 
-  res.status(200).json({
-    success: true,
-    accessToken: newAccessToken
-  });
-}));
+    res.status(200).json({
+      success: true,
+      accessToken: newAccessToken,
+    });
+  })
+);
 
 // 로그인된 사용자 정보 반환 (GET /api/v1/auth/me)
-router.get('/me', protect, asyncHandler(async (req, res) => {
-  res.status(200).json({
-    success: true,
-    user: {
-      id: req.user._id,
-      name: req.user.name,
-      email: req.user.email,
-    }
-  });
-}));
+router.get(
+  "/me",
+  protect,
+  asyncHandler(async (req, res) => {
+    res.status(200).json({
+      success: true,
+      user: {
+        id: req.user._id,
+        name: req.user.name,
+        nickname: req.user.nickname,
+        email: req.user.email,
+      },
+    });
+  })
+);
 
 // 로그아웃 (POST /api/v1/auth/logout)
-router.post('/logout', asyncHandler(async (req, res) => {
-  authService.clearAuthCookies(res);
+router.post(
+  "/logout",
+  asyncHandler(async (req, res) => {
+    authService.clearAuthCookies(res);
 
-  res.status(200).json({
-    success: true,
-    message: '로그아웃 성공'
-  });
-}));
+    res.status(200).json({
+      success: true,
+      message: "로그아웃 성공",
+    });
+  })
+);
 
 module.exports = router;

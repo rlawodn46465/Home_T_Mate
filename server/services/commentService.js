@@ -12,7 +12,9 @@ const getCommentsByPost = async (postId) => {
   return comments.map((comment) => ({
     id: comment._id,
     content: comment.isDeleted ? "삭제된 댓글입니다." : comment.content,
-    author: comment.author ? comment.author.nickname : "알 수 없음",
+    author: comment.author
+      ? { id: comment.author._id, nickname: comment.author.nickname }
+      : { id: null, nickname: "알 수 없음" },
     isDeleted: comment.isDeleted,
     createdAt: comment.createdAt,
   }));
@@ -35,14 +37,28 @@ const createComment = async (postId, userId, content) => {
     content,
   });
 
+  const populatedComment = await Comment.findById(comment._id).populate(
+    "author",
+    "nickname _id"
+  );
+
+  if (!populatedComment) {
+    throw new Error("댓글 생성 후 데이터를 불러오는 데 실패했습니다.");
+  }
+
   // 댓글 수 증가
   post.commentCount += 1;
   await post.save();
 
   return {
-    id: comment._id,
-    content: comment.content,
-    createdAt: comment.createdAt,
+    id: populatedComment._id,
+    content: populatedComment.content,
+    author: {
+      id: populatedComment.author?._id?.toString() || userId.toString(),
+      nickname: populatedComment.author?.nickname || "사용자",
+    },
+    isDeleted: populatedComment.isDeleted,
+    createdAt: populatedComment.createdAt,
   };
 };
 
