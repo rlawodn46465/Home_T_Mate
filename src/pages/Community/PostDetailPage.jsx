@@ -8,6 +8,7 @@ import { useComments } from "../../hooks/useComments";
 import CommentList from "../../components/ui/Community/CommentList";
 import Button from "../../components/common/Button";
 import training_icon from "../../assets/images/training_icon.svg";
+import { useGoalDownload } from "../../hooks/useGoalDownload";
 
 const HeartIcon = ({ filled }) => (
   <span
@@ -23,6 +24,7 @@ const HeartIcon = ({ filled }) => (
 
 const PostDetailPage = () => {
   const { postId } = useParams();
+  const { handleDownload, isDownloading } = useGoalDownload();
   const { navigateWithPanel } = usePersistentPanel();
   const { post, loading, error, isAuthor, handleToggleLike, handleDeletePost } =
     usePostDetail(postId);
@@ -102,17 +104,43 @@ const PostDetailPage = () => {
           <p className="post-text">{post.content}</p>
           {post.linkedGoal && (
             <div className="linked-goal-card">
-              <h3>
-                <img
-                  src={training_icon}
-                  alt="목표 아이콘"
-                  className="community-list-item__icon"
-                />{" "}
-                {post.linkedGoal.name}
-              </h3>
-              <button onClick={() => alert("루틴 다운로드 기능 구현 필요")}>
-                목표 가져오기 ({post.linkedGoal.downloadCount})
-              </button>
+              <div className="goal-info-card">
+                <div className="goal-header">
+                  <div className="goal-title-area">
+                    <span
+                      className={`goal-badge ${post.linkedGoal.goalType.toLowerCase()}`}
+                    >
+                      {post.linkedGoal.goalType === "ROUTINE"
+                        ? "루틴"
+                        : "챌린지"}
+                    </span>
+                    <h3>{post.linkedGoal.name}</h3>
+                  </div>
+                  <div className="goal-meta">
+                    <span>📂 {post.linkedGoal.downloadCount}회 저장됨</span>
+                  </div>
+                </div>
+
+                <div className="goal-body">
+                  <div className="goal-parts">
+                    {post.linkedGoal.parts?.map((part, idx) => (
+                      <span key={idx} className="part-tag">
+                        #{part}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  className="download-goal-btn"
+                  disabled={isDownloading}
+                  onClick={() => handleDownload(post.id, post.linkedGoal.name)}
+                >
+                  {isDownloading
+                    ? "가져오는 중..."
+                    : "🔥 이 루틴 내 목록에 담기"}
+                </button>
+              </div>
             </div>
           )}
         </div>

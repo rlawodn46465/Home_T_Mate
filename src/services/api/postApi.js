@@ -43,3 +43,9 @@ export const togglePostLike = async (postId) => {
   const response = await api.post(`${API_POST_PATH}/${postId}/like`);
   return response.data;
 };
+
+// 게시글에서 공유된 목표를 내 목표로 가져오기
+export const downloadGoal = async (postId) => {
+  const response = await api.post(`/api/v1/posts/${postId}/download-goal`);
+  return response.data;
+};
