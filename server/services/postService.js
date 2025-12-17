@@ -4,6 +4,63 @@ const UserGoal = require("../models/UserGoal");
 const Goal = require("../models/Goal"); // Goal 모델 필요
 const { BadRequestError, NotFoundError } = require("../utils/errorHandler");
 
+// 게시글 작성/수정 시 연결된 목표 처리 공통 로직
+const processLinkedGoal = async (userId, title, userGoalId, manualGoalData) => {
+  let linkedGoalId = null;
+
+  // 기존 목표를 선택하여 공유하는 경우
+  if (userGoalId) {
+    const userGoal = await UserGoal.findById(userGoalId).populate("goalId");
+    if (!userGoal)
+      throw new NotFoundError("공유하려는 목표 정보를 찾을 수 없습니다.");
+    if (userGoal.userId.toString() !== userId.toString()) {
+      throw new BadRequestError("본인의 목표만 공유할 수 있습니다.");
+    }
+
+    if (userGoal.isModified) {
+      const newSnapshotGoal = await Goal.create({
+        creatorId: userId,
+        name: `${title} (공유된 루틴)`,
+        goalType: userGoal.goalId.goalType,
+        durationWeek: userGoal.durationWeek,
+        parts: userGoal.goalId.parts,
+        isUserPublic: true,
+        isBoardPublic: true,
+        exercises: userGoal.customExercises,
+      });
+      linkedGoalId = newSnapshotGoal._id;
+    } else {
+      linkedGoalId = userGoal.goalId._id;
+    }
+  }
+  // 목표 없이 직접 입력한 경우
+  else if (manualGoalData && manualGoalData.customExercises) {
+    const allParts = manualGoalData.customExercises.reduce((acc, ex) => {
+      return [...acc, ...(ex.targetMuscles || [])];
+    }, []);
+
+    const newManualGoal = await Goal.create({
+      creatorId: userId,
+      name: manualGoalData.name || `${title} (루틴)`,
+      goalType: "ROUTINE",
+      parts: [...new Set(allParts)],
+      isUserPublic: true,
+      isBoardPublic: true,
+      exercises: manualGoalData.customExercises.map((ex) => ({
+        exerciseId: ex.exerciseId,
+        name: ex.name,
+        targetMuscles: ex.targetMuscles,
+        days: ex.days || [],
+        restTime: ex.restTime || 60,
+        sets: ex.sets,
+      })),
+    });
+    linkedGoalId = newManualGoal._id;
+  }
+
+  return linkedGoalId;
+};
+
 // 게시글 목록 조회 서비스
 const getPosts = async (queryData) => {
   const {
@@ -86,71 +143,69 @@ const getPosts = async (queryData) => {
 
 // 게시글 작성 서비스
 const createPost = async (userId, postData) => {
-  const { title, content, boardType, userGoalId } = postData;
+  const { title, content, boardType, userGoalId, manualGoalData } = postData;
 
-  // 1. 필수 값 검증
+  // 필수 값 검증
   if (!title || !content || !boardType) {
     throw new BadRequestError("제목, 내용, 게시판 종류는 필수입니다.");
   }
 
-  let linkedGoalId = null;
+  const linkedGoalId = await processLinkedGoal(
+    userId,
+    title,
+    userGoalId,
+    manualGoalData
+  );
 
-  // 2. 목표 공유 로직 (userGoalId가 넘어왔을 경우)
-  if (userGoalId) {
-    const userGoal = await UserGoal.findById(userGoalId).populate("goalId");
-
-    if (!userGoal) {
-      throw new NotFoundError("공유하려는 목표 정보를 찾을 수 없습니다.");
-    }
-
-    // 본인의 목표인지 확인
-    if (userGoal.userId.toString() !== userId.toString()) {
-      throw new BadRequestError("본인의 목표만 공유할 수 있습니다.");
-    }
-
-    // CASE A: 사용자가 루틴을 커스텀(수정)해서 사용 중인 경우
-    // -> 수정된 내용을 바탕으로 새로운 Goal(스냅샷)을 생성하여 공유
-    if (userGoal.isModified) {
-      const newSnapshotGoal = await Goal.create({
-        creatorId: userId,
-        name: `${title} (공유된 루틴)`, // 혹은 userGoal.goalId.name + " 커스텀"
-        goalType: userGoal.goalId.goalType, // 원본 타입 유지
-        durationWeek: userGoal.durationWeek,
-        parts: userGoal.goalId.parts, // 운동 부위는 재계산하거나 원본 유지
-        isUserPublic: true, // 공유 목적이므로 공개
-        isBoardPublic: true,
-
-        // 중요: 커스텀된 운동 목록을 Goal 형식으로 변환하여 저장
-        exercises: userGoal.customExercises.map((ex) => ({
-          exerciseId: ex.exerciseId,
-          targetMuscles: [], // 필요 시 populate해서 채워야 함 (지금은 생략 가능)
-          days: ex.days,
-          restTime: ex.restTime,
-          sets: ex.sets,
-        })),
-      });
-
-      linkedGoalId = newSnapshotGoal._id;
-    }
-    // CASE B: 원본 그대로 사용 중인 경우
-    // -> 원본 Goal ID를 그대로 연결
-    else {
-      linkedGoalId = userGoal.goalId._id;
-    }
-  }
-
-  // 3. 게시글 생성
+  // 게시글 생성
   const newPost = await Post.create({
     author: userId,
     title,
     content,
     boardType,
-    linkedGoal: linkedGoalId, // 공유할 목표 ID (없으면 null)
-    shareCount: 0,
-    images: postData.images || [], // 이미지 배열이 있다면 저장
+    linkedGoal: linkedGoalId,
   });
 
   return newPost;
+};
+
+// 게시글 수정
+const updatePost = async (postId, userId, data) => {
+  const { title, content, images, boardType, userGoalId, manualGoalData } =
+    data;
+
+  // 기존 게시글 조회 및 권한 확인
+  const post = await Post.findById(postId);
+  if (!post) {
+    throw new NotFoundError("게시글을 찾을 수 없습니다.");
+  }
+
+  if (post.author.toString() !== userId.toString()) {
+    throw new BadRequestError("수정 권한이 없습니다.");
+  }
+
+  // 필수 데이터 업데이트
+  if (title) post.title = title;
+  if (content) post.content = content;
+  if (images) post.images = images;
+  if (boardType) post.boardType = boardType;
+
+  // 목표 변경 사항 처리
+  if (userGoalId !== undefined || manualGoalData !== undefined) {
+    post.linkedGoal = await processLinkedGoal(
+      userId,
+      post.title,
+      userGoalId,
+      manualGoalData
+    );
+  }
+
+  await post.save();
+
+  return {
+    postId: post._id,
+    message: "게시글이 수정되었습니다.",
+  };
 };
 
 // 게시글 상세 조회
@@ -285,32 +340,6 @@ const downloadGoalFromPost = async (postId, userId) => {
     goalId: goal._id,
     goalName: goal.name,
     message: "운동 목표를 내 루틴으로 가져왔습니다.",
-  };
-};
-
-// 게시글 수정
-const updatePost = async (postId, userId, data) => {
-  const post = await Post.findById(postId);
-
-  if (!post) {
-    throw new NotFoundError("게시글을 찾을 수 없습니다.");
-  }
-
-  if (post.author.toString() !== userId.toString()) {
-    throw new BadRequestError("수정 권한이 없습니다.");
-  }
-
-  const { title, content, images } = data;
-
-  if (title) post.title = title;
-  if (content) post.content = content;
-  if (images) post.images = images;
-
-  await post.save();
-
-  return {
-    postId: post._id,
-    message: "게시글이 수정되었습니다.",
   };
 };
 
