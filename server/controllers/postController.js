@@ -30,7 +30,7 @@ const createPost = asyncHandler(async (req, res) => {
 // GET /api/v1/posts/:postId (게시글 상세 조회)
 const getPostDetail = asyncHandler(async (req, res) => {
   const { postId } = req.params;
-  const userId = req.user._id;
+  const userId = req.user ? req.user._id : null;
 
   const post = await postService.getPostDetail(postId, userId);
 

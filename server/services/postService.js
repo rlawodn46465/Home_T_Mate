@@ -228,9 +228,9 @@ const getPostDetail = async (postId, userId) => {
   post.viewCount += 1;
   await post.save();
 
-  const isLiked = post.likes.some(
-    (likeUserId) => likeUserId.toString() === userId.toString()
-  );
+  const isLiked = userId
+    ? post.likes.some((id) => id.toString() === userId.toString())
+    : false;
 
   return {
     id: post._id,

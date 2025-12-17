@@ -8,7 +8,7 @@ const {
 } = require("../controllers/commentController");
 
 // 댓글 조회 (GET /api/v1/posts/:postId/comments)
-router.get("/posts/:postId", protect, getCommentsByPost);
+router.get("/posts/:postId", getCommentsByPost);
 
 // 댓글 작성 (POST /api/v1/posts/:postId/comments)
 router.post("/posts/:postId", protect, createComment);

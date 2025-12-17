@@ -14,7 +14,7 @@ const {
 
 // 게시글 목록 조회 (검색, 페이징, 카테고리 필터 포함)
 // GET /api/v1/posts?boardType=free&page=1&limit=10&search=검색어
-router.get("/", protect, getPosts);
+router.get("/", getPosts);
 
 // 게시글 작성 (POST /api/v1/posts)
 router.post("/", protect, createPost);
@@ -26,7 +26,7 @@ router.put("/:postId", protect, updatePost);
 router.delete("/:postId", protect, deletePost);
 
 // 게시글 상세 조회 (GET /api/v1/posts/:postId)
-router.get("/:postId", protect, getPostDetail);
+router.get("/:postId", getPostDetail);
 
 // 게시글 좋아요 (POST /api/v1/posts/:postId/like)
 router.post("/:postId/like", protect, toggleLike);
