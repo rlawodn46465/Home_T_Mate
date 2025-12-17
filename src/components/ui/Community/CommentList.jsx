@@ -22,6 +22,8 @@ const CommentList = ({ comments, isLoading, onDelete }) => {
     return <div className="comment-no-data">첫 댓글을 작성해보세요!</div>;
   }
 
+  console.log(comments);
+
   return (
     <div className="comment-list">
       {comments.map((comment) => (

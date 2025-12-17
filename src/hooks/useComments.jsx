@@ -35,16 +35,7 @@ export const useComments = (postId, initialCommentCount = 0) => {
       if (!content.trim() || !user) return;
 
       try {
-        const newCommentData = await createComment(postId, { content });
-
-        const newComment = {
-          ...newCommentData,
-          author: {
-            id: user._id,
-            nickname: user.nickname,
-          },
-          isDeleted: false,
-        };
+        const newComment = await createComment(postId, { content });
 
         setComments((prev) => [...prev, newComment]);
         setCommentCount((prev) => prev + 1);
@@ -52,7 +43,6 @@ export const useComments = (postId, initialCommentCount = 0) => {
         return true;
       } catch (err) {
         alert(err.message || "댓글 작성에 실패했습니다.");
-        console.error("댓글 작성 실패:", err);
         return false;
       }
     },
