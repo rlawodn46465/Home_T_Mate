@@ -22,6 +22,7 @@ const GoalsExerciseList = ({
           onAddSet={onAddSet}
           onRemoveSet={onRemoveSet}
           isDaySelector={true}
+          isDurationVisible={false}
         />
       ))}
       <div className="add-exercise-area">
