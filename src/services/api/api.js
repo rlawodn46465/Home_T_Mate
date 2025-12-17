@@ -72,8 +72,8 @@ api.interceptors.response.use(
     }
 
     // 그 외의 에러 처리
-    if (status === 401) {
-      console.error("인증에 실패했습니다. 리다이렉트중...");
+    if (status === 401 && originalRequest._retry) {
+      console.warn("인증 세션이 만료되었습니다. 다시 로그인해주세요.");
     }
 
     return Promise.reject(error);
