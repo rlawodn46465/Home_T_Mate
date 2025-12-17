@@ -5,10 +5,11 @@ import { usePosts } from "../../hooks/usePosts";
 import "./CommunityPage.css";
 import { useCallback } from "react";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
+import { useAuth } from "../../hooks/useAuth";
 
 const CommunityPage = () => {
-  const { navigateWithPanel, setQueryParams: setPanelParams } =
-    usePersistentPanel();
+  const { isAuthenticated } = useAuth();
+  const { navigateWithPanel } = usePersistentPanel();
 
   const initialBoardType = null;
 
@@ -42,7 +43,9 @@ const CommunityPage = () => {
     <div className="community-container">
       <div className="community-header">
         <h2>게시판</h2>
-        <Button text={"글쓰기"} onClick={handleWriteClick} />
+        {isAuthenticated && (
+          <Button text={"글쓰기"} onClick={handleWriteClick} />
+        )}
       </div>
       <CommunityControls
         currentQueryParams={queryParams}

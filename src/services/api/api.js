@@ -66,7 +66,6 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // 토큰 갱신 실패 시 (리프레시 토큰도 만료시)
         clearAuthTokens();
-        console.error("Token Refresh Failed. User must log in again.");
         throw refreshError;
       }
     }
