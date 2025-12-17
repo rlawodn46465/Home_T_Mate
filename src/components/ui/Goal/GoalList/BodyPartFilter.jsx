@@ -1,13 +1,15 @@
-import "./BodyPartFilter.css";
+import styles from "./BodyPartFilter.module.css";
 
 const BodyPartFilter = ({ parts, activePart, onPartChange }) => {
   return (
-    <div className="body-part-filter-scroll">
-      <div className="body-part-filter">
+    <div className={styles.bodyPartFilterScroll}>
+      <div className={styles.bodyPartFilter}>
         {parts.map((part) => (
           <button
             key={part}
-            className={`filter-button ${activePart === part ? "active" : ""}`}
+            className={`${styles.filterButton} ${
+              activePart === part ? styles.active : ""
+            }`}
             onClick={() => onPartChange(part)}
           >
             {part}

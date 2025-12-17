@@ -1,0 +1,116 @@
+.card {
+  position: relative;
+  padding: 10px 15px;
+  background-color: rgb(230, 230, 230);
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 10px;
+}
+
+.readonly .itemInput {
+  border: none;
+  background: transparent;
+  pointer-events: none;
+  text-align: center;
+  font-weight: bold;
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.headerLeft {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+}
+
+.title {
+  display: flex;
+  align-items: flex-end;
+  gap: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2f2f2f;
+}
+
+.setCount {
+  font-size: 12px;
+  font-weight: 400;
+  color: #989898;
+}
+
+.removeExerciseBtn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #2f2f2f;
+  font-size: 24px;
+  transition: color 0.2s;
+}
+
+.removeExerciseBtn:hover { color: #e72e28; }
+
+.daySelectionGroup {
+  display: flex;
+  justify-content: space-around;
+  margin: 15px 0;
+}
+
+.dayButtons { display: flex; gap: 5px; }
+
+.dayButton {
+  width: 23px;
+  height: 23px;
+  border-radius: 50%;
+  color: #656565;
+  border: none;
+  cursor: pointer;
+  font-size: 12px;
+  background: #dcdcdc;
+}
+
+.dayButtonActive {
+  background-color: #5155a3;
+  color: white;
+}
+
+.itemInput {
+  width: 40px;
+  text-align: center;
+  background-color: transparent;
+  border: none;
+  border-bottom: 2px solid #5155a3;
+  outline: none;
+}
+
+.setRow {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 30px;
+  background-color: #dcdcdc;
+  border-radius: 6px;
+  padding: 0 8px;
+  margin-bottom: 4px;
+}
+
+.setNumber {
+  font-size: 16px;
+  font-weight: 700;
+  color: #5155a3;
+  min-width: 15px;
+}
+
+.addSetBtn {
+  color: #989898;
+  width: 100%;
+  height: 30px;
+  background-color: #dcdcdc;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  margin-top: 5px;
+}

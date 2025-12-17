@@ -1,0 +1,34 @@
+.goalInfoSection {
+  margin-bottom: 5px;
+}
+
+.nameInputWrapper {
+  margin-bottom: 5px;
+}
+
+.toggleContainer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end; /* end 대신 표준 flex-end 사용 */
+}
+
+.goalWeeksWrapper {
+  font-size: 14px;
+}
+
+.goalWeekLabel {
+  font-weight: 500;
+}
+
+.goalWeekInput {
+  width: 45px;
+  background-color: transparent;
+  border: none;
+  border-bottom: 1px solid rgba(79, 70, 229, 1);
+  text-align: center;
+  outline: none;
+}
+
+.goalWeekUnit {
+  font-weight: 500;
+}

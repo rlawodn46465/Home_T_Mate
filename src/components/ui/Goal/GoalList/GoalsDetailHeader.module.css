@@ -1,0 +1,16 @@
+.goalsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.goalsDetailHeaderMenu {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+
+.goalsDetailIcon {
+  width: 30px;
+  cursor: pointer;
+}

@@ -1,0 +1,112 @@
+.goalCard {
+  margin-bottom: 20px;
+  cursor: pointer;
+  transition: opacity 0.3s;
+}
+
+.goalCardDeleting {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 4px;
+}
+
+.typeTag {
+  width: 60px;
+  height: 23px;
+  text-align: center;
+  line-height: 23px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+}
+
+/* 동적 클래스명을 위한 설정 */
+.typeTag루틴 {
+  background-color: rgba(69, 58, 245, 1);
+}
+
+.typeTag챌린지 {
+  background-color: rgba(124, 124, 124, 1);
+}
+
+.title {
+  width: 230px;
+  font-size: 16px;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin: 0;
+}
+
+.options {
+  position: relative;
+  z-index: 10;
+}
+
+.optionsBtn {
+  background: none;
+  border: none;
+  padding: 5px;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  opacity: 0.5;
+}
+
+.optionsBtn .dot {
+  display: block;
+  width: 4px;
+  height: 4px;
+  background-color: #777;
+  border-radius: 50%;
+}
+
+.info > p {
+  font-size: 12px;
+  margin-bottom: 4px;
+}
+
+.infoProgress {
+  display: flex;
+  gap: 4px;
+  font-size: 12px;
+  margin-bottom: 4px;
+  align-items: center;
+}
+
+.progressBarWrapper {
+  display: flex;
+  align-items: center;
+  width: 250px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(220, 220, 220, 1);
+}
+
+.progressBar {
+  height: 100%;
+  background-color: rgba(75, 179, 89, 1);
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progressBottom {
+  display: flex;
+  gap: 20px;
+  font-size: 12px;
+}
+
+.progressLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(152, 152, 152, 1);
+  margin-left: 5px;
+}

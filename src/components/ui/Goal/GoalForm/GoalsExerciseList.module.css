@@ -1,0 +1,20 @@
+.goalExerciseList {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.addExerciseArea {
+  text-align: center;
+}
+
+.addExerciseButton {
+  cursor: pointer;
+  font-size: 18px;
+  font-weight: 500;
+  color: rgba(81, 85, 163, 1);
+  border: none;
+  background: none; /* 버튼 스타일 초기화 추가 */
+  padding: 8px 0;
+}

@@ -1,0 +1,88 @@
+.container {
+  width: 100%;
+  max-width: 1024px;
+  margin: 0 auto;
+}
+
+.page {
+  width: 100%;
+  padding: 0 16px;
+  background-color: white;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 10px;
+}
+
+.headerLeft { flex-grow: 1; }
+.headerRight { flex-shrink: 0; min-width: 80px; }
+
+.createBox {
+  display: flex;
+  flex-direction: column;
+}
+
+.selectWrap, .featureOptionsContainer {
+  flex-grow: 1;
+  padding: 10.5px 0;
+  border-bottom: 1px solid rgba(189, 189, 189, 1);
+}
+
+.featureOptionsContainer {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.featureItem {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  cursor: pointer;
+  font-size: 15px;
+}
+
+.featureIcon { width: 18px; }
+
+.clearGoalBtn {
+  border: none;
+  background: none;
+  font-weight: 600;
+  color: #e72e28;
+  cursor: pointer;
+}
+
+.titleInput {
+  width: 100%;
+  padding: 15px 10px;
+  border: none;
+  border-bottom: 1px solid #bdbdbd;
+  font-size: 18px;
+  font-weight: 600;
+  outline: none;
+}
+
+.contentTextarea {
+  width: 100%;
+  min-height: 300px;
+  padding: 15px 10px;
+  border: none;
+  font-size: 16px;
+  resize: none;
+  outline: none;
+}
+
+.goalPanelWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+@media (min-width: 1024px) {
+  .page { box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
+  .createBox { flex-direction: row; gap: 30px; }
+}

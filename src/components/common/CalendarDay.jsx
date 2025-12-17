@@ -1,4 +1,5 @@
 import { getDay } from "date-fns";
+import styles from "./Calendar.module.css";
 
 const CalendarDay = ({
   date,
@@ -34,7 +35,7 @@ const CalendarDay = ({
 
   return (
     <div
-      className={`calendar-day-cell ${weekendClass} ${selectedClass} ${disabledClass}`}
+      className={`${styles.calendarDayCell} ${weekendClass} ${selectedClass} ${disabledClass}`}
       onClick={handleClick}
       style={{
         opacity: opacity,
@@ -42,9 +43,9 @@ const CalendarDay = ({
       }}
       title={isDisabled ? "선택할 수 없는 날짜" : ""}
     >
-      <div className={`day-number ${todayClass}`}>{dayOfMonth}</div>
-      <div className="day-content-area">{children}</div>
-      {isSelected && <div className="selected-dot" />}
+      <div className={`${styles.dayNumber} ${todayClass}`}>{dayOfMonth}</div>
+      <div className={styles.dayContentArea}>{children}</div>
+      {isSelected && <div className={styles.selectedDot} />}
     </div>
   );
 };

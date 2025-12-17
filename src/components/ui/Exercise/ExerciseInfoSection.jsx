@@ -1,14 +1,13 @@
-import "./ExerciseInfoSection.css";
+import styles from "./ExerciseInfoSection.module.css";
 import InstructionList from "./InstructionList";
 import MemoArea from "./MemoArea";
 
-const ExerciseInfoSection = ({ description, initialMemo, onMemoSave}) => {
-
+const ExerciseInfoSection = ({ description, initialMemo, onMemoSave }) => {
   return (
-    <div className="exercise-info-section">
-      <InstructionList description={description}/>
+    <section className={styles.container}>
+      <InstructionList description={description} />
       <MemoArea initialMemo={initialMemo} onSave={onMemoSave} />
-    </div>
+    </section>
   );
 };
 

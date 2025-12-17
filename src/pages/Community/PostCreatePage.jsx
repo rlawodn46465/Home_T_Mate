@@ -1,14 +1,16 @@
+import { useCallback, useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { usePostCreate } from "../../hooks/usePostCreate";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
-import { useCallback, useEffect, useState } from "react";
+import { usePostDetail } from "../../hooks/usePostDetail";
+
 import Button from "../../components/common/Button";
 import SelectBox from "../../components/ui/Community/SelectBox";
 import PageHeader from "../../components/common/PageHeader";
-import training_icon from "../../assets/images/training_icon.svg";
-import "./PostCreatePage.css";
 import GoalSelectionPanel from "../../components/ui/Community/GoalSelectionPanel";
-import { useParams } from "react-router-dom";
-import { usePostDetail } from "../../hooks/usePostDetail";
+
+import training_icon from "../../assets/images/training_icon.svg";
+import styles from "./PostCreatePage.module.css";
 
 const BOARD_TYPE_OPTIONS = [
   { value: "free", label: "자유게시판" },
@@ -21,27 +23,21 @@ const PostCreatePage = () => {
 
   const { savePost, isProcessing } = usePostCreate();
   const { navigateWithPanel } = usePersistentPanel();
-
   const { post: existingPost, loading: fetchingPost } = usePostDetail(postId);
 
-  // 폼 상태 관리
+  // 폼 필드 상태
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [boardType, setBoardType] = useState(BOARD_TYPE_OPTIONS[0].value);
-
-  // 목표 선택 패널 표시 상태
   const [isGoalPanelVisible, setIsGoalPanelVisible] = useState(false);
-  // 선택된 목표 ID 저장용
   const [selectedGoal, setSelectedGoal] = useState(null);
 
-  // 수정 모드 데이터세팅
+  // 수정 모드 시 기존 데이터 로드
   useEffect(() => {
     if (isEditMode && existingPost) {
       setTitle(existingPost.title);
       setContent(existingPost.content);
       setBoardType(existingPost.boardType);
-
-      // 기존에 연결된 목표가 있다면 selectedGoal 형식에 맞춰 세팅
       if (existingPost.linkedGoal) {
         setSelectedGoal({
           id: existingPost.linkedGoal.id,
@@ -52,7 +48,7 @@ const PostCreatePage = () => {
     }
   }, [isEditMode, existingPost]);
 
-  // 게시글 작성 핸들러
+  // 저장 처리 핸들러
   const handleSubmit = useCallback(async () => {
     if (isProcessing) return;
     if (!title.trim() || !content.trim()) {
@@ -64,10 +60,9 @@ const PostCreatePage = () => {
       title,
       content,
       boardType,
-      userGoalId:
-        selectedGoal && selectedGoal.id !== "manual" ? selectedGoal.id : null,
+      userGoalId: selectedGoal?.id !== "manual" ? selectedGoal?.id : null,
       manualGoalData:
-        selectedGoal && selectedGoal.id === "manual"
+        selectedGoal?.id === "manual"
           ? {
               name: selectedGoal.name,
               customExercises: selectedGoal.customExercises,
@@ -76,14 +71,9 @@ const PostCreatePage = () => {
     };
 
     const result = await savePost(postData, postId);
-
     if (result) {
-      alert(
-        isEditMode ? "게시글이 수정되었습니다." : "게시글이 등록되었습니다."
-      );
-      navigateWithPanel(
-        isEditMode ? `/community/${postId}` : "/community"
-      );
+      alert(isEditMode ? "수정되었습니다." : "등록되었습니다.");
+      navigateWithPanel(isEditMode ? `/community/${postId}` : "/community");
     }
   }, [
     title,
@@ -97,29 +87,23 @@ const PostCreatePage = () => {
     navigateWithPanel,
   ]);
 
-  // 뒤로가기 핸들러
-  const handleBack = useCallback(() => {
-    if (isEditMode) {
-      navigateWithPanel(`/community/${postId}`);
-    } else {
-      navigateWithPanel("/community");
-    }
-  }, [isEditMode, navigateWithPanel, postId]);
+  const handleBack = () =>
+    navigateWithPanel(isEditMode ? `/community/${postId}` : "/community");
 
-  if (isEditMode && fetchingPost) return <div>데이터를 불러오는 중...</div>;
+  if (isEditMode && fetchingPost)
+    return <div className={styles.loading}>데이터 로드 중...</div>;
 
   return (
-    <div className="post-create-page-container">
-      <div className="post-create-page">
-        <header className="post-create-header">
-          <div className="header-left">
+    <div className={styles.container}>
+      <div className={styles.page}>
+        <header className={styles.header}>
+          <div className={styles.headerLeft}>
             <PageHeader
               title={isEditMode ? "글 수정" : "글쓰기"}
               onGoBack={handleBack}
             />
           </div>
-
-          <div className="header-right">
+          <div className={styles.headerRight}>
             <Button
               text={isEditMode ? "수정" : "작성"}
               onClick={handleSubmit}
@@ -128,23 +112,24 @@ const PostCreatePage = () => {
           </div>
         </header>
 
-        <main className="post-create-main">
-          <div className="post-create-box">
-            <div className="board-type-select-wrap">
+        <main>
+          <div className={styles.createBox}>
+            <div className={styles.selectWrap}>
               <SelectBox
                 options={BOARD_TYPE_OPTIONS}
                 value={boardType}
                 onChange={(e) => setBoardType(e.target.value)}
               />
             </div>
+
             {boardType === "exercise" && (
-              <div className="feature-options-container">
+              <div className={styles.featureOptionsContainer}>
                 <div
-                  className="feature-item"
+                  className={styles.featureItem}
                   onClick={() => setIsGoalPanelVisible(true)}
                 >
                   <img
-                    className="feature-item-icon"
+                    className={styles.featureIcon}
                     src={training_icon}
                     alt="운동"
                   />
@@ -156,7 +141,7 @@ const PostCreatePage = () => {
                 </div>
                 {selectedGoal && (
                   <button
-                    className="clear-goal-btn"
+                    className={styles.clearGoalBtn}
                     onClick={() => setSelectedGoal(null)}
                   >
                     ✕
@@ -167,21 +152,21 @@ const PostCreatePage = () => {
           </div>
 
           <input
-            type="text"
+            className={styles.titleInput}
             placeholder="제목"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            className="title-input"
           />
 
           <textarea
+            className={styles.contentTextarea}
             placeholder="내용을 입력하세요."
             value={content}
             onChange={(e) => setContent(e.target.value)}
-            className="content-textarea"
           />
+
           {isGoalPanelVisible && (
-            <div className="goal-panel-wrapper">
+            <div className={styles.goalPanelWrapper}>
               <GoalSelectionPanel
                 onClose={() => setIsGoalPanelVisible(false)}
                 onSelectFinalGoal={(goal) => {

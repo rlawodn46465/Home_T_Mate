@@ -1,14 +1,14 @@
-import './ToggleComponents.css';
+import React, { memo } from "react";
+import styles from "./ToggleComponents.module.css";
 
-const ToggleComponents = ({isUp}) => {
-
-  const chevronClassName = isUp ? "chevron-up" : "chevron-down";
+const ToggleComponents = ({ isUp }) => {
+  const chevronClassName = `${styles.chevron} ${isUp ? styles.active : ""}`;
 
   return (
-    <div className="toggle-container">
-      <div className={`chevron ${chevronClassName}`}></div>
+    <div className={styles.container} aria-expanded={isUp} role="button">
+      <span className={chevronClassName} />
     </div>
   );
 };
 
-export default ToggleComponents;
+export default memo(ToggleComponents);

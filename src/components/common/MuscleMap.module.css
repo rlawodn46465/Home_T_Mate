@@ -1,0 +1,20 @@
+.body {
+  stroke: #7c7c7c;
+  stroke-miterlimit: 10;
+  stroke-width: 0.25px;
+  fill: none;
+}
+
+.active {
+  fill: rgba(62, 114, 184, 1);
+}
+
+.inactive {
+  fill: rgba(239, 239, 239, 1);
+}
+
+.active:hover,
+.inactive:hover {
+  stroke: #555;
+  stroke-width: 0.5px;
+}

@@ -1,0 +1,21 @@
+.container {
+  width: 100%;
+  min-height: 100px;
+}
+
+.noData {
+  padding: 40px 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+  line-height: 1.6;
+  background-color: #fcfcfc;
+  border-radius: 12px;
+  margin-top: 10px;
+  border: 1px dashed #eee;
+}
+
+.highlight {
+  color: #6610f2;
+  font-weight: 600;
+}

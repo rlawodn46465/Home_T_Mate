@@ -1,5 +1,5 @@
 import Button from "../../../common/Button";
-import "./GoalsDetailHeader.css";
+import styles from "./GoalsDetailHeader.module.css";
 import edit_icon from "../../../../assets/images/edit_icon.svg";
 import delete_icon from "../../../../assets/images/delete_icon.svg";
 
@@ -12,12 +12,12 @@ const GoalsDetailHeader = ({
   onDelete,
 }) => {
   return (
-    <div className="goals-header">
+    <div className={styles.goalsHeader}>
       <h2>{title}</h2>
-      <div className="goals-detail-header__menu">
+      <div className={styles.goalsDetailHeaderMenu}>
         {showEditButton && onDelete && (
           <img // 클래스 꾸미기 & 아이콘 추가
-            className="goals-detail__icon"
+            className={styles.goalsDetailIcon}
             src={delete_icon}
             onClick={onDelete}
             alt="삭제"
@@ -25,7 +25,7 @@ const GoalsDetailHeader = ({
         )}
         {showEditButton && (
           <img
-            className="goals-detail__icon"
+            className={styles.goalsDetailIcon}
             src={edit_icon}
             onClick={onEdit}
             alt="수정"

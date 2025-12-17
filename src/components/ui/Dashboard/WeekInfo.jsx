@@ -1,22 +1,20 @@
+import { memo } from "react";
+import styles from "./WeekInfo.module.css";
 import MuscleMap from "../../common/MuscleMap";
 import DateCircle from "./DateCircle";
-import "./WeekInfo.css";
-import { useFetchWeekly } from "../../../hooks/useStats";
 import Spinner from "../../common/Spinner";
 import ErrorMessage from "../../common/ErrorMessage";
+import { useFetchWeekly } from "../../../hooks/useStats";
 
 const WeekInfo = () => {
   const { data, loading, error, refetch } = useFetchWeekly();
 
-  if (loading) {
-    return <Spinner text={"불러오는 중..."} />;
-  }
-
-  if (error) {
+  if (loading) return <Spinner text="주간 기록 불러오는 중..." />;
+  if (error)
     return (
-      <ErrorMessage message="목표를 불러오지 못했습니다." onRetry={refetch} />
+      <ErrorMessage message="기록을 불러오지 못했습니다." onRetry={refetch} />
     );
-  }
+  if (!data) return null;
 
   const {
     currentWeek,
@@ -26,50 +24,50 @@ const WeekInfo = () => {
   } = data;
 
   return (
-    <div className="week-info__container">
+    <section className={styles.container}>
       <h4 className="section-title">이번주</h4>
-      <div className="week-info__content-wrapper">
-        {/* 1. 좌측: 근육 맵 시각화 */}
-        <div className="week-info__muscle-map-wrapper">
+
+      <div className={styles.contentWrapper}>
+        <aside className={styles.muscleMapWrapper}>
           <MuscleMap selectedTags={weeklyTargetMuscles} />
-        </div>
+        </aside>
 
-        {/* 2. 우측: 정보 섹션 */}
-        <div className="week-info__info-section">
-          {/* 요일 헤더 */}
-          <div className="week-info__day-header">
-            {currentWeek.map((day, index) => (
-              <div key={index} className="week-info__day-item">
-                {day.day}
-              </div>
-            ))}
-          </div>
-
-          {/* 날짜 원형 */}
-          <div className="week-info__date-container">
-            {currentWeek.map((dayData, index) => (
-              <DateCircle key={index} data={dayData} />
-            ))}
-          </div>
-
-          {/* 운동 요약 정보 */}
-          <div className="week-info__summary-wrapper">
-            <div className="week-info__summary-item">
-              <div className="week-info__summary-label">오늘(분)</div>
-              <div className="week-info__summary-value">{todayMinutes}</div>
+        <div className={styles.infoSection}>
+          <div className={styles.calendarArea}>
+            <div className={styles.dayHeader}>
+              {currentWeek.map((day, idx) => (
+                <div key={`day-${idx}`} className={styles.dayItem}>
+                  {day.day}
+                </div>
+              ))}
             </div>
-            <div className="week-info__summary-line"></div>
-            <div className="week-info__summary-item">
-              <div className="week-info__summary-label">주간 평균(분)</div>
-              <div className="week-info__summary-value">
+
+            <div className={styles.dateContainer}>
+              {currentWeek.map((dayData, idx) => (
+                <DateCircle key={`date-${idx}`} data={dayData} />
+              ))}
+            </div>
+          </div>
+
+          <div className={styles.summaryWrapper}>
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryLabel}>오늘(분)</span>
+              <strong className={styles.summaryValue}>{todayMinutes}</strong>
+            </div>
+
+            <div className={styles.verticalLine} aria-hidden="true" />
+
+            <div className={styles.summaryItem}>
+              <span className={styles.summaryLabel}>주간 평균</span>
+              <strong className={styles.summaryValue}>
                 {weeklyAverageMinutes}
-              </div>
+              </strong>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default WeekInfo;
+export default memo(WeekInfo);

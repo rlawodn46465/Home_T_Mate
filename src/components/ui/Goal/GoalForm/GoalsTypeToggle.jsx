@@ -1,20 +1,24 @@
-import "./GoalsTypeToggle.css";
+import styles from "./GoalsTypeToggle.module.css";
 
 const GoalsTypeToggle = ({ goalType, onTypeChange }) => {
   const isGoal = goalType === "routine";
 
   return (
-    <div className="goal-type-toggle">
-      <div className={`active-slider ${isGoal ? 'left' : 'right'}`}/>
+    <div className={styles.goalTypeToggle}>
+      <div
+        className={`${styles.activeSlider} ${
+          !isGoal ? styles.activeSliderRight : ""
+        }`}
+      />
       <button
-        className="toggle-button"
+        className={styles.toggleButton}
         data-active={isGoal}
         onClick={() => onTypeChange("routine")}
       >
         루틴
       </button>
       <button
-        className="toggle-button"
+        className={styles.toggleButton}
         data-active={!isGoal}
         onClick={() => onTypeChange("challenge")}
       >

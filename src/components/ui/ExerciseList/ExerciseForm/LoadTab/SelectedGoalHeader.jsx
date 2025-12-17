@@ -1,27 +1,41 @@
-import "../../../Goal/GoalList/GoalItemCard.css";
+import styles from "./SelectedGoalHeader.module.css";
 
 const SelectedGoalHeader = ({ goal, onClose }) => {
+  if (!goal) return null;
+
+  const isRoutine = goal.goalType === "루틴" || goal.type === "루틴";
+
   return (
-    <div className="selected-goal-header">
-      <div className="goal-card-header">
+    <div className={styles.header}>
+      <div className={styles.topRow}>
         <span
-          className={`badge ${
-            goal.goalType === "루틴" ? "goal" : "challenge"
+          className={`${styles.badge} ${
+            isRoutine ? styles.routineBadge : styles.challengeBadge
           }`}
         >
-          {goal.goalType === "루틴" ? "루틴" : "챌린지"}
+          {isRoutine ? "루틴" : "챌린지"}
         </span>
-        <span className="goal-name">{goal.name}</span>
-        <button className="close-button" onClick={onClose}>
-          X
+        <h3 className={styles.title}>{goal.name || goal.title}</h3>
+        <button
+          className={styles.closeButton}
+          onClick={onClose}
+          aria-label="닫기"
+        >
+          ✕
         </button>
       </div>
-      <div className="goal-info">
-        <p>진행도: {goal.currentWeek || 1}주차</p>
-        <p>부위: {goal.parts.join(", ")}</p>
-        <p>
-          빈도: {goal.activeDays.join(", ")} &nbsp;|&nbsp; 제작자:{" "}
-          {goal.creator}
+
+      <div className={styles.infoContent}>
+        <p className={styles.infoText}>
+          진행도:{" "}
+          <span className={styles.accent}>{goal.currentWeek || 1}주차</span>
+        </p>
+        <p className={styles.infoText}>
+          부위: {goal.parts?.join(", ") || "전신"}
+        </p>
+        <p className={styles.infoText}>
+          빈도: {goal.activeDays?.join(", ")} | 제작자:{" "}
+          {goal.creator || "시스템"}
         </p>
       </div>
     </div>

@@ -1,12 +1,14 @@
-import "./TabNavigation.css";
+import styles from "./TabNavigation.module.css";
 
 const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
   return (
-    <div className="tab-navigation">
+    <div className={styles.tabNavigation}>
       {tabs.map((part) => (
         <button
           key={part}
-          className={`tab-navigation__button ${activeTab === part ? "active" : ""}`}
+          className={`${styles.tabNavigationButton} ${
+            activeTab === part ? styles.active : ""
+          }`}
           onClick={() => onTabChange(part)}
         >
           {part}

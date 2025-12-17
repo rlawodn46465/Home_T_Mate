@@ -1,11 +1,12 @@
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
-import "./PageHeader.css";
+import styles from "./PageHeader.module.css";
 
 const PageHeader = ({ title, onGoBack }) => {
   const navigate = useNavigate();
 
   const handleGoBack = () => {
-    if (onGoBack) {
+    if (typeof onGoBack === "function") {
       onGoBack();
     } else {
       navigate(-1);
@@ -13,11 +14,17 @@ const PageHeader = ({ title, onGoBack }) => {
   };
 
   return (
-    <div className="page-header">
-      <h2>{title}</h2>
-      <p onClick={handleGoBack}>뒤로가기</p>
-    </div>
+    <header className={styles.header}>
+      <h2 className={styles.title}>{title}</h2>
+      <button
+        type="button"
+        className={styles.backButton}
+        onClick={handleGoBack}
+      >
+        뒤로가기
+      </button>
+    </header>
   );
 };
 
-export default PageHeader;
+export default memo(PageHeader);

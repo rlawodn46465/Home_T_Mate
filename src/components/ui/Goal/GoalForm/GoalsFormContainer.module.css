@@ -1,0 +1,62 @@
+.goalsFormContainer {
+  padding: 10px;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.buttonBox {
+  display: flex;
+  gap: 5px;
+}
+
+.buttonBox button {
+  width: 70px;
+  height: 30px;
+  border-radius: 7px;
+  font-weight: 500;
+}
+
+.cancelButton {
+  background-color: white;
+  border: 1px solid rgba(231, 46, 40, 1);
+  color: rgba(231, 46, 40, 1);
+  cursor: pointer;
+}
+
+.cancelButton:hover {
+  background-color: rgba(254, 226, 226, 0.5);
+}
+
+.saveButton {
+  background-color: rgba(81, 85, 163, 1);
+  border: none;
+  color: white;
+  cursor: pointer;
+}
+
+.saveButton:hover {
+  background-color: rgba(67, 56, 202, 1);
+}
+
+.saveButton:disabled {
+  background-color: #a5b4fc;
+  cursor: not-allowed;
+}
+
+.addExercise {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(81, 85, 163, 1);
+  text-align: center;
+}
+
+.error {
+  color: rgba(231, 46, 40, 1);
+  text-align: center;
+  padding: 20px;
+}

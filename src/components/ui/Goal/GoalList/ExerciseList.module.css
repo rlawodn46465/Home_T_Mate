@@ -1,0 +1,39 @@
+.noExercises {
+  text-align: center;
+  padding: 20px;
+  color: #888;
+}
+
+.exerciseItem {
+  padding: 15px 0;
+  border-bottom: 1px solid rgba(189, 189, 189, 0.5);
+  cursor: pointer;
+}
+
+.exerciseItem:last-child {
+  border-bottom: none;
+}
+
+.exerciseItemInfo h4 {
+  margin-bottom: 5px;
+}
+
+.exerciseItemInfoTop {
+  display: flex;
+  align-items: flex-start;
+  gap: 6px;
+}
+
+.exerciseItemInfo p {
+  font-size: 14px;
+  color: #777;
+}
+
+.exerciseItemInfoBottom {
+  display: flex;
+  gap: 4px;
+}
+
+.exerciseItemInfoBottom > p {
+  color: rgba(67, 67, 67, 1);
+}

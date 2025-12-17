@@ -1,4 +1,5 @@
-import "./TabNavigation.css";
+import { memo } from "react";
+import styles from "./TabNavigation.module.css";
 
 //부모 컴포넌트 사용법
 /*
@@ -19,18 +20,28 @@ const [activeTab, setActiveTab] = useState(TABS[0]);
 
 const TabNavigation = ({ tabs, activeTab, onTabChange }) => {
   return (
-    <div className="tab-navigation-detail">
-      {tabs.map((tabName) => (
-        <button
-          key={tabName}
-          className={`tab-item ${activeTab === tabName ? "active" : ""}`}
-          onClick={() => onTabChange(tabName)}
-        >
-          {tabName}
-        </button>
-      ))}
-    </div>
+    <nav className={styles.container}>
+      {tabs.map((tabName) => {
+        const isActive = activeTab === tabName;
+        const tabClassName = `${styles.tabItem} ${
+          isActive ? styles.active : ""
+        }`;
+
+        return (
+          <button
+            key={tabName}
+            type="button"
+            className={tabClassName}
+            onClick={() => onTabChange(tabName)}
+            aria-selected={isActive}
+            role="tab"
+          >
+            {tabName}
+          </button>
+        );
+      })}
+    </nav>
   );
 };
 
-export default TabNavigation;
+export default memo(TabNavigation);

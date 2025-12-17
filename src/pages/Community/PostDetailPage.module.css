@@ -1,0 +1,134 @@
+.container {
+  max-width: 1024px;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #fff;
+  display: flex;
+  flex-direction: column;
+}
+
+.loading, .error {
+  padding: 40px;
+  text-align: center;
+  color: #666;
+}
+
+.contentArea {
+  padding: 0 20px 20px 20px;
+  flex: 1;
+}
+
+.category {
+  font-size: 12px;
+  color: #3b82f6;
+  margin-top: 10px;
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.title {
+  font-size: 20px;
+  font-weight: bold;
+  color: #333;
+  margin: 0 0 10px 0;
+}
+
+.metaInfo {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 10px;
+}
+
+.metaLeft, .metaRight {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #eee;
+  margin: 15px 0;
+}
+
+.postBody {
+  min-height: 150px;
+  white-space: pre-wrap;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #222;
+}
+
+.postImages img {
+  max-width: 100%;
+  border-radius: 8px;
+  margin-bottom: 15px;
+}
+
+/* 공유 목표 카드 스타일 */
+.linkedGoalCard {
+  max-width: 320px;
+  margin: 24px 0;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px solid #d7d8d8;
+}
+
+.goalBadge {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-weight: bold;
+  margin-bottom: 8px;
+  display: inline-block;
+}
+
+.routine { background-color: #e7f5ff; color: #1971c2; }
+.challenge { background-color: #fff0f6; color: #d01b5f; }
+
+.downloadBtn {
+  width: 100%;
+  padding: 12px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 12px;
+}
+
+/* 하단 섹션 */
+.actionButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.commentSection {
+  background-color: #f5f5f5;
+  margin: 0 -20px;
+  padding: 20px;
+}
+
+.commentInputBox {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 10px;
+  margin-bottom: 20px;
+}
+
+.commentInputBox textarea {
+  width: 100%;
+  border: none;
+  resize: none;
+  height: 60px;
+  font-size: 13px;
+  outline: none;
+}

@@ -1,0 +1,78 @@
+.inputContainer {
+  display: flex;
+  max-width: 610px;
+  width: 100%;
+  justify-content: center;
+  margin: 0 auto 9px auto;
+  background-color: rgba(220, 220, 220, 1);
+  border-radius: 22px;
+  overflow: hidden;
+}
+
+.inputIcon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 40px;
+  height: 44px;
+  background-color: rgba(202, 202, 202, 1);
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.2s;
+}
+
+.inputContainer.focused .inputIcon {
+  opacity: 1;
+  visibility: visible;
+}
+
+.inputIcon img {
+  width: 20px;
+  height: 20px;
+}
+
+.inputField {
+  flex: 1;
+  border: none;
+  background: transparent;
+  padding: 0 15px;
+  font-size: 16px;
+  font-weight: 500;
+  outline: none;
+}
+
+.searchSubmitBtn {
+  width: 80px;
+  height: 44px;
+  border: none;
+  background-color: rgba(81, 85, 163, 1);
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.tagContainer {
+  display: flex;
+  justify-content: center;
+  gap: 7px;
+  width: 100%;
+  margin-bottom: 9px;
+}
+
+.tag {
+  padding: 0 15px;
+  height: 26px;
+  border-radius: 13px;
+  background-color: rgba(124, 124, 124, 1);
+  font-size: 12px;
+  font-weight: 500;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  user-select: none;
+}
+
+.tagActive {
+  background-color: rgba(81, 85, 163, 1);
+}

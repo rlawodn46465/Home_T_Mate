@@ -1,11 +1,12 @@
-import './DropdownMenu.css';
+import styles from "./DropdownMenu.module.css";
 
 const DropdownMenu = ({ position = "right", children }) => {
-  const munuClassName = `dropdown-menu ${position}`;
+  const containerClassName = `${styles.container} ${styles[position]}`;
+
   return (
-    <div className={munuClassName}>
-      <div className="menu-items">{children}</div>
-    </div>
+    <nav className={containerClassName}>
+      <ul className={styles.menuList}>{children}</ul>
+    </nav>
   );
 };
 

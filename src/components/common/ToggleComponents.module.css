@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  border-radius: 4px;
+}
+
+.container:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.chevron {
+  width: 10px;
+  height: 10px;
+  border-style: solid;
+  border-color: #555;
+  border-width: 0 3px 3px 0;
+  display: inline-block;
+  transform: translateY(-25%) rotate(45deg);
+  transition: transform 0.3s ease;
+}
+
+.active {
+  transform: translateY(25%) rotate(-135deg);
+}

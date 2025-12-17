@@ -1,0 +1,35 @@
+.container {
+  margin-bottom: 24px;
+  color: #2f2f2f;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.genderButton {
+  flex: 1;
+  max-width: 150px;
+  height: 44px;
+  border: 2px solid #bdbdbd;
+  border-radius: 10px;
+  background-color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  color: #888;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+.active {
+  border-color: #5155a3;
+  color: #5155a3;
+  background-color: rgba(81, 85, 163, 0.05);
+}
+
+.genderButton:hover:not(.active) {
+  background-color: #f9f9f9;
+  border-color: #aaa;
+}

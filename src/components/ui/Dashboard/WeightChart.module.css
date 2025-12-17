@@ -1,0 +1,46 @@
+.container {
+  width: 100%;
+  padding: 10px 0;
+}
+
+.chartArea {
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  height: 200px;
+  padding: 20px 0;
+  margin-bottom: 20px;
+  background-color: #f9f9fb;
+  border-radius: 12px;
+}
+
+.legendArea {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+.legendItem {
+  display: flex;
+  align-items: center;
+}
+
+.colorBox {
+  width: 12px;
+  height: 12px;
+  border-radius: 3px;
+  margin-right: 8px;
+}
+
+.currentBox {
+  composes: colorBox;
+  background-color: rgba(69, 58, 245, 1);
+}
+
+.maxBox {
+  composes: colorBox;
+  background-color: rgba(189, 189, 237, 1);
+}

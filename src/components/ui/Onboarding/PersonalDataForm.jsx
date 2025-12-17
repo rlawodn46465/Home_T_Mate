@@ -1,46 +1,68 @@
-import { useRef } from "react";
-import "./PersonalDataForm.css";
+import { useRef, memo } from "react";
+import styles from "./PersonalDataForm.module.css";
 
 const PersonalDataForm = () => {
   const dateInputRef = useRef(null);
   const heightInputRef = useRef(null);
   const weightInputRef = useRef(null);
 
-  const focusInput = (ref) => {
-    if (ref.current) {
-      ref.current.focus();
-    }
+  const handleWrapperClick = (ref) => {
+    ref.current?.focus();
   };
 
   return (
-    <div className="personal-data-form">
+    <div className={styles.form}>
       <h4 className="section-title">출생년도를 입력해주세요.</h4>
       <div
-        className="personal-data-input"
-        onClick={() => focusInput(dateInputRef)}
+        className={styles.inputWrapper}
+        onClick={() => handleWrapperClick(dateInputRef)}
       >
-        <input id="date" ref={dateInputRef} placeholder="YYYY" />
-        <label className="personal-input-text" htmlFor="date">
+        <input
+          id="date"
+          ref={dateInputRef}
+          className={styles.inputField}
+          placeholder="YYYY"
+          type="number"
+          min="1900"
+          max={new Date().getFullYear()}
+        />
+        <label className={styles.unitText} htmlFor="date">
           년도
         </label>
       </div>
+
       <h4 className="section-title">키와 몸무게를 입력해주세요.</h4>
-      <div className="personal-body-info">
+      <div className={styles.bodyInfoGroup}>
         <div
-          className="personal-data-input"
-          onClick={() => focusInput(heightInputRef)}
+          className={styles.inputWrapper}
+          onClick={() => handleWrapperClick(heightInputRef)}
         >
-          <input id="height" ref={heightInputRef} placeholder="000" />
-          <label className="personal-input-text" htmlFor="height">
+          <input
+            id="height"
+            ref={heightInputRef}
+            className={styles.inputField}
+            placeholder="000"
+            type="number"
+            step="0.1"
+          />
+          <label className={styles.unitText} htmlFor="height">
             키(cm)
           </label>
         </div>
+
         <div
-          className="personal-data-input"
-          onClick={() => focusInput(weightInputRef)}
+          className={styles.inputWrapper}
+          onClick={() => handleWrapperClick(weightInputRef)}
         >
-          <input id="weight" ref={weightInputRef} placeholder="000.0" />
-          <label className="personal-input-text" htmlFor="weight">
+          <input
+            id="weight"
+            ref={weightInputRef}
+            className={styles.inputField}
+            placeholder="00.0"
+            type="number"
+            step="0.1"
+          />
+          <label className={styles.unitText} htmlFor="weight">
             몸무게(kg)
           </label>
         </div>
@@ -49,4 +71,4 @@ const PersonalDataForm = () => {
   );
 };
 
-export default PersonalDataForm;
+export default memo(PersonalDataForm);

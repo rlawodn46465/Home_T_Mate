@@ -1,5 +1,5 @@
 import DailyExerciseItem from "../../../common/DailyExerciseItem";
-import "./GoalsExerciseList.css";
+import styles from "./GoalsExerciseList.module.css";
 
 const GoalsExerciseList = ({
   exercises,
@@ -11,7 +11,7 @@ const GoalsExerciseList = ({
   onRemoveSet,
 }) => {
   return (
-    <div className="goal-exercise-list">
+    <div className={styles.goalExerciseList}>
       {exercises.map((exercise) => (
         <DailyExerciseItem
           key={exercise.id}
@@ -25,8 +25,8 @@ const GoalsExerciseList = ({
           isDurationVisible={false}
         />
       ))}
-      <div className="add-exercise-area">
-        <button className="add-exercise-button" onClick={onOpenModal}>
+      <div className={styles.addExerciseArea}>
+        <button className={styles.addExerciseButton} onClick={onOpenModal}>
           + 운동 추가
         </button>
       </div>

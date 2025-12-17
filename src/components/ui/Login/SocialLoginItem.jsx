@@ -1,14 +1,18 @@
-import "./SocialLoginItem.css";
+import styles from "./SocialLoginItem.module.css";
 
 const SocialLoginItem = ({ id, iconSrc, text, onClick }) => {
+  const itemClassName = `${styles.item} ${styles[id] || ""}`;
+
   return (
-    <li className={`login-item ${id}`} onClick={onClick}>
-      <img
-        src={iconSrc}
-        alt={`${text} 아이콘`}
-        className={"login-icon"}
-      />
-      <p className="login-text">{text}</p>
+    <li
+      className={itemClassName}
+      onClick={onClick}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => (e.key === "Enter" || e.key === " ") && onClick?.()}
+    >
+      <img src={iconSrc} alt={`${text} 로고`} className={styles.icon} />
+      <span className={styles.text}>{text}</span>
     </li>
   );
 };

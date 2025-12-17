@@ -1,34 +1,40 @@
-import "./BarGroup.css";
+import React, { memo } from "react";
+import styles from "./BarGroup.module.css";
 
 const BarGroup = ({ data, maxScale }) => {
   const { part, current, max } = data;
 
-  // 최대 무게 막대 높이
-  const maxBarHeight = (max / maxScale) * 100;
-  // 이번주 무게 막대 높이
-  const currentBarHeight = (current / maxScale) * 100;
+  // 최대 스케일이 0이거나 데이터가 없는 경우를 대비한 방어 코드
+  const safeMaxScale = maxScale || 1;
 
-  // 무게를 소수점 첫째 자리까지 표시
-  const formatWeight = (weight) => `${weight.toFixed(1)}kg`;
+  // 막대 높이 계산 (0 ~ 100%)
+  const maxBarHeight = Math.min((max / safeMaxScale) * 100, 100);
+  const currentBarHeight = Math.min((current / safeMaxScale) * 100, 100);
+
+  // 무게 포맷팅 (0일 경우 처리)
+  const formatWeight = (weight) => `${(weight || 0).toFixed(1)}kg`;
 
   return (
-    <div className="weight-chart__bar-group">
-      <div className="weight-chart__bar-wrapper">
+    <div className={styles.group}>
+      <div className={styles.wrapper}>
         {/* 이번주 무게 막대 */}
         <div
-          className="weight-chart__bar weight-chart__bar--current"
+          className={styles.currentBar}
           style={{ height: `${currentBarHeight}%` }}
-        ></div>
+          aria-label={`이번주 ${part} 무게: ${current}kg`}
+        />
         {/* 최대 무게 막대 */}
         <div
-          className="weight-chart__bar weight-chart__bar--max"
+          className={styles.maxBar}
           style={{ height: `${maxBarHeight}%` }}
-        ></div>
+          aria-label={`역대 최대 ${part} 무게: ${max}kg`}
+        />
       </div>
-      <div className="weight-chart__value-label">{formatWeight(current)}</div>
-      <div className="weight-chart__part-label">{part}</div>
+
+      <div className={styles.valueLabel}>{formatWeight(current)}</div>
+      <div className={styles.partLabel}>{part}</div>
     </div>
   );
 };
 
-export default BarGroup;
+export default memo(BarGroup);

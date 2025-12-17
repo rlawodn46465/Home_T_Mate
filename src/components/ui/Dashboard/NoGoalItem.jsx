@@ -1,22 +1,33 @@
+import { memo } from "react";
 import { useNavigate } from "react-router-dom";
-import "./TodayGoalItem.css";
+import styles from "./TodayGoalItem.module.css";
 
 const NoGoalItem = () => {
   const navigate = useNavigate();
+
   const handleClick = () => {
     navigate("?panel=goals-form");
   };
 
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      handleClick();
+    }
+  };
+
   return (
     <li
-      className="today-goal-item today-goal-item--no-goal"
+      className={styles.noGoal}
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       role="button"
-      aria-label="목표 생성하기"
+      tabIndex={0}
+      aria-label="목표 생성하기 페이지로 이동"
     >
       목표를 생성해주세요 ✨
     </li>
   );
 };
 
-export default NoGoalItem;
+export default memo(NoGoalItem);

@@ -1,61 +1,55 @@
 import { useState, useRef, useEffect } from "react";
-import "./SelectBox.css";
+import styles from "./SelectBox.module.css";
 
 const SelectBox = ({ options, value, onChange, className = "" }) => {
   const [isOpen, setIsOpen] = useState(false);
   const selectRef = useRef(null);
 
   const selectedLabel =
-    options.find((option) => option.value === value)?.label || options[0].label;
+    options.find((opt) => opt.value === value)?.label || options[0].label;
 
+  // 바깥 클릭 시 드롭다운 닫기
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (selectRef.current && !selectRef.current.contains(event.target)) {
+    const handleClickOutside = (e) => {
+      if (selectRef.current && !selectRef.current.contains(e.target)) {
         setIsOpen(false);
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [selectRef]);
+  }, []);
 
+  // 선택 시 부모의 onChange에 가상 이벤트 전달
   const handleSelect = (newValue) => {
-    const syntheticEvent = {
-      target: {
-        value: newValue,
-      },
-    };
-    onChange(syntheticEvent);
+    onChange({ target: { value: newValue } });
     setIsOpen(false);
   };
 
   return (
-    <div className={`custom-select-box-wrap ${className}`} ref={selectRef}>
+    <div className={`${styles.selectBoxWrap} ${className}`} ref={selectRef}>
       <div
-        className="custom-select-button"
+        className={styles.selectButton}
         onClick={() => setIsOpen(!isOpen)}
         tabIndex="0"
       >
-        <span className="selected-label">{selectedLabel}</span>
-        <span
-          className={`select-arrow ${isOpen ? "open" : ""}`}
-          aria-hidden="true"
-        >
+        <span>{selectedLabel}</span>
+        <span className={`${styles.arrow} ${isOpen ? styles.arrowOpen : ""}`}>
           ▼
         </span>
       </div>
 
       {isOpen && (
-        <ul className="custom-dropdown-list">
+        <ul className={styles.dropdownList}>
           {options.map((option) => (
             <li
               key={option.value}
-              className={`dropdown-item ${
-                option.value === value ? "selected" : ""
+              className={`${styles.dropdownItem} ${
+                option.value === value ? styles.selected : ""
               }`}
               onClick={() => handleSelect(option.value)}
             >
               {option.label}
-              <span className="radio-indicator"></span>
+              <div className={styles.radioIndicator} />
             </li>
           ))}
         </ul>

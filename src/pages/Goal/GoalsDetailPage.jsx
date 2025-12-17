@@ -1,6 +1,4 @@
 import { useCallback, useState } from "react";
-
-import "./GoalsDetailPage.css";
 import GoalsDetailHeader from "../../components/ui/Goal/GoalList/GoalsDetailHeader";
 import ExerciseList from "../../components/ui/Goal/GoalList/ExerciseList";
 import GoalsSummary from "../../components/ui/Goal/GoalList/GoalsSummary";
@@ -9,18 +7,20 @@ import { useGoalDetail } from "../../hooks/useGoalDetail";
 import { useGoalDelete } from "../../hooks/useGoalDelete";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
+import styles from "./GoalsDetailPage.module.css";
+
 const TABS = ["오늘 운동", "리스트"];
+
 const GoalsDetailPage = ({ goalId }) => {
   const { navigateToPanel, currentPath } = usePersistentPanel();
-
   const [activeTab, setActiveTab] = useState(TABS[0]);
 
+  // 데이터 로딩 및 삭제 관련 커스텀 훅
   const {
     goal: goalDetail,
     loading: detailLoading,
     error: detailError,
   } = useGoalDetail(goalId, true);
-
   const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
   // 뒤로가기 로직
@@ -87,25 +87,15 @@ const GoalsDetailPage = ({ goalId }) => {
     );
   }
 
-  // 목표 시작
-  const handleStartGoal = () => {
-    alert(`목표 시작: ${goalDetail.name}!`);
-    // 목표 시작 로직 (타이머 시작, 운동 기록 등)
-  };
+  // 목표 시작 및 종료 (테스트용)
+  const handleStartGoal = () => alert(`목표 시작: ${goalDetail.name}!`);
+  const handleEndGoal = () => alert(`목표 종료: ${goalDetail.name}!`);
 
-  const handleEndGoal = () => {
-    alert(`목표 종료: ${goalDetail.name}!`);
-    // 목표 종료 로직 (결과 저장 등)
-  };
-
-  //
+  // 생성일 포맷팅 함수
   const formatCreationDate = (isoString) => {
     if (!isoString) return "날짜 정보 없음";
-
     try {
-      const date = new Date(isoString);
-      // 한국 로케일을 사용하여 'YYYY년 M월 D일' 형식으로 변환
-      return date.toLocaleDateString("ko-KR", {
+      return new Date(isoString).toLocaleDateString("ko-KR", {
         year: "numeric",
         month: "long",
         day: "numeric",
@@ -114,7 +104,7 @@ const GoalsDetailPage = ({ goalId }) => {
       });
     } catch (e) {
       console.error("날짜 포맷팅 오류:", e);
-      return isoString; // 오류 발생 시 원본 문자열 반환
+      return isoString;
     }
   };
 
@@ -136,50 +126,47 @@ const GoalsDetailPage = ({ goalId }) => {
   ];
 
   return (
-    <div className="goals-detail-page">
+    <div className={styles.goalsDetailPage}>
       <GoalsDetailHeader
         title={
           goalDetail.goalType === "Challenge" ? "챌린지 상세" : "루틴 상세"
         }
         onEdit={handleEdit}
         onGoBack={handleGoBack}
-        showBackButton={true}
-        showEditButton={true}
+        showBackButton
+        showEditButton
         onDelete={handleDelete}
       />
-      <div className="goal-info">
+
+      <div className={styles.goalInfo}>
         <h4>{goalDetail.name}</h4>
-        <p className="goal-meta">
+        <p className={styles.goalMeta}>
           생성일 : {formatCreationDate(goalDetail.createdAt)}
         </p>
-        <p className="goal-meta">제작자 : {goalDetail.creator}</p>
+        <p className={styles.goalMeta}>제작자 : {goalDetail.creator}</p>
         <GoalsSummary goalDetail={goalDetail} allGoalDays={allGoalDays} />
       </div>
+
       <TabNavigation
         tabs={TABS}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
 
-      <div className="exercise-content">
-        {activeTab === "오늘 운동" && (
-          <ExerciseList
-            exercises={todayExercises}
-            onSelectExercise={handleExerciseDetailNavigation}
-          />
-        )}
-        {activeTab === "리스트" && (
-          <ExerciseList
-            exercises={goalDetail.exercises}
-            onSelectExercise={handleExerciseDetailNavigation}
-          />
-        )}
+      <div className={styles.exerciseContent}>
+        <ExerciseList
+          exercises={
+            activeTab === "오늘 운동" ? todayExercises : goalDetail.exercises
+          }
+          onSelectExercise={handleExerciseDetailNavigation}
+        />
       </div>
-      <div className="goal-actions">
-        <button className="start-button" onClick={handleStartGoal}>
+
+      <div className={styles.goalActions}>
+        <button className={styles.startButton} onClick={handleStartGoal}>
           시작
         </button>
-        <button className="end-button" onClick={handleEndGoal}>
+        <button className={styles.endButton} onClick={handleEndGoal}>
           목표 끝내기
         </button>
       </div>

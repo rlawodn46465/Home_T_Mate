@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import edit_icon from "../../../../assets/images/edit_icon.svg";
-import "./GoalsNameInput.css";
+import styles from "./GoalsNameInput.module.css";
 
 const GoalsNameInput = ({ initialName, onNameChange }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [currentName, setCurrentName] = useState(initialName || "새 목표 이름");
 
   useEffect(() => {
-    if(initialName){
+    if (initialName) {
       setCurrentName(initialName);
     }
   }, [initialName]);
@@ -36,10 +36,10 @@ const GoalsNameInput = ({ initialName, onNameChange }) => {
   return (
     <div>
       {isEditing ? (
-        <div className="goal-name-input">
+        <div className={styles.goalNameInput}>
           <input
             type="text"
-            className="goal-name-input__text-input"
+            className={styles.textInput}
             value={currentName}
             onChange={handleInputChange}
             onBlur={handleSaveClick}
@@ -48,17 +48,17 @@ const GoalsNameInput = ({ initialName, onNameChange }) => {
             autoFocus
           />
           <img
-            className="goal-name-input__icon"
+            className={styles.icon}
             onClick={handleSaveClick}
             src={edit_icon}
-            alt="수정"
+            alt="저장"
           />
         </div>
       ) : (
-        <div className="goal-name-input">
-          <p className="goal-name-input__text">{currentName}</p>
+        <div className={styles.goalNameInput}>
+          <p className={styles.text}>{currentName}</p>
           <img
-            className="goal-name-input__icon"
+            className={styles.icon}
             onClick={handleEditClick}
             src={edit_icon}
             alt="수정"

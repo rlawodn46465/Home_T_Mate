@@ -1,0 +1,43 @@
+.goalSummary {
+  display: flex;
+  gap: 10px;
+}
+
+.bodyPartDisplay {
+  width: 80px;
+}
+
+.summaryText {
+  /* 추가적인 스타일이 필요할 경우를 대비해 정의 */
+}
+
+.summaryTextItem {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-bottom: 6px;
+}
+
+.progressBarWrapper {
+  display: flex;
+  align-items: center;
+  width: 160px;
+  height: 6px;
+  border-radius: 3px;
+  background-color: rgba(220, 220, 220, 1);
+  margin-left: 4px;
+}
+
+.progressBar {
+  height: 100%;
+  background-color: rgba(75, 179, 89, 1); /* 진행 막대 색상 */
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.progressLabel {
+  font-size: 12px;
+  font-weight: 600;
+  color: rgba(152, 152, 152, 1);
+  margin-left: 5px;
+}

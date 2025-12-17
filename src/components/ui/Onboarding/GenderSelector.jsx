@@ -1,15 +1,39 @@
-import "./GenderSelector.css";
+import { useState, memo } from "react";
+import styles from "./GenderSelector.module.css";
 
-const GenderSelector = () => {
+const GenderSelector = ({ onChange }) => {
+  const [selected, setSelected] = useState(null); // 'M' or 'F'
+
+  const handleSelect = (gender) => {
+    setSelected(gender);
+    onChange?.(gender);
+  };
+
   return (
-    <div className="gender-selector">
+    <div className={styles.container}>
       <h4 className="section-title">성별을 선택해주세요.</h4>
-      <div className="gender-container">
-        <button className="gender-button">남성</button>
-        <button className="gender-button">여성</button>
+      <div className={styles.buttonGroup}>
+        <button
+          type="button"
+          className={`${styles.genderButton} ${
+            selected === "M" ? styles.active : ""
+          }`}
+          onClick={() => handleSelect("M")}
+        >
+          남성
+        </button>
+        <button
+          type="button"
+          className={`${styles.genderButton} ${
+            selected === "F" ? styles.active : ""
+          }`}
+          onClick={() => handleSelect("F")}
+        >
+          여성
+        </button>
       </div>
     </div>
   );
 };
 
-export default GenderSelector;
+export default memo(GenderSelector);

@@ -19,7 +19,7 @@ import {
 } from "date-fns";
 import { ko } from "date-fns/locale";
 import CalendarDay from "./CalendarDay";
-import "./Calendar.css";
+import styles from "./Calendar.module.css";
 
 const Calendar = ({
   startDate, // 목표 시작일 (이전 날짜 선택 불가)
@@ -105,34 +105,37 @@ const Calendar = ({
   };
 
   return (
-    <div className="calendar-container">
-      <div className="calendar-body">
-        <div className="calendar-nav">
-          <button onClick={prevMonth} className="nav-arrow">
+    <div className={styles.calendarContainer}>
+      <div className={styles.calendarBody}>
+        {/* 네비게이션 */}
+        <div className={styles.calendarNav}>
+          <button onClick={prevMonth} className={styles.navArrow}>
             {"<"}
           </button>
-          <p className="nav-month-year">
+          <p className={styles.navMonthYear}>
             {format(currentMonth, "yyyy년 M월", { locale: ko })}
           </p>
-          <button onClick={nextMonth} className="nav-arrow">
+          <button onClick={nextMonth} className={styles.navArrow}>
             {">"}
           </button>
         </div>
 
-        <div className="calendar-grid calendar-weekdays">
+        {/* 요일 헤더 */}
+        <div className={`${styles.calendarGrid} ${styles.calendarWeekdays}`}>
           {weekDays.map((day, index) => (
             <div
               key={day}
-              className={`weekday-header ${index === 0 ? "is-sunday" : ""} ${
-                index === 6 ? "is-saturday" : ""
-              }`}
+              className={`${styles.weekdayHeader} 
+                ${index === 0 ? styles.isSunday : ""} 
+                ${index === 6 ? styles.isSaturday : ""}`}
             >
               {day}
             </div>
           ))}
         </div>
 
-        <div className="calendar-grid calendar-days">
+        {/* 날짜 그리드 */}
+        <div className={`${styles.calendarGrid} ${styles.calendarDays}`}>
           {calendarDays.map((date, index) => {
             const { disabled, opacity } = getDateStatus(date);
             const isSelected = selectedDate && isSameDay(date, selectedDate);
@@ -149,7 +152,6 @@ const Calendar = ({
                 opacity={opacity}
                 onClick={() => !disabled && onSelectDate(date)}
               >
-                {/* 카테고리별 점 */}
                 {renderDayContents && renderDayContents(date)}
               </CalendarDay>
             );

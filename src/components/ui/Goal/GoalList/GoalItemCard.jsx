@@ -1,6 +1,5 @@
 import { useState } from "react";
-
-import "./GoalItemCard.css";
+import styles from "./GoalItemCard.module.css";
 import ContextualMenu from "./ContextualMenu";
 import { usePersistentPanel } from "../../../../hooks/usePersistentPanel";
 
@@ -53,50 +52,50 @@ const GoalItemCard = ({
   return (
     // 삭제중 스타일링 할지 고민할 것
     <div
-      className={`goal-card ${isDeleting ? "goal-card--deleting" : ""}`}
+      className={`${styles.goalCard} ${
+        isDeleting ? styles.goalCardDeleting : ""
+      }`}
       onClick={handleCardClick}
     >
-      <div className="goal-card__header">
+      <div className={styles.header}>
         <span
-          className={`goal-card__type-tag goal-card__type-tag--${goalTypeLabel}`}
+          className={`${styles.typeTag} ${styles[`typeTag${goalTypeLabel}`]}`}
         >
           {goalTypeLabel}
         </span>
-        <h5 className="goal-card__title">{name}</h5>
+        <h5 className={styles.title}>{name}</h5>
         {!hidenMenu && (
-          <div className="goal-card__options">
+          <div className={styles.options}>
             <button
-              className="goal-card__options-btn"
+              className={styles.optionsBtn}
               onClick={handleOptionsClick}
               disabled={isDeleting}
             >
-              <span className="dot"></span>
-              <span className="dot"></span>
-              <span className="dot"></span>
+              <span className={styles.dot}></span>
+              <span className={styles.dot}></span>
+              <span className={styles.dot}></span>
             </button>
             {isMenuOpen && <ContextualMenu onSelect={handleMenuSelect} />}
           </div>
         )}
       </div>
-      <div className="goal-card__info">
-        <div className="goal-card__info-progress">
+      <div className={styles.info}>
+        <div className={styles.infoProgress}>
           진행도 :
           {goalTypeLabel === "챌린지" ? (
-            <div className="goal-card__progress-bar-wrapper">
+            <div className={styles.progressBarWrapper}>
               <div
-                className="goal-card__progress-bar"
+                className={styles.progressBar}
                 style={{ width: `${progressPercent}%` }}
               ></div>
-              <span className="goal-card__progress-label">
-                {progressPercent}%
-              </span>
+              <span className={styles.progressLabel}>{progressPercent}%</span>
             </div>
           ) : (
             <p>{progress}주차</p>
           )}
         </div>
         <p>부위: {parts.join(", ")}</p>
-        <div className="goal-card__progress-bottom">
+        <div className={styles.progressBottom}>
           <p>빈도: {activeDaysLabel}</p>
           <p>제작자: {creator}</p>
         </div>

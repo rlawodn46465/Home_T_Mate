@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import MuscleMap from "../../components/common/MuscleMap";
 import TabNavigation from "../../components/common/TabNavigation";
-import "./ExerciseDetail.css";
 import ExerciseInfoSection from "../../components/ui/Exercise/ExerciseInfoSection";
 import ExerciseRecordSection from "../../components/ui/Exercise/ExerciseRecordSection";
 import { fetchExerciseDetail } from "../../services/api/goalApi";
@@ -10,17 +9,21 @@ import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 import Spinner from "../../components/common/Spinner";
 import ErrorMessage from "../../components/common/ErrorMessage";
 
+import styles from "./ExerciseDetail.module.css";
+
 const ExerciseDetail = ({ exerciseId }) => {
   const TABS = ["설명", "나의 기록"];
   const [activeTab, setActiveTab] = useState(TABS[0]);
 
-  // 데이터 상태와 로딩 상태 정의
+  // API 데이터 및 로딩/에러 상태 관리
   const [detailData, setDetailData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // 메모 상태
+  // 사용자 메모 상태
   const [persistedMemo, setPersistedMemo] = useState("");
+
+  const { navigateToPanel } = usePersistentPanel();
 
   useEffect(() => {
     if (!exerciseId) {
@@ -31,6 +34,7 @@ const ExerciseDetail = ({ exerciseId }) => {
 
     let isCancelled = false;
 
+    // 운동 상세 정보 비동기 로드
     const loadData = async () => {
       setIsLoading(true);
       setError(null);
@@ -40,8 +44,8 @@ const ExerciseDetail = ({ exerciseId }) => {
 
         if (!isCancelled) {
           setDetailData(data);
-
-          if (data.myStats && data.myStats.memo) {
+          // 기존 메모 데이터가 있다면 상태 업데이트
+          if (data.myStats?.memo) {
             setPersistedMemo(data.myStats.memo);
           }
         }
@@ -51,56 +55,54 @@ const ExerciseDetail = ({ exerciseId }) => {
           setError("정보를 불러오는데 실패했습니다.");
         }
       } finally {
-        if (!isCancelled) {
-          setIsLoading(false);
-        }
+        if (!isCancelled) setIsLoading(false);
       }
     };
 
     loadData();
+
+    // 언마운트 시 비동기 작업 취소 처리
     return () => {
       isCancelled = true;
     };
   }, [exerciseId]);
 
-  // 메모 저장 핸들러
+  // 메모 저장 처리
   const handleMemoSave = (newMemo) => {
     setPersistedMemo(newMemo);
     console.log("메모 저장 완료 : ", newMemo);
   };
 
-  const { navigateToPanel } = usePersistentPanel();
-
+  // 기록 목록으로 돌아가기
   const handleGoBackToRecordList = () => {
     navigateToPanel("?panel=record");
   };
 
-  if (isLoading) {
+  // 상태별 렌더링 (로딩, 에러, 데이터 없음)
+  if (isLoading)
     return <Spinner text={"🏃‍♂️ 운동 상세 정보를 불러오는 중입니다..."} />;
-  }
-
-  if (error) {
-    return <ErrorMessage message={`❌ 오류: ${error}`} />;
-  }
-
-  if (!detailData) {
-    return <div className="error-state">데이터가 존재하지 않습니다.</div>;
-  }
+  if (error) return <ErrorMessage message={`❌ 오류: ${error}`} />;
+  if (!detailData)
+    return <div className={styles.errorState}>데이터가 존재하지 않습니다.</div>;
 
   return (
-    <div className="exercise-detail-page">
+    <div className={styles.exerciseDetailPage}>
       <PageHeader
         title={"운동 기록 상세"}
         onGoBack={handleGoBackToRecordList}
       />
-      <div className="exercise-header">
+      <div className={styles.exerciseHeader}>
         {detailData.exercise.targetMuscles && (
           <MuscleMap selectedTags={detailData.exercise.targetMuscles} />
         )}
-        <div className="exercise-header-info">
-          <h4>{detailData.exercise.name}</h4>
-          <p>부위 : {detailData.exercise.targetMuscles.join(", ")}</p>
-          <p>장비 : {detailData.exercise.equipment}</p>
+        <div className={styles.exerciseHeaderInfo}>
+          <h4 className={styles.exerciseName}>{detailData.exercise.name}</h4>
+          <p className={styles.exerciseMeta}>
+            부위 : {detailData.exercise.targetMuscles.join(", ")}
+          </p>
+          <p className={styles.exerciseMeta}>
+            장비 : {detailData.exercise.equipment}
+          </p>
         </div>
       </div>
       <TabNavigation

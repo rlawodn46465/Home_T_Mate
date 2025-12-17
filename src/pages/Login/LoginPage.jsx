@@ -1,10 +1,11 @@
 import { useLocation } from "react-router-dom";
-import "./LoginPage.css";
 import { initiateSocialLogin } from "../../services/api/authService";
 import google from "../../assets/images/google_icon.svg";
 import naver from "../../assets/images/naver_icon.svg";
 import kakao from "../../assets/images/kakao_icon.svg";
 import SocialLoginItem from "../../components/ui/Login/SocialLoginItem";
+
+import styles from "./LoginPage.module.css";
 
 const ORIGINAL_PATH_KEY = "hometmate_original_path";
 
@@ -16,6 +17,7 @@ const LoginPage = () => {
     sessionStorage.setItem(ORIGINAL_PATH_KEY, currentPath);
     initiateSocialLogin(provider);
   };
+
   const social = [
     {
       id: "google",
@@ -28,9 +30,9 @@ const LoginPage = () => {
   ];
 
   return (
-    <div className="login-container">
-      <h2>로그인 방법을 선택해주세요.</h2>
-      <ul className="login-box">
+    <div className={styles.loginContainer}>
+      <h2 className={styles.title}>로그인 방법을 선택해주세요.</h2>
+      <ul className={styles.loginBox}>
         {social.map((menu) => (
           <SocialLoginItem
             key={menu.id}

@@ -1,45 +1,49 @@
-import "./WeightChart.css";
+import { useMemo, memo } from "react";
+import styles from "./WeightChart.module.css";
 import BarGroup from "./BarGroup";
-import { useFetchWeight } from "../../../hooks/useStats";
 import Spinner from "../../common/Spinner";
 import ErrorMessage from "../../common/ErrorMessage";
+import { useFetchWeight } from "../../../hooks/useStats";
 
 const WeightChart = () => {
   const { data, loading, error, refetch } = useFetchWeight();
 
-  if (loading) {
-    return <Spinner text={"불러오는 중..."} />;
-  }
+  // 차트 스케일 계산 로직 (데이터 변경 시에만 재계산)
+  const maxScale = useMemo(() => {
+    if (!data || data.length === 0) return 1;
+    const overallMax = Math.max(...data.map((d) => d.max || 0));
+    return overallMax > 0 ? overallMax : 1;
+  }, [data]);
 
-  if (error) {
+  if (loading) return <Spinner text="무게 데이터 분석 중..." />;
+  if (error)
     return (
-      <ErrorMessage message="목표를 불러오지 못했습니다." onRetry={refetch} />
+      <ErrorMessage message="데이터를 불러오지 못했습니다." onRetry={refetch} />
     );
-  }
-
-  const OVERALL_MAX_WEIGHT = Math.max(...data.map((d) => d.max));
-  const MAX_SCALE = OVERALL_MAX_WEIGHT > 0 ? OVERALL_MAX_WEIGHT : 1;
+  if (!data) return null;
 
   return (
-    <div className="weight-chart__container">
+    <section className={styles.container}>
       <h4 className="section-title">부위별 무게</h4>
-      <div className="weight-chart__chart-container">
-        {data.map((data, index) => (
-          <BarGroup key={index} data={data} maxScale={MAX_SCALE} />
+
+      <div className={styles.chartArea}>
+        {data.map((item, index) => (
+          <BarGroup key={item.part || index} data={item} maxScale={maxScale} />
         ))}
       </div>
-      <div className="weight-chart__legend-container">
-        <div className="weight-chart__legend-item">
-          <span className="weight-chart__legend-color weight-chart__legend-color--current"></span>
+
+      <div className={styles.legendArea}>
+        <div className={styles.legendItem}>
+          <span className={styles.currentBox} />
           <span>이번 주</span>
         </div>
-        <div className="weight-chart__legend-item">
-          <span className="weight-chart__legend-color weight-chart__legend-color--max"></span>
+        <div className={styles.legendItem}>
+          <span className={styles.maxBox} />
           <span>최대 무게</span>
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 
-export default WeightChart;
+export default memo(WeightChart);

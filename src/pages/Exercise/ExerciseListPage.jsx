@@ -5,19 +5,19 @@ import Button from "../../components/common/Button";
 import TabNavigation from "../../components/common/TabNavigation";
 import Calendar from "../../components/common/Calendar";
 import ExerciseList from "../../components/ui/ExerciseList/ExerciseList";
-
-import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
-
-import "./ExerciseListPage.css";
-import { useHistoryActions } from "../../hooks/useHistoryActions";
-import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 import Spinner from "../../components/common/Spinner";
 import ErrorMessage from "../../components/common/ErrorMessage";
+
+import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
+import { useHistoryActions } from "../../hooks/useHistoryActions";
+import { usePersistentPanel } from "../../hooks/usePersistentPanel";
+
+import styles from "./ExerciseListPage.module.css";
 
 const TABS = ["전체", "개별운동", "루틴", "챌린지"];
 const ALL_DAYS = ["월", "화", "수", "목", "금", "토", "일"];
 
-// 부위별 색상 매핑
+// 운동 부위별 색상 설정
 const BODY_PART_COLORS = {
   가슴: "#DC3545",
   등: "#FFC107",
@@ -29,65 +29,58 @@ const BODY_PART_COLORS = {
 
 const ExerciseListPage = () => {
   const { navigateToPanel } = usePersistentPanel();
-
   const [activeTab, setActiveTab] = useState(TABS[0]);
   const [currentMonthDate, setCurrentMonthDate] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState(new Date());
 
-  // 데이터 불러오기
+  // 데이터 조회 및 액션 관련 훅
   const { historyData, isLoading, error, refetch } = useMonthlyHistory(
     currentMonthDate.getFullYear(),
     currentMonthDate.getMonth() + 1
   );
-
-  // 삭제/수정 액션 훅
   const { isProcessing, handleDelete } = useHistoryActions(refetch);
 
-  // 캘린더 전달 데이터 가공
+  // 캘린더에 표시할 날짜별 운동 부위 데이터 가공
   const monthlyDots = useMemo(() => {
-    if (!historyData || historyData.length === 0) return {};
+    if (!historyData?.length) return {};
 
-    const aggregatedData = historyData.reduce((acc, curr) => {
+    return historyData.reduce((acc, curr) => {
       const dateKey = curr.date;
       const currentCategories = curr.categoryGroup || [];
-
       const existingCategories = acc[dateKey] || [];
-      const combinedCategories = [...existingCategories, ...currentCategories];
-      const uniqueCategories = Array.from(new Set(combinedCategories));
-      acc[dateKey] = uniqueCategories;
 
+      // 중복 제거 후 카테고리 병합
+      acc[dateKey] = Array.from(
+        new Set([...existingCategories, ...currentCategories])
+      );
       return acc;
     }, {});
-    return aggregatedData;
   }, [historyData]);
 
   // 운동 추가 페이지 이동
-  const handleAddExerciseClick = () => {
-    navigateToPanel("?panel=exercise-form");
-  };
+  const handleAddExerciseClick = () => navigateToPanel("?panel=exercise-form");
 
-  // 달력 날짜별 렌더링 함수
+  // 달력 날짜별 하단 점(dot) 렌더링
   const renderDayContents = (date) => {
     const dateKey = format(date, "yyyy-MM-dd");
     const categories = monthlyDots[dateKey] || [];
-    if (categories.length === 0) return null;
+    if (!categories.length) return null;
 
     return (
-      <div className="workout-dots-container">
-        {Array.isArray(categories) &&
-          categories.map((part, index) => (
-            <span
-              key={index}
-              className="workout-dot"
-              style={{ backgroundColor: BODY_PART_COLORS[part] || "#ccc" }}
-              title={part}
-            />
-          ))}
+      <div className={styles.workoutDotsContainer}>
+        {categories.map((part, index) => (
+          <span
+            key={`${dateKey}-${index}`}
+            className={styles.workoutDot}
+            style={{ backgroundColor: BODY_PART_COLORS[part] || "#ccc" }}
+            title={part}
+          />
+        ))}
       </div>
     );
   };
 
-  // 기록 삭제 핸들러
+  // 기록 삭제 처리
   const handleDeleteRecord = async (recordId) => {
     const success = await handleDelete(recordId);
     if (success) {
@@ -97,21 +90,21 @@ const ExerciseListPage = () => {
     }
   };
 
-  // 기록 수정 핸들러 (수정 모달/페이지 이동 로직)
+  // 기록 수정 페이지 이동
   const handleEditRecord = (recordData) => {
-    const newQuery = `?panel=exercise-edit&recordId=${recordData.id}`;
-    navigateToPanel(newQuery);
+    navigateToPanel(`?panel=exercise-edit&recordId=${recordData.id}`);
   };
 
   return (
-    <div className="exercise-list-page">
-      <div className="exercise-list-header">
+    <div className={styles.exerciseListPage}>
+      <div className={styles.header}>
         <h2>운동 활동</h2>
         <Button text={"+ 운동 추가"} onClick={handleAddExerciseClick} />
       </div>
+
       <Calendar
-        startDate={new Date("2020-01-01")} // 과거 데이터도 볼 수 있게 넉넉히 설정
-        activeDays={ALL_DAYS} // 모든 요일 활성화
+        startDate={new Date("2020-01-01")}
+        activeDays={ALL_DAYS}
         selectedDate={selectedDate}
         onSelectDate={setSelectedDate}
         currentMonth={currentMonthDate}
@@ -119,11 +112,11 @@ const ExerciseListPage = () => {
         renderDayContents={renderDayContents}
       />
 
-      <div className="calendar-legend">
+      <div className={styles.calendarLegend}>
         {Object.entries(BODY_PART_COLORS).map(([part, color]) => (
-          <span key={part} className="legend-item">
+          <span key={part} className={styles.legendItem}>
             <span
-              className="workout-dot legend-dot"
+              className={`${styles.workoutDot} ${styles.legendDot}`}
               style={{ backgroundColor: color }}
             />
             {part}
@@ -136,7 +129,8 @@ const ExerciseListPage = () => {
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
-      <div className="exercise-list-box">
+
+      <div className={styles.exerciseListBox}>
         {isLoading || isProcessing ? (
           <Spinner
             text={isProcessing ? "처리 중..." : "데이터를 불러오는 중입니다..."}

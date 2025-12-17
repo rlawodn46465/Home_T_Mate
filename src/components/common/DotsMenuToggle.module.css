@@ -1,0 +1,29 @@
+.container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 30px;
+  height: 20px;
+  padding: 5px;
+  background-color: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.container:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.dot {
+  width: 5px;
+  height: 5px;
+  background-color: #333;
+  border-radius: 50%;
+  transition: background-color 0.2s ease;
+}
+
+.active .dot,
+.container:hover .dot {
+  background-color: #5155a3;
+}

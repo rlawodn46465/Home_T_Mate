@@ -1,0 +1,20 @@
+.tabNavigation {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.tabNavigationButton {
+    font-size: 21px;
+    font-weight: 700;
+    color: #aaa;
+    background: none;
+    border: none;
+    border-bottom: 3px solid transparent;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.active {
+    color: rgba(81, 85, 163, 1);
+}

@@ -1,0 +1,78 @@
+.container {
+  margin-bottom: 20px;
+}
+
+.contentWrapper {
+  display: flex;
+  gap: 15px;
+  align-items: flex-start;
+}
+
+.muscleMapWrapper {
+  width: 80px;
+  flex-shrink: 0;
+}
+
+.infoSection {
+  display: flex;
+  flex: 1;
+  max-width: 230px;
+  flex-direction: column;
+}
+
+.dayHeader {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+}
+
+.dayItem {
+  width: 30px;
+  font-weight: 500;
+}
+
+.dateContainer {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+/* 요약 정보 영역 */
+.summaryWrapper {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  text-align: center;
+  padding: 10px 0;
+  background-color: #fcfcfc;
+  border-radius: 8px;
+}
+
+.summaryItem {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.summaryLabel {
+  font-size: 12px;
+  font-weight: 500;
+  color: #888;
+  margin-bottom: 4px;
+}
+
+.summaryValue {
+  font-size: 22px;
+  font-weight: 700;
+  color: #3e72b8;
+}
+
+.verticalLine {
+  width: 1px;
+  height: 30px;
+  background-color: rgba(189, 189, 189, 0.4);
+}

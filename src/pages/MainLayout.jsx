@@ -3,12 +3,12 @@ import CommunityPage from "./Community/CommunityPage";
 import PostCreatePage from "./Community/PostCreatePage";
 import PostDetailPage from "./Community/PostDetailPage";
 import RightPanel from "./RightPanel";
-import "./MainLayout.css";
+import styles from "./MainLayout.module.css";
 
 const MainLayout = () => {
   return (
-    <div className="main-content">
-      <div className="left-content">
+    <div className={styles.mainContent}>
+      <div className={styles.leftContent}>
         <Routes>
           <Route path="/" element={<CommunityPage />} />
           <Route path="/write" element={<PostCreatePage />} />
@@ -16,7 +16,7 @@ const MainLayout = () => {
           <Route path="/:postId" element={<PostDetailPage />} />
         </Routes>
       </div>
-      <div className="right-content">
+      <div className={styles.rightContent}>
         <RightPanel />
       </div>
     </div>

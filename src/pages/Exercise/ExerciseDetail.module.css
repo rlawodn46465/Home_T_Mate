@@ -1,0 +1,29 @@
+.exerciseHeader {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.exerciseHeaderInfo {
+  display: flex;
+  flex-direction: column;
+}
+
+.exerciseName {
+  margin-bottom: 10px;
+}
+
+.exerciseMeta {
+  font-size: 14px;
+  color: #666;
+  line-height: 1.5;
+}
+
+.errorState {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+  color: #ff4d4f;
+  font-weight: 600;
+}

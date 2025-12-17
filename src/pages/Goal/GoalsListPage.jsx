@@ -1,11 +1,12 @@
-import "./GoalsListPage.css";
+import { useState, useCallback, useMemo } from "react";
 import TabNavigation from "../../components/ui/Goal/GoalList/TabNavigation";
 import GoalsHeader from "../../components/ui/Goal/GoalList/GoalsHeader";
 import BodyPartFilter from "../../components/ui/Goal/GoalList/BodyPartFilter";
-import { useState, useCallback, useMemo } from "react";
 import GoalItemCard from "../../components/ui/Goal/GoalList/GoalItemCard";
 import { useGoals } from "../../hooks/useGoals";
 import { useGoalDelete } from "../../hooks/useGoalDelete";
+
+import styles from "./GoalsListPage.module.css";
 
 const BODY_PARTS = [
   "전체",
@@ -28,14 +29,12 @@ const GoalsListPage = () => {
   const { goals, refreshGoals } = useGoals();
   const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
-  // 목표 리스트 불러올 곳
+  // 필터 조건에 따른 목표 리스트 계산
   const filteredGoals = useMemo(() => {
     return goals.filter((goal) => {
-      const typeMatch = activeTab === "전체" || goal.goalTypeLabel === activeTab;
-
-      // 추가 한국어로 상태 변환
+      const typeMatch =
+        activeTab === "전체" || goal.goalTypeLabel === activeTab;
       const statusMatch = goal.status === activeStatus;
-
       const partMatch =
         activePart === "전체" ||
         (goal.parts && goal.parts.includes(activePart));
@@ -44,20 +43,18 @@ const GoalsListPage = () => {
     });
   }, [goals, activeTab, activeStatus, activePart]);
 
+  // 목표 아이템 액션 핸들러 (삭제 등)
   const handleItemAction = useCallback(
     async (id, action) => {
-      // 실제 상태 변경, API 호출 등 로직 구현
       if (action === "삭제") {
-        const isConfirmed = window.confirm("정말 목표를 삭제하시겠습니까?");
+        if (!window.confirm("정말 목표를 삭제하시겠습니까?")) return;
 
-        if (isConfirmed) {
-          try {
-            await deleteGoalHandler(id);
-            alert("목표가 성공적으로 삭제되었습니다.");
-            refreshGoals();
-          } catch (error) {
-            alert(error.message || "목표 삭제 중 오류가 발생했습니다.");
-          }
+        try {
+          await deleteGoalHandler(id);
+          alert("목표가 성공적으로 삭제되었습니다.");
+          refreshGoals();
+        } catch (error) {
+          alert(error.message || "목표 삭제 중 오류가 발생했습니다.");
         }
       }
     },
@@ -65,7 +62,7 @@ const GoalsListPage = () => {
   );
 
   return (
-    <div className="goal-list-page">
+    <div className={styles.goalListPage}>
       <GoalsHeader />
       <TabNavigation
         tabs={["전체", "루틴", "챌린지"]}
@@ -77,23 +74,25 @@ const GoalsListPage = () => {
         activePart={activePart}
         onPartChange={setActivePart}
       />
-
-      <div className="status-tabs-container">
+      <div className={styles.statusTabsContainer}>
         <button
-          className={`status-tab ${activeStatus === "진행중" ? "active" : ""}`}
+          className={`${styles.statusTab} ${
+            activeStatus === "진행중" ? styles.statusTabActive : ""
+          }`}
           onClick={() => setActiveStatus("진행중")}
         >
           진행중
         </button>
         <button
-          className={`status-tab ${activeStatus === "완료" ? "active" : ""}`}
+          className={`${styles.statusTab} ${
+            activeStatus === "완료" ? styles.statusTabActive : ""
+          }`}
           onClick={() => setActiveStatus("완료")}
         >
           완료
         </button>
       </div>
-
-      <div className="goal-list-scroll-area">
+      <div className={styles.goalListScrollArea}>
         {filteredGoals.map((goal) => (
           <GoalItemCard
             key={goal.id}
@@ -102,8 +101,9 @@ const GoalsListPage = () => {
             isDeleting={isDeleting}
           />
         ))}
+
         {filteredGoals.length === 0 && (
-          <p className="no-results">표시할 목표가 없습니다.</p>
+          <p className={styles.noResults}>표시할 목표가 없습니다.</p>
         )}
       </div>
     </div>

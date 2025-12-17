@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import "./MemoArea.css";
+import styles from "./MemoArea.module.css";
 
 const MemoArea = ({ initialMemo, onSave }) => {
   const textareaRef = useRef(null);
@@ -14,13 +14,11 @@ const MemoArea = ({ initialMemo, onSave }) => {
     setIsChanged(false);
   }, [initialMemo]);
 
-  const handleContainerClick = () => {
+  const handleStartEdit = () => {
     if (!isEditing) {
       setEditingStartData(currentMemo);
       setIsEditing(true);
-      if (textareaRef.current) {
-        textareaRef.current.focus();
-      }
+      textareaRef.current?.focus();
     }
   };
 
@@ -30,51 +28,50 @@ const MemoArea = ({ initialMemo, onSave }) => {
     setIsChanged(newValue !== editingStartData);
   };
 
-  const handleBlur = () => {
-    if (isEditing) {
-      setIsEditing(false);
-    }
-  };
-
   const handleCancel = () => {
     setCurrentMemo(editingStartData);
     setIsEditing(false);
     setIsChanged(false);
-
-    if (textareaRef.current) {
-      textareaRef.current.blur();
-    }
   };
 
   const handleSave = () => {
     if (isChanged && onSave) {
       onSave(currentMemo);
       setIsEditing(false);
-      textareaRef.current?.blur();
     }
   };
 
   return (
-    <div className="memo-area-secion">
+    <div className={styles.section}>
       <h4>메모</h4>
-      <div onMouseDown={handleContainerClick}>
+      <div className={styles.textareaContainer} onMouseDown={handleStartEdit}>
         <textarea
           ref={textareaRef}
+          className={`${styles.textarea} ${isEditing ? styles.editing : ""}`}
           value={currentMemo}
           onChange={handleMemoChange}
-          onBlur={handleBlur}
           readOnly={!isEditing}
+          placeholder="여기에 메모를 남겨보세요..."
           rows={5}
-          className={`memo-area ${isEditing ? "focus" : ""}`}
-          placeholder={initialMemo}
         />
       </div>
 
-      {isEditing && <button onMouseDown={handleCancel}>편집 취소</button>}
       {isEditing && (
-        <button onClick={handleSave} disabled={!isChanged}>
-          저장
-        </button>
+        <div className={styles.buttonGroup}>
+          <button
+            className={`${styles.btn} ${styles.cancelBtn}`}
+            onMouseDown={handleCancel}
+          >
+            편집 취소
+          </button>
+          <button
+            className={`${styles.btn} ${styles.saveBtn}`}
+            onClick={handleSave}
+            disabled={!isChanged}
+          >
+            저장
+          </button>
+        </div>
       )}
     </div>
   );

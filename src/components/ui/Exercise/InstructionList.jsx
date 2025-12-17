@@ -1,62 +1,39 @@
-import "./InstructionList.css";
+import styles from "./InstructionList.module.css";
+
+const InstructionSection = ({ title, items, isTip = false }) => {
+  if (
+    !items ||
+    items.length === 0 ||
+    (items[0]?.text === "" && items[0] === "")
+  )
+    return null;
+
+  return (
+    <div className={styles.section}>
+      <h4>{title}</h4>
+      <ul className={styles.list}>
+        {items.map((item, index) => (
+          <li key={index} className={styles.item}>
+            <span className={styles.stepNumber}>
+              {isTip ? index + 1 : item.step}.
+            </span>
+            <span>{isTip ? item : item.text}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+};
 
 const InstructionList = ({ description }) => {
-  const isListValid = (list) => {
-    return list && list[0].text !== "" && list[0] !== "";
-  };
-
   const { setup, movement, breathing, tips } = description;
 
   return (
-    <div className="instruction-list">
-      {isListValid(setup) && (
-        <>
-          <h4>준비</h4>
-          <ul>
-            {setup.map((item) => (
-              <li key={`setup-${item.step}`}>
-                <span>{item.step}.</span> {item.text}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      {isListValid(movement) && (
-        <>
-          <h4>움직임</h4>
-          <ul>
-            {movement.map((item) => (
-              <li key={`movement-${item.step}`}>
-                <span>{item.step}.</span> {item.text}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      {isListValid(breathing) && (
-        <>
-          <h4>호흡법</h4>
-          <ul>
-            {breathing.map((item) => (
-              <li key={`breathing-${item.step}`}>
-                <span>{item.step}.</span> {item.text}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
-      {isListValid(tips) && (
-        <>
-          <h4>팁</h4>
-          <ul>
-            {tips.map((item, index) => (
-              <li key={`tip-${index}`}>
-                <span>{index + 1}.</span> {item}
-              </li>
-            ))}
-          </ul>
-        </>
-      )}
+    <div className={styles.container}>
+      <InstructionSection title="준비" items={setup} />
+      <InstructionSection title="움직임" items={movement} />
+      <InstructionSection title="호흡법" items={breathing} />
+      <InstructionSection title="팁" items={tips} isTip={true} />
     </div>
   );
 };

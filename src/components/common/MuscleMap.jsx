@@ -1,15 +1,13 @@
-import "./MuscleMap.css";
+import styles from "./MuscleMap.module.css";
 
 const MuscleMap = ({ selectedTags }) => {
   const getFillColor = (muscleId) => {
-    return selectedTags.includes(muscleId)
-      ? "muscle-active-color"
-      : "muscle-inactive-color";
+    return selectedTags.includes(muscleId) ? styles.active : styles.inactive;
   };
   //[복근, 가슴, 어깨, 이두, 삼두, 전완, 대퇴사두, 승모, 종아리]
 
   return (
-    <svg className="muscle-body" width="80" height="170" viewBox="0 0 40 115">
+    <svg className={styles.body} width="80" height="170" viewBox="0 0 40 115">
       <path
         className={getFillColor("복근")}
         d="M21.8,23.7V26a6.1,6.1,0,0,1-4.6,2.4V26.1A5,5,0,0,1,21.8,23.7Z"

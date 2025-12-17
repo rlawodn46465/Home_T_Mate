@@ -1,0 +1,50 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.container h4 {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.statsList {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+}
+
+.statItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
+.value {
+  font-size: 15px;
+  font-weight: 600;
+  color: #333;
+}
+
+.unit {
+  font-size: 13px;
+  color: #3e72b8;
+  margin-left: 2px;
+}
+
+.label {
+  font-size: 11px;
+  color: #888;
+  margin-top: 4px;
+}
+
+.recentLogs {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}

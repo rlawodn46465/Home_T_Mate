@@ -1,0 +1,40 @@
+.item {
+  width: 200px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(104, 80, 251, 1);
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  list-style: none;
+}
+
+.item:hover {
+  background-color: rgba(120, 100, 255, 1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(104, 80, 251, 0.2);
+}
+
+.item:active {
+  transform: translateY(0);
+  background-color: rgba(90, 70, 230, 1);
+  box-shadow: none;
+}
+
+.noGoal {
+  composes: item;
+  background-color: #ffffff;
+  color: rgba(104, 80, 251, 1);
+  border: 2px dashed rgba(104, 80, 251, 0.5);
+}
+
+.noGoal:hover {
+  background-color: rgba(104, 80, 251, 0.05);
+  border-color: rgba(104, 80, 251, 1);
+  transform: scale(1.02);
+}

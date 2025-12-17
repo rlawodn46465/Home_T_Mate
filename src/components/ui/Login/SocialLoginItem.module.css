@@ -1,0 +1,51 @@
+.item {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding: 0 16px;
+  width: 320px;
+  height: 50px;
+  border-radius: 6px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: #ffffff;
+  cursor: pointer;
+  transition: opacity 0.2s ease, transform 0.1s ease;
+
+  /* 드래그 방지 */
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+}
+
+.item:active {
+  transform: scale(0.98);
+}
+
+.google {
+  background-color: #f45a5c;
+}
+
+.naver {
+  background-color: #27d34b;
+}
+
+.kakao {
+  background-color: #ffeb00;
+  color: #391f1e;
+}
+
+.icon {
+  width: 24px;
+  height: 24px;
+  object-fit: contain;
+  z-index: 1;
+}
+
+.text {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  white-space: nowrap;
+  font-size: 15px;
+  font-weight: 600;
+}

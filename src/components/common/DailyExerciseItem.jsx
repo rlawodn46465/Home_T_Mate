@@ -1,10 +1,9 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import ToggleComponents from "./ToggleComponents";
 import MuscleMap from "./MuscleMap";
+import styles from "./DailyExerciseItem.module.css";
 
-import "./DailyExerciseItem.css";
-
-const daysOfWeek = ["월", "화", "수", "목", "금", "토", "일"];
+const DAYS_OF_WEEK = ["월", "화", "수", "목", "금", "토", "일"];
 
 const DailyExerciseItem = ({
   exercise,
@@ -19,59 +18,36 @@ const DailyExerciseItem = ({
 }) => {
   const { id, name, sets, restTime, days, targetMuscles, duration } = exercise;
   const [isExpanded, setIsExpanded] = useState(true);
-  const containerRef = useRef(null);
 
-  // 세트 간 휴식 시간 업데이트
-  const handleRestTimeChange = (e) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 허용
-    const numValue = parseInt(rawValue, 10);
-    if (rawValue === "" || !isNaN(numValue)) {
-      onExerciseUpdate(id, "restTime", rawValue === "" ? 0 : numValue);
-    }
+  // 숫자 전용 입력 핸들러 (유틸리티성 함수)
+  const handleNumericChange = (callback) => (e) => {
+    const rawValue = e.target.value.replace(/[^0-9]/g, "");
+    callback(rawValue === "" ? 0 : parseInt(rawValue, 10));
   };
 
-  // 운동 시간 업데이트 핸들러
-  const handleDurationChange = (e) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, ""); // 숫자만 허용
-    const numValue = parseInt(rawValue, 10);
-    if (rawValue === "" || !isNaN(numValue)) {
-      onExerciseUpdate(id, "duration", rawValue === "" ? 0 : numValue);
-    }
-  };
-
-  // 요일 토글
+  // 요일 토글 로직
   const toggleDay = (day) => {
     const newDays = days.includes(day)
-      ? days.filter((d) => d !== day) // 제거
-      : [...days, day]; // 추가
+      ? days.filter((d) => d !== day)
+      : [...days, day];
     onExerciseUpdate(id, "days", newDays);
   };
 
-  // 세트 추가
-  const handleAddSet = () => onAddSet(id);
-
-  // 세트 제거
-  const handleRemoveSet = (setId) => onRemoveSet(id, setId);
-
-  // 무게/횟수 변경 핸들러
-  const handleSetFieldChange = (setId, field, e) => {
-    const rawValue = e.target.value.replace(/[^0-9]/g, "");
-    const numValue = parseInt(rawValue, 10);
-
-    if (rawValue === "" || !isNaN(numValue)) {
-      onSetUpdate(id, setId, field, rawValue === "" ? 0 : numValue);
-    }
-  };
-
-  const renderDaySelectionGroup = () => (
-    <div className="day-selection-group">
-      <span className="day-label">요일</span>
-      <div className="day-buttons">
-        {daysOfWeek.map((day) => (
+  // 요일 선택 영역 렌더링
+  const renderDaySelection = () => (
+    <div className={styles.daySelectionGroup}>
+      <span className={styles.dayLabel}>요일</span>
+      <div className={styles.dayButtons}>
+        {DAYS_OF_WEEK.map((day) => (
           <button
             key={day}
-            className={`day-button ${days.includes(day) ? "active" : ""}`}
-            onClick={() => toggleDay(day)}
+            className={`${styles.dayButton} ${
+              days.includes(day) ? styles.dayButtonActive : ""
+            }`}
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleDay(day);
+            }}
           >
             {day}
           </button>
@@ -81,111 +57,117 @@ const DailyExerciseItem = ({
   );
 
   return (
-    <div
-      className={`exercise-item-card ${isReadOnly ? "readonly" : ""}`}
-      ref={containerRef}
-    >
-      <div className="item-header" onClick={() => setIsExpanded(!isExpanded)}>
-        <div className="item-header-left">
+    <div className={`${styles.card} ${isReadOnly ? styles.readonly : ""}`}>
+      {/* 카드 헤더: 클릭 시 접기/펴기 */}
+      <div className={styles.header} onClick={() => setIsExpanded(!isExpanded)}>
+        <div className={styles.headerLeft}>
           <ToggleComponents isUp={isExpanded} />
-          <h3 className="exercise-title">
+          <h3 className={styles.title}>
             {name}
-            <span className="set-count">{sets.length}세트</span>
-            {!isReadOnly && duration && isDurationVisible > 0 && (
-              <span className="duration-preview"> · {duration}분</span>
+            <span className={styles.setCount}>{sets.length}세트</span>
+            {!isReadOnly && duration > 0 && isDurationVisible && (
+              <span className={styles.setCount}> · {duration}분</span>
             )}
           </h3>
         </div>
         {!isReadOnly && (
-          <div className="remove-button-wrapper">
-            <button
-              className="remove-exercise-button"
-              onClick={(e) => {
-                e.stopPropagation();
-                if (typeof onRemove === "function") onRemove(id);
-              }}
-            >
-              &times;
-            </button>
-          </div>
+          <button
+            className={styles.removeExerciseBtn}
+            onClick={(e) => {
+              e.stopPropagation();
+              onRemove(id);
+            }}
+          >
+            &times;
+          </button>
         )}
       </div>
 
+      {/* 상세 정보 영역 */}
       {isExpanded && (
-        <div className="item-details">
-          {isDaySelector && renderDaySelectionGroup()}
-          <div className="item-info-container">
+        <div className={styles.details} onClick={(e) => e.stopPropagation()}>
+          {isDaySelector && renderDaySelection()}
+
+          <div className={styles.infoContainer}>
+            {/* 설정 행: 휴식 시간 및 운동 시간 */}
             <div
-              className="time-settings-row"
+              className={styles.settingsRow}
               style={{ display: "flex", gap: "15px", marginBottom: "10px" }}
             >
-              <div className="rest-time-group">
-                <span className="rest-time-label">휴식(세트간)</span>
+              <div className={styles.group}>
+                <span className={styles.label}>휴식(세트간)</span>
                 <input
                   type="text"
-                  readOnly={isReadOnly}
-                  className="item-input"
+                  className={styles.itemInput}
                   value={restTime}
-                  onChange={!isReadOnly ? handleRestTimeChange : undefined}
+                  readOnly={isReadOnly}
+                  onChange={handleNumericChange((val) =>
+                    onExerciseUpdate(id, "restTime", val)
+                  )}
                 />
-                <span className="rest-time-unit">초</span>
+                <span className={styles.unit}>초</span>
               </div>
               {!isReadOnly && isDurationVisible && (
-                <div className="duration-group">
-                  <span className="rest-time-label">운동 시간</span>
+                <div className={styles.group}>
+                  <span className={styles.label}>운동 시간</span>
                   <input
                     type="text"
-                    className="item-input"
+                    className={styles.itemInput}
                     value={duration || 0}
-                    onChange={handleDurationChange}
+                    onChange={handleNumericChange((val) =>
+                      onExerciseUpdate(id, "duration", val)
+                    )}
                   />
-                  <span className="rest-time-unit">분</span>
+                  <span className={styles.unit}>분</span>
                 </div>
               )}
             </div>
-            <div className="item-info-box">
+
+            {/* 근육 지도 및 세트 리스트 */}
+            <div
+              className={styles.infoBox}
+              style={{ display: "flex", justifyContent: "space-between" }}
+            >
               <MuscleMap selectedTags={targetMuscles?.join(", ")} />
-              <div className="item-info-sets">
-                <div className="set-list">
-                  {sets.map((set, setIndex) => (
-                    <div key={set.id} className="set-row">
-                      <span className="set-number">{setIndex + 1}</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        className="item-input"
-                        value={set.weight}
-                        onChange={(e) =>
-                          handleSetFieldChange(set.id, "weight", e)
-                        }
-                      />
-                      <span className="unit-label">kg</span>
-                      <input
-                        type="text"
-                        inputMode="numeric"
-                        className="item-input"
-                        value={set.reps}
-                        onChange={(e) =>
-                          handleSetFieldChange(set.id, "reps", e)
-                        }
-                      />
-                      <span className="unit-label">회</span>
-                      {!isReadOnly && sets.length > 1 && (
-                        <button
-                          className="remove-set-button"
-                          onClick={() => handleRemoveSet(set.id)}
-                        >
-                          제거
-                        </button>
+
+              <div className={styles.setList}>
+                {sets.map((set, idx) => (
+                  <div key={set.id} className={styles.setRow}>
+                    <span className={styles.setNumber}>{idx + 1}</span>
+                    <input
+                      className={styles.itemInput}
+                      value={set.weight}
+                      onChange={handleNumericChange((val) =>
+                        onSetUpdate(id, set.id, "weight", val)
                       )}
-                    </div>
-                  ))}
-                  {!isReadOnly && (
-                    <button className="add-set-button" onClick={handleAddSet}>
-                      + 세트 추가
-                    </button>
-                  )}
-                </div>
+                    />
+                    <span className={styles.unitLabel}>kg</span>
+                    <input
+                      className={styles.itemInput}
+                      value={set.reps}
+                      onChange={handleNumericChange((val) =>
+                        onSetUpdate(id, set.id, "reps", val)
+                      )}
+                    />
+                    <span className={styles.unitLabel}>회</span>
+                    {!isReadOnly && sets.length > 1 && (
+                      <button
+                        className={styles.removeSetBtn}
+                        onClick={() => onRemoveSet(id, set.id)}
+                      >
+                        제거
+                      </button>
+                    )}
+                  </div>
+                ))}
+                {!isReadOnly && (
+                  <button
+                    className={styles.addSetBtn}
+                    onClick={() => onAddSet(id)}
+                  >
+                    + 세트 추가
+                  </button>
+                )}
               </div>
             </div>
           </div>

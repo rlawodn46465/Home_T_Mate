@@ -1,11 +1,13 @@
 import CommunityListItem from "./CommunityListItem";
-import "./CommunityList.css";
 import Pagination from "./Pagination";
 import Spinner from "../../common/Spinner";
 import ErrorMessage from "../../common/ErrorMessage";
+import styles from "./CommunityList.module.css";
+
+// 게시판 타입을 텍스트로 변환하기 위한 맵핑 (상수)
 const TAG_MAP = {
-  2: "자유게시판",
-  3: "운동게시판",
+  free: "자유게시판",
+  exercise: "운동게시판",
 };
 
 const CommunityList = ({
@@ -16,28 +18,31 @@ const CommunityList = ({
   onPageChange,
   onItemClick,
 }) => {
+  // 로딩 상태 처리
   if (isLoading) {
     return <Spinner text={"게시글 로딩 중..."} />;
   }
 
+  // 에러 상태 처리
   if (error) {
     return <ErrorMessage message="데이터를 불러오는 데 실패했습니다." />;
   }
 
+  // 데이터가 없을 때 처리
   if (!posts || posts.length === 0) {
     return (
-      <div className="no-data">
+      <div className={styles.noData}>
         등록된 게시글이 없거나, 검색 결과가 없습니다.
       </div>
     );
   }
 
   return (
-    <div className="community-list-container">
+    <div className={styles.container}>
       {posts.map((item) => (
         <CommunityListItem
           key={item.id}
-          tag={item.boardType === "free" ? 2 : 3}
+          tagText={TAG_MAP[item.boardType] || "카테고리 없음"}
           title={item.title}
           user={item.author}
           commentCount={item.commentCount}

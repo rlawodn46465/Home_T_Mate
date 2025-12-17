@@ -1,0 +1,73 @@
+.container {
+  position: absolute;
+  top: calc(100% + 8px);
+  z-index: 1000;
+  animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.menuList {
+  background-color: #3b5998;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  padding: 6px 0;
+  min-width: 130px;
+  overflow: hidden;
+  list-style: none;
+  margin: 0;
+}
+
+.container::before {
+  content: "";
+  position: absolute;
+  top: -14px;
+  border: 7px solid transparent;
+  border-bottom-color: #3b5998;
+}
+
+.right {
+  right: 0;
+}
+.right::before {
+  right: 8px;
+}
+
+.left {
+  left: 0;
+}
+.left::before {
+  left: 8px;
+}
+
+.menuList :global(div),
+.menuList :global(button),
+.menuList :global(li) {
+  width: 100%;
+  padding: 10px 16px;
+  color: white;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  border: none;
+  background: transparent;
+  text-align: left;
+  transition: background-color 0.2s;
+  display: block;
+}
+
+.menuList :global(div:hover),
+.menuList :global(button:hover),
+.menuList :global(li:hover) {
+  background-color: rgba(255, 255, 255, 0.15);
+}

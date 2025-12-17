@@ -1,0 +1,30 @@
+.contextualMenu {
+  position: absolute;
+  top: 0px;
+  right: 20px;
+  background-color: rgba(81, 85, 163, 1); /* 배경색을 보라색으로 설정 */
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(255, 255, 255, 1);
+  overflow: hidden;
+  width: 100px;
+}
+
+.contextualMenu button {
+  width: 100%;
+  padding: 10px;
+  background: none;
+  border: none;
+  color: white;
+  text-align: center;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.1s;
+}
+
+.contextualMenu button:hover {
+  background-color: rgba(112, 115, 181, 1);
+}
+
+.contextualMenu button:not(:last-child) {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}

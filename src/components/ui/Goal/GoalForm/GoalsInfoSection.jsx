@@ -1,31 +1,29 @@
 import GoalsNameInput from "./GoalsNameInput";
 import GoalsTypeToggle from "./GoalsTypeToggle";
-import "./GoalsInfoSection.css";
+import styles from "./GoalsInfoSection.module.css";
 
 const GoalsInfoSection = ({ info, onInfoChange }) => {
-
   const { name, goalType, goalWeeks } = info;
-
   const isChallenge = goalType === "challenge";
 
   return (
-    <div className="goal-info-section">
-      <div className="goal-info-section__name-input">
+    <div className={styles.goalInfoSection}>
+      <div className={styles.nameInputWrapper}>
         <GoalsNameInput
           initialName={name}
           onNameChange={(newName) => onInfoChange("name", newName)}
         />
       </div>
 
-      <div className="goal-info-section__toggle">
+      <div className={styles.toggleContainer}>
         <GoalsTypeToggle
           goalType={goalType}
           onTypeChange={(newType) => onInfoChange("goalType", newType)}
         />
 
         {isChallenge && (
-          <div className="goal-info-section__goal-weeks">
-            <label htmlFor="goal-weeks" className="goal-week-label">
+          <div className={styles.goalWeeksWrapper}>
+            <label htmlFor="goal-weeks" className={styles.goalWeekLabel}>
               목표 주차 :{" "}
             </label>
             <input
@@ -48,9 +46,9 @@ const GoalsInfoSection = ({ info, onInfoChange }) => {
                 }
                 onInfoChange("goalWeeks", finalValue);
               }}
-              className="goal-week-input"
+              className={styles.goalWeekInput}
             />
-            <span className="goal-week-unit">차</span>
+            <span className={styles.goalWeekUnit}>차</span>
           </div>
         )}
       </div>
