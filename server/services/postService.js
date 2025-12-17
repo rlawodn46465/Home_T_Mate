@@ -319,12 +319,32 @@ const downloadGoalFromPost = async (postId, userId) => {
     throw new BadRequestError("이미 가져간 목표입니다.");
   }
 
+  const customExercises = goal.exercises.map((ex) => ({
+    exerciseId: ex.exerciseId,
+    days: ex.days,
+    restTime: ex.restTime,
+    sets: ex.sets.map((s) => ({
+      setNumber: s.setNumber,
+      weight: s.weight,
+      reps: s.reps,
+    })),
+  }));
+
+  // 3. 활동 요일(activeDays) 계산
+  const activeDays = [...new Set(goal.exercises.flatMap((ex) => ex.days || []))].sort();
+
   // UserGoal 생성
   const userGoal = await UserGoal.create({
     userId,
     goalId: goal._id,
     durationWeek: goal.durationWeek,
     status: "진행중",
+    startDate: new Date(),
+    currentWeek: 1,
+    completedSessions: 0,
+    activeDays: activeDays,      
+    customExercises: customExercises, 
+    isModified: false,
   });
 
   // Goal 다운로드 수 증가
