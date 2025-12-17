@@ -2,7 +2,7 @@
 const asyncHandler = require("../utils/asyncHandler");
 const postService = require("../services/postService");
 
-// GET /api/v1/posts
+// GET /api/v1/posts (게시글 조회)
 const getPosts = asyncHandler(async (req, res) => {
   const result = await postService.getPosts(req.query);
 
