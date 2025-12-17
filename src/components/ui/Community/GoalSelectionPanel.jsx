@@ -45,7 +45,7 @@ const GoalSelectionPanel = ({ onClose, onSelectFinalGoal }) => {
       }
       onSelectFinalGoal({
         id: "manual",
-        name: "직접 입력한 운동",
+        name: "공유 목표",
         goalType: "개별운동",
         customExercises: goalForm.exercises,
       });
