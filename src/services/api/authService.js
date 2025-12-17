@@ -21,11 +21,7 @@ export const handleSocialLoginSuccess = async (token) => {
       setAccessToken(token);
     }
     // 서버의 /auth/me 엔드포인트를 호출하여 현재 인증된 사용자 정보를 가져옴
-    const response = await api.get(`${API_AUTH_PATH}/me`, {
-      headers: {
-        Authorization: token ? `Bearer ${token}` : undefined,
-      },
-    });
+    const response = await api.get(`${API_AUTH_PATH}/me`);
 
     // 사용자 정보 반환
     return { user: response.data };
