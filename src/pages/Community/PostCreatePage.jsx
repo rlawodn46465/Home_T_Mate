@@ -82,7 +82,7 @@ const PostCreatePage = () => {
         isEditMode ? "게시글이 수정되었습니다." : "게시글이 등록되었습니다."
       );
       navigateWithPanel(
-        isEditMode ? `/community/post/${postId}` : "/community"
+        isEditMode ? `/community/${postId}` : "/community"
       );
     }
   }, [
