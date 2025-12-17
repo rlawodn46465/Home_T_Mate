@@ -1,4 +1,10 @@
-import {createContext, useContext, useState, useCallback, useEffect} from 'react';
+import {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useEffect,
+} from "react";
 import { useNavigate } from "react-router-dom";
 import {
   handleSocialLoginSuccess,
@@ -64,7 +70,7 @@ export const AuthProvider = ({ children }) => {
       }
     };
     checkInitialAuth();
-  }, [loadUser]);
+  }, []);
 
   const value = {
     user,
@@ -74,5 +80,5 @@ export const AuthProvider = ({ children }) => {
     loadUser,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
