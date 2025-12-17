@@ -9,43 +9,32 @@ const tagData = [
 ];
 
 const CommunityControls = ({ currentQueryParams, onFilterChange }) => {
-  const getInitialTagId = (boardType) => {
-    const foundTag = tagData.find((t) => t.boardType === boardType);
-    return foundTag ? foundTag.id : 1;
-  };
-
-  const initialTagId = getInitialTagId(currentQueryParams.boardType);
-
   const [isInputFocused, setIsInputFocused] = useState(false);
-  const [selectedTagId, setSelectedTagId] = useState(initialTagId);
   const [searchText, setSearchText] = useState(currentQueryParams.search || "");
 
+  // 외부에서 검색어가 초기화 되거나 변경될 때 동기화
   useEffect(() => {
     setSearchText(currentQueryParams.search || "");
-    const currentTag =
-      tagData.find((t) => t.boardType === currentQueryParams.boardType) ||
-      tagData[0];
-    setSelectedTagId(currentTag.id);
-  }, [currentQueryParams.search, currentQueryParams.boardType]);
+  }, [currentQueryParams.search]);
 
-  // 태그 클릭 핸들러: boardType 변경
-  const handleTagClick = (tagId) => {
-    setSelectedTagId(tagId);
-
-    const selectedTag = tagData.find((tag) => tag.id === tagId);
-    const type = selectedTag && selectedTag.boardType;
-
-    onFilterChange({ boardType: type });
+  // 즉시 필터링 적용
+  const handleTagClick = (tag) => {
+    onFilterChange({
+      boardType: tag.boardType,
+      page: 1,
+    });
   };
 
-  // 검색 핸들러: search 쿼리 변경
-  const handleSearch = () => {
-    onFilterChange({ search: searchText });
+  // 실제 검색 수행 함수
+  const handleSearchTrigger = () => {
+    onFilterChange({
+      search: searchText,
+      page: 1,
+    });
   };
 
   return (
     <>
-      {/* 검색 입력 섹션 */}
       <div
         className={`community-input-container ${
           isInputFocused ? "focused" : ""
@@ -62,22 +51,25 @@ const CommunityControls = ({ currentQueryParams, onFilterChange }) => {
           onFocus={() => setIsInputFocused(true)}
           onBlur={() => setIsInputFocused(false)}
           onKeyDown={(e) => {
-            if (e.key === "Enter") handleSearch();
+            if (e.key === "Enter") handleSearchTrigger();
           }}
         />
-        <button onClick={handleSearch}>
-          <img src={input_icon} alt="검색 버튼" />
+        <button className="search-submit-btn" onClick={handleSearchTrigger}>
+          검색
         </button>
       </div>
 
-      {/* 태그 필터 섹션 */}
       <div className="community-tag-container">
         {tagData.map((tag) => (
           <CommunityTag
             key={tag.id}
             text={tag.text}
-            isActive={selectedTagId === tag.id}
-            onClick={() => handleTagClick(tag.id)}
+            isActive={
+              (tag.boardType === null &&
+                currentQueryParams.boardType === null) ||
+              tag.boardType === currentQueryParams.boardType
+            }
+            onClick={() => handleTagClick(tag)}
           />
         ))}
       </div>
