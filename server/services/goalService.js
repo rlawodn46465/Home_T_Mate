@@ -4,7 +4,13 @@ const Goal = require("../models/Goal");
 const UserGoal = require("../models/UserGoal");
 const ExerciseHistory = require("../models/ExerciseHistory");
 const { formatUserGoalResponse } = require("../utils/responseMap");
-const { parseISO, startOfDay, endOfDay } = require("date-fns");
+const {
+  parseISO,
+  startOfDay,
+  endOfDay,
+  differenceInDays,
+  addDays,
+} = require("date-fns");
 
 const {
   NotFoundError,
@@ -15,6 +21,10 @@ const { default: mongoose } = require("mongoose");
 
 // 사용자 목표 목록 조회
 const getUserGoals = async (userId) => {
+
+  // 데이터 조회 전 상태 갱신
+  await refreshUserGoalsStatus(userId);
+
   // 내가 만든 Goal 조회
   const userGoals = await UserGoal.find({ userId: userId })
     .populate({
@@ -138,6 +148,9 @@ const getGoalDetail = async (goalId) => {
 
 // 오늘 목표 조회
 const getTodayGoals = async (userId) => {
+  // 데이터 조회 전 상태 갱신
+  await refreshUserGoalsStatus(userId);
+
   const userIdObj = new mongoose.Types.ObjectId(userId);
 
   const daysOfWeek = ["일", "월", "화", "수", "목", "금", "토"];
@@ -377,6 +390,48 @@ const getUserGoalDetail = async (userGoalId, userId) => {
   };
 };
 
+// 사용자의 '진행중'인 목표들의 주차 및 상태 최신화
+const refreshUserGoalsStatus = async (userId) => {
+  const now = new Date();
+
+  // '진행중'인 목표만 가져와서 검사
+  const userGoals = await UserGoal.find({ userId, status: "진행중" }).populate(
+    "goalId"
+  );
+
+  for (const userGoal of userGoals) {
+    const startDate = new Date(userGoal.startDate);
+
+    // 주차 계산: (현재날짜 - 시작날짜) / 7일 = 지난 주수 -> +1 주차
+    const daysDiff = differenceInDays(now, startDate);
+    const calculatedWeek = Math.floor(daysDiff / 7) + 1;
+
+    let isUpdated = false;
+
+    // 주차 업데이트 (주차가 변경되었을 때만)
+    if (userGoal.currentWeek !== calculatedWeek) {
+      userGoal.currentWeek = calculatedWeek;
+      isUpdated = true;
+    }
+
+    // 챌린지 완료 체크
+    // 챌린지이고, 설정된 기간(durationWeek)을 초과했다면 상태를 '완료'로 변경
+    if (
+      userGoal.goalId.goalType === "CHALLENGE" &&
+      userGoal.durationWeek &&
+      userGoal.currentWeek > userGoal.durationWeek
+    ) {
+      userGoal.status = "완료";
+      isUpdated = true;
+    }
+
+    // 변경사항이 있을 때만 저장하여 DB 부하 감소
+    if (isUpdated) {
+      await userGoal.save();
+    }
+  }
+};
+
 module.exports = {
   getUserGoals,
   getGoalDetail,
@@ -386,4 +441,5 @@ module.exports = {
   getDailyExerciseRecords,
   getTodayGoals,
   getUserGoalDetail,
+  refreshUserGoalsStatus,
 };

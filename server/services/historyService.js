@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const ExerciseHistory = require("../models/ExerciseHistory");
 const UserGoal = require("../models/UserGoal");
+const goalService = require("./goalService");
 const {
   checkDailySessionCompleted,
   mapRecordToSingleRecordResponse,
@@ -40,6 +41,9 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
 
 // 운동 기록 저장 (운동 완료 시 호출)
 const saveWorkoutSession = async (userId, workoutData) => {
+  // 기록 저장 전 유저의 목표 상태 갱신
+  await goalService.refreshUserGoalsStatus(userId);
+
   const { date, userGoalId, exercises, ...workoutMeta } = workoutData;
   const workoutInfo = { date, userGoalId, ...workoutMeta };
 
