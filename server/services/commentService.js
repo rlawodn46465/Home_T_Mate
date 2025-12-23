@@ -1,3 +1,5 @@
+// services/commentService.js
+
 const Comment = require("../models/Comment");
 const Post = require("../models/Post");
 const { BadRequestError, NotFoundError } = require("../utils/errorHandler");

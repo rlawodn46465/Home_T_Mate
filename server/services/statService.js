@@ -1,3 +1,5 @@
+// services/statService.js
+
 const mongoose = require("mongoose");
 const ExerciseHistory = require("../models/ExerciseHistory");
 const Exercise = require("../models/Exercise");
@@ -59,9 +61,12 @@ const getWeeklyStats = async (userId) => {
       const d = new Date(startDate);
       d.setDate(startDate.getDate() + i);
 
-      const dayRecords = histories.filter(
-        (h) => h.records.date.getDay() === d.getDay()
-      );
+      const dateString = d.toISOString().split("T")[0];
+
+      const dayRecords = histories.filter((h) => {
+        const recordDateString = h.records.date.toISOString().split("T")[0];
+        return recordDateString === dateString;
+      });
 
       return {
         date: d.getDate(),
