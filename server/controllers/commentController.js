@@ -1,5 +1,8 @@
+// controllers/commentController.js
+
 const asyncHandler = require("../utils/asyncHandler");
 const commentService = require("../services/commentService");
+const { successResponse } = require("../utils/response");
 
 // 댓글 목록
 const getCommentsByPost = asyncHandler(async (req, res) => {
@@ -7,10 +10,7 @@ const getCommentsByPost = asyncHandler(async (req, res) => {
 
   const comments = await commentService.getCommentsByPost(postId);
 
-  res.status(200).json({
-    success: true,
-    data: comments,
-  });
+  return successResponse(res, comments);
 });
 
 // 댓글 작성
@@ -21,10 +21,7 @@ const createComment = asyncHandler(async (req, res) => {
 
   const comment = await commentService.createComment(postId, userId, content);
 
-  res.status(201).json({
-    success: true,
-    data: comment,
-  });
+  return successResponse(res, comment);
 });
 
 // 댓글 삭제 (소프트 삭제)
@@ -34,10 +31,7 @@ const deleteComment = asyncHandler(async (req, res) => {
 
   await commentService.deleteComment(commentId, userId);
 
-  res.status(200).json({
-    success: true,
-    message: "댓글이 삭제되었습니다.",
-  });
+  return successResponse(res, null, { message: "댓글이 삭제되었습니다." });
 });
 
 module.exports = {

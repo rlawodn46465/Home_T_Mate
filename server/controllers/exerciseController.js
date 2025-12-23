@@ -2,6 +2,7 @@
 
 const asyncHandler = require("../utils/asyncHandler");
 const exerciseService = require("../services/exerciseService");
+const { successResponse } = require("../utils/response");
 
 // 전체 운동 목록 조회 (GET /api/v1/exercises)
 const getExerciseListController = asyncHandler(async (req, res) => {
@@ -12,7 +13,7 @@ const getExerciseListController = asyncHandler(async (req, res) => {
     tool: req.query.tool,
   }; // 서비스 로직 위임
   const exercises = await exerciseService.getExerciseList(filterOptions);
-  res.status(200).json({ success: true, data: exercises });
+  return successResponse(res, exercises);
 });
 
 // 특정 운동 상세 정보[운동 정보, 사용자 통계, 최근 로그] (GET /api/v1/exercises/:id)
@@ -21,7 +22,7 @@ const getExerciseDetailController = asyncHandler(async (req, res) => {
     req.params.id,
     req.user._id
   );
-  res.status(200).json({ success: true, data });
+  return successResponse(res, data);
 });
 
 module.exports = {
