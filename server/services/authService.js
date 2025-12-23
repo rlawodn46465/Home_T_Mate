@@ -31,7 +31,7 @@ const refreshToken = async (refreshToken) => {
     const user = await User.findById(decoded.id);
 
     if (!user) {
-      throw new CustomErrorI("토큰에 해당하는 사용자를 찾을 수 없습니다.", 401);
+      throw new CustomError("토큰에 해당하는 사용자를 찾을 수 없습니다.", 401);
     }
 
     // 새 Access Token 발급 및 반환
