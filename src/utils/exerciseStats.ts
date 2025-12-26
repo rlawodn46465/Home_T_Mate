@@ -1,6 +1,37 @@
 // src/utils/exerciseStats.js
 
-export const calculateExerciseStats = (exercises) => {
+interface RawSet {
+  setNumber?: number;
+  weight?: number;
+  reps?: number;
+}
+
+interface RawExercise {
+  _id?: string | number;
+  exerciseId?: string | number;
+  name: string;
+  sets?: RawSet[];
+  duration?: number;
+}
+
+export interface CalculatedExercise {
+  exerciseId: string | number;
+  name: string;
+  sets: {
+    setNumber: number;
+    weight: number;
+    reps: number;
+    isCompleted: boolean;
+  }[];
+  maxWeight: number;
+  totalVolume: number;
+  totalReps: number;
+  duration: number;
+}
+
+export const calculateExerciseStats = (
+  exercises: RawExercise[]
+): CalculatedExercise[] => {
   return exercises.map((ex) => {
     let maxWeight = 0;
     let totalVolume = 0;
@@ -25,7 +56,7 @@ export const calculateExerciseStats = (exercises) => {
     });
 
     return {
-      exerciseId: ex._id || ex.exerciseId, // ID는 _id 또는 exerciseId 사용
+      exerciseId: ex._id || ex.exerciseId,
       name: ex.name,
       sets: setsWithCompletion,
       maxWeight: maxWeight,

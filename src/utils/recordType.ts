@@ -1,3 +1,5 @@
+export type RecordType = (typeof RECORD_TYPE)[keyof typeof RECORD_TYPE];
+
 export const RECORD_TYPE = {
   PERSONAL: "PERSONAL",
   ROUTINE: "ROUTINE",
