@@ -133,9 +133,9 @@ const GoalsDetailPage = ({ goalId }) => {
         }
         onEdit={handleEdit}
         onGoBack={handleGoBack}
+        onDelete={handleDelete}
         showBackButton
         showEditButton
-        onDelete={handleDelete}
       />
 
       <div className={styles.goalInfo}>

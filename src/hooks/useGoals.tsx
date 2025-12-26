@@ -33,7 +33,7 @@ export const useGoals = () => {
 export const useTodayGoals = () => {
   const [goals, setGoals] = useState<TodayGoal[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const loadTodayGoals = useCallback(async () => {
     setIsLoading(true);

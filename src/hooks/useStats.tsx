@@ -5,7 +5,7 @@ import type { WeeklyStatsResponse, WeightStatItem } from "../types/stat";
 export const useFetchWeekly = () => {
   const [data, setData] = useState<WeeklyStatsResponse | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -30,7 +30,7 @@ export const useFetchWeekly = () => {
 export const useFetchWeight = () => {
   const [data, setData] = useState<WeightStatItem[] | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<Error | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);

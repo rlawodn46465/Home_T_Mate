@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-import type {MouseEvent} from "react";
+import type { MouseEvent, RefObject } from "react";
 // [1. 커스텀 훅 import]
 // import { useDragScroll } from '경로';
 // [2. 훅 호출]
@@ -24,22 +24,24 @@ import type {MouseEvent} from "react";
 
 // 마우스 이동 거리기 값(px)보다 작으면 단순 클릭 간주
 
-interface UseDragScrollReturn {
-  scrollRef: React.RefObject<HTMLDivElement>;
+interface UseDragScrollReturn<T> {
+  scrollRef: RefObject<T>;
   isDragging: boolean;
   dragHandlers: {
-    onMouseDown: (e: MouseEvent<HTMLDivElement>) => void;
+    onMouseDown: (e: MouseEvent<T>) => void;
     onMouseLeave: () => void;
     onMouseUp: () => void;
-    onMouseMove: (e: MouseEvent<HTMLDivElement>) => void;
+    onMouseMove: (e: MouseEvent<T>) => void;
   };
-  handleTabClick: <T>(setter: (value: T) => void, value: T) => void;
+  handleTabClick: <V>(setter: (value: V) => void, value: V) => void;
 }
 
 const DRAG_THRESHOLD = 5;
 
-export const useDragScroll = (): UseDragScrollReturn => {
-  const scrollRef = useRef<HTMLDivElement>(null);
+export const useDragScroll = <
+  T extends HTMLElement
+>(): UseDragScrollReturn<T> => {
+  const scrollRef = useRef<T>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
@@ -47,7 +49,7 @@ export const useDragScroll = (): UseDragScrollReturn => {
   const [isMoved, setIsMoved] = useState(false);
 
   // 드래그 시작
-  const onMouseDown = useCallback((e: MouseEvent<HTMLDivElement>) => {
+  const onMouseDown = useCallback((e: MouseEvent<T>) => {
     if (!scrollRef.current) return;
 
     // 드래그 중, 탭 클릭 이벤트 방지
@@ -80,7 +82,7 @@ export const useDragScroll = (): UseDragScrollReturn => {
 
   // 스크롤
   const onMouseMove = useCallback(
-    (e: MouseEvent<HTMLDivElement>) => {
+    (e: MouseEvent<T>) => {
       if (!isDragging || !scrollRef.current) return;
       e.preventDefault();
 
@@ -103,7 +105,7 @@ export const useDragScroll = (): UseDragScrollReturn => {
 
   // 드래그 중이면 클릭 무시
   const handleTabClick = useCallback(
-    <T extends unknown>(setter: (value: T) => void, value: T) => {
+    <V extends unknown>(setter: (value: V) => void, value: V) => {
       if (isMoved) return;
       setter(value);
     },
