@@ -8,6 +8,13 @@ import { useAuth } from "../../hooks/useAuth";
 
 import styles from "./CommunityPage.module.css";
 
+interface QueryParams {
+  boardType?: "free" | "exercise" | null;
+  search?: string;
+  sortBy?: string;
+  page?: number;
+}
+
 const CommunityPage = () => {
   const { isAuthenticated } = useAuth();
   const { navigateWithPanel } = usePersistentPanel();
@@ -20,12 +27,12 @@ const CommunityPage = () => {
     usePosts({ boardType: initialBoardType });
 
   // 필터, 검색, 정렬 조건 변경 시 호출
-  const handleFilterChange = (newFilters) => {
+  const handleFilterChange = (newFilters: Partial<QueryParams>) => {
     setQueryParams(newFilters);
   };
 
   // 페이지네이션 번호 변경 시 호출
-  const handlePageChange = (newPage) => {
+  const handlePageChange = (newPage: number) => {
     setQueryParams({ page: newPage });
   };
 

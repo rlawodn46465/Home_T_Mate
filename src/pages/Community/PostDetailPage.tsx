@@ -1,4 +1,4 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, type ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./PostDetailPage.module.css";
 import { usePostDetail } from "../../hooks/usePostDetail";
@@ -9,7 +9,11 @@ import PageHeader from "../../components/common/PageHeader";
 import CommentList from "../../components/ui/Community/CommentList";
 import Button from "../../components/common/Button";
 
-const HeartIcon = ({ filled }) => (
+interface HeartIconProps {
+  filled: boolean;
+}
+
+const HeartIcon = ({ filled }: HeartIconProps) => (
   <span
     style={{
       color: filled ? "#ff4d4f" : "#aaa",
@@ -22,21 +26,21 @@ const HeartIcon = ({ filled }) => (
 );
 
 const PostDetailPage = () => {
-  const { postId } = useParams();
+  const { postId } = useParams<{ postId: string }>();
   const { navigateWithPanel } = usePersistentPanel();
   const { handleDownload, isDownloading } = useGoalDownload();
   const { post, loading, error, isAuthor, handleToggleLike, handleDeletePost } =
-    usePostDetail(postId);
+    usePostDetail(postId || "");
 
-  const [newCommentContent, setNewCommentContent] = useState("");
-  const [isInputFocused, setIsInputFocused] = useState(false);
+  const [newCommentContent, setNewCommentContent] = useState<string>("");
+  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
 
   const {
     comments,
     loading: commentsLoading,
     handleCreateComment,
     handleDeleteComment,
-  } = useComments(postId, post?.commentCount);
+  } = useComments(postId || "", post?.commentCount);
 
   // 댓글 작성 로직 통합
   const onSubmitComment = useCallback(async () => {
@@ -52,7 +56,7 @@ const PostDetailPage = () => {
   }, [newCommentContent, handleCreateComment]);
 
   // 날짜 포맷팅 함수
-  const formatDate = (dateString) => {
+  const formatDate = (dateString?: string): string => {
     if (!dateString) return "";
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
@@ -96,7 +100,7 @@ const PostDetailPage = () => {
         <article className={styles.postBody}>
           {post.images?.length > 0 && (
             <div className={styles.postImages}>
-              {post.images.map((img, idx) => (
+              {post.images.map((img: string, idx: number) => (
                 <img key={idx} src={img} alt={`첨부이미지 ${idx + 1}`} />
               ))}
             </div>
@@ -131,9 +135,8 @@ const PostDetailPage = () => {
             <Button
               text="수정"
               onClick={() => navigateWithPanel(`/community/edit/${postId}`)}
-              variant="secondary"
             />
-            <Button text="삭제" onClick={handleDeletePost} variant="danger" />
+            <Button text="삭제" onClick={handleDeletePost} />
           </div>
         )}
 
@@ -151,7 +154,9 @@ const PostDetailPage = () => {
             <textarea
               placeholder={isInputFocused ? "" : "댓글을 입력해주세요"}
               value={newCommentContent}
-              onChange={(e) => setNewCommentContent(e.target.value)}
+              onChange={(e: ChangeEvent<HTMLTextAreaElement>) =>
+                setNewCommentContent(e.target.value)
+              }
               onFocus={() => setIsInputFocused(true)}
               onBlur={() =>
                 !newCommentContent.trim() && setIsInputFocused(false)

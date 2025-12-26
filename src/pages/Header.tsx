@@ -10,7 +10,7 @@ const Header = () => {
   const { handleLogout } = useAuth();
   const { navigateToPanel, navigateWithPanel } = usePersistentPanel();
 
-  const handleCommunityClick = (e) => {
+  const handleCommunityClick = (e: React.MouseEvent<HTMLElement>) => {
     e.preventDefault();
     navigateWithPanel("/community");
   };

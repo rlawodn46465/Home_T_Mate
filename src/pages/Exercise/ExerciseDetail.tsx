@@ -11,17 +11,50 @@ import ErrorMessage from "../../components/common/ErrorMessage";
 
 import styles from "./ExerciseDetail.module.css";
 
-const ExerciseDetail = ({ exerciseId }) => {
-  const TABS = ["설명", "나의 기록"];
-  const [activeTab, setActiveTab] = useState(TABS[0]);
+interface ExerciseDescription {
+  setup: { step: number; text: string }[];
+  movement: { step: number; text: string }[];
+  breathing: { step: number; text: string }[];
+  tips: string[];
+}
+
+interface ExerciseStats {
+  memo?: string;
+  best: number;
+  total: number;
+  [key: string]: any;
+}
+
+interface ExerciseDetailData {
+  exercise: {
+    id?: string | number;
+    name: string;
+    description: ExerciseDescription;
+    targetMuscles: string[];
+    equipment: string;
+  };
+  myStats?: ExerciseStats;
+  recentLogs?: any[];
+}
+
+interface ExerciseDetailProps {
+  exerciseId: string | number;
+}
+
+type TabType = (typeof TABS)[number];
+
+const TABS = ["설명", "나의 기록"] as const;
+
+const ExerciseDetail = ({ exerciseId }: ExerciseDetailProps) => {
+  const [activeTab, setActiveTab] = useState<TabType>(TABS[0]);
 
   // API 데이터 및 로딩/에러 상태 관리
-  const [detailData, setDetailData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [detailData, setDetailData] = useState<ExerciseDetailData | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   // 사용자 메모 상태
-  const [persistedMemo, setPersistedMemo] = useState("");
+  const [persistedMemo, setPersistedMemo] = useState<string>("");
 
   const { navigateToPanel } = usePersistentPanel();
 
@@ -40,10 +73,10 @@ const ExerciseDetail = ({ exerciseId }) => {
       setError(null);
 
       try {
-        const data = await fetchExerciseDetail(exerciseId);
+        const data = await fetchExerciseDetail(String(exerciseId));
 
         if (!isCancelled) {
-          setDetailData(data);
+          setDetailData(data as unknown as ExerciseDetailData);
           // 기존 메모 데이터가 있다면 상태 업데이트
           if (data.myStats?.memo) {
             setPersistedMemo(data.myStats.memo);
@@ -68,7 +101,7 @@ const ExerciseDetail = ({ exerciseId }) => {
   }, [exerciseId]);
 
   // 메모 저장 처리
-  const handleMemoSave = (newMemo) => {
+  const handleMemoSave = (newMemo: string) => {
     setPersistedMemo(newMemo);
     console.log("메모 저장 완료 : ", newMemo);
   };
@@ -106,9 +139,9 @@ const ExerciseDetail = ({ exerciseId }) => {
         </div>
       </div>
       <TabNavigation
-        tabs={TABS}
+        tabs={TABS as unknown as string[]}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => setActiveTab(tab as TabType)}
       />
       {activeTab === "설명" && (
         <ExerciseInfoSection
@@ -119,7 +152,7 @@ const ExerciseDetail = ({ exerciseId }) => {
       )}
       {activeTab === "나의 기록" && (
         <ExerciseRecordSection
-          myStats={detailData.myStats}
+          myStats={detailData.myStats as any}
           recentLogs={detailData.recentLogs}
         />
       )}

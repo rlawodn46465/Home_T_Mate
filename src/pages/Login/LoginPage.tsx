@@ -7,18 +7,27 @@ import SocialLoginItem from "../../components/ui/Login/SocialLoginItem";
 
 import styles from "./LoginPage.module.css";
 
+type SocialProvider = "google" | "naver" | "kakao";
+
+interface SocialLoginOption {
+  id: string;
+  iconSrc: string;
+  text: string;
+  provider: SocialProvider;
+}
+
 const ORIGINAL_PATH_KEY = "hometmate_original_path";
 
 const LoginPage = () => {
   const location = useLocation();
 
-  const handleSocialLogin = (provider) => {
+  const handleSocialLogin = (provider: SocialProvider) => {
     const currentPath = location.pathname + location.search;
     sessionStorage.setItem(ORIGINAL_PATH_KEY, currentPath);
     initiateSocialLogin(provider);
   };
 
-  const social = [
+  const social: SocialLoginOption[] = [
     {
       id: "google",
       iconSrc: google,

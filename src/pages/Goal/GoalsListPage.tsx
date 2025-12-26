@@ -8,6 +8,21 @@ import { useGoalDelete } from "../../hooks/useGoalDelete";
 
 import styles from "./GoalsListPage.module.css";
 
+type BodyPart = (typeof BODY_PARTS)[number];
+type GoalType = "전체" | "루틴" | "챌린지";
+type GoalStatus = "진행중" | "완료";
+
+interface Goal {
+  id: string | number;
+  goalTypeLabel: string;
+  status: string;
+  parts?: string[];
+  name: string;
+  progress: number;
+  creator: string;
+  [key: string]: any;
+}
+
 const BODY_PARTS = [
   "전체",
   "복근",
@@ -19,19 +34,23 @@ const BODY_PARTS = [
   "대퇴사두",
   "승모",
   "종아리",
-];
+] as const;
 
 const GoalsListPage = () => {
-  const [activeTab, setActiveTab] = useState("전체");
-  const [activeStatus, setActiveStatus] = useState("진행중");
-  const [activePart, setActivePart] = useState("전체");
+  const [activeTab, setActiveTab] = useState<GoalType>("전체");
+  const [activeStatus, setActiveStatus] = useState<GoalStatus>("진행중");
+  const [activePart, setActivePart] = useState<BodyPart | string>("전체");
 
   const { goals, refreshGoals } = useGoals();
   const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
   // 필터 조건에 따른 목표 리스트 계산
   const filteredGoals = useMemo(() => {
-    return goals.filter((goal) => {
+    if (!goals) return [];
+
+    const allGoals = goals as unknown as Goal[];
+
+    return allGoals.filter((goal) => {
       const typeMatch =
         activeTab === "전체" || goal.goalTypeLabel === activeTab;
       const statusMatch = goal.status === activeStatus;
@@ -45,12 +64,12 @@ const GoalsListPage = () => {
 
   // 목표 아이템 액션 핸들러 (삭제 등)
   const handleItemAction = useCallback(
-    async (id, action) => {
+    async (id: string | number, action: string) => {
       if (action === "삭제") {
         if (!window.confirm("정말 목표를 삭제하시겠습니까?")) return;
 
         try {
-          await deleteGoalHandler(id);
+          await deleteGoalHandler(String(id));
           alert("목표가 성공적으로 삭제되었습니다.");
           refreshGoals();
         } catch (error) {
@@ -67,10 +86,10 @@ const GoalsListPage = () => {
       <TabNavigation
         tabs={["전체", "루틴", "챌린지"]}
         activeTab={activeTab}
-        onTabChange={setActiveTab}
+        onTabChange={(tab) => setActiveTab(tab as GoalType)}
       />
       <BodyPartFilter
-        parts={BODY_PARTS}
+        parts={BODY_PARTS as unknown as string[]}
         activePart={activePart}
         onPartChange={setActivePart}
       />
@@ -96,7 +115,7 @@ const GoalsListPage = () => {
         {filteredGoals.map((goal) => (
           <GoalItemCard
             key={goal.id}
-            goals={goal}
+            goals={goal as any}
             onAction={handleItemAction}
             isDeleting={isDeleting}
           />

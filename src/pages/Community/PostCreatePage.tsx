@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
+import type { ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
 import { usePostCreate } from "../../hooks/usePostCreate";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
@@ -12,32 +13,42 @@ import GoalSelectionPanel from "../../components/ui/Community/GoalSelectionPanel
 import training_icon from "../../assets/images/training_icon.svg";
 import styles from "./PostCreatePage.module.css";
 
+type BoardType = (typeof BOARD_TYPE_OPTIONS)[number]["value"];
+
+interface LinkedGoal {
+  id: string | number;
+  name: string;
+  customExercises?: any[];
+}
+
 const BOARD_TYPE_OPTIONS = [
   { value: "free", label: "자유게시판" },
   { value: "exercise", label: "운동게시판" },
-];
+] as const;
 
 const PostCreatePage = () => {
-  const { postId } = useParams();
+  const { postId } = useParams<{ postId: string }>();
   const isEditMode = !!postId;
 
   const { savePost, isProcessing } = usePostCreate();
   const { navigateWithPanel } = usePersistentPanel();
-  const { post: existingPost, loading: fetchingPost } = usePostDetail(postId);
+  const { post: existingPost, loading: fetchingPost } = usePostDetail(
+    postId || ""
+  );
 
   // 폼 필드 상태
-  const [title, setTitle] = useState("");
-  const [content, setContent] = useState("");
-  const [boardType, setBoardType] = useState(BOARD_TYPE_OPTIONS[0].value);
-  const [isGoalPanelVisible, setIsGoalPanelVisible] = useState(false);
-  const [selectedGoal, setSelectedGoal] = useState(null);
+  const [title, setTitle] = useState<string>("");
+  const [content, setContent] = useState<string>("");
+  const [boardType, setBoardType] = useState<BoardType>("free");
+  const [isGoalPanelVisible, setIsGoalPanelVisible] = useState<boolean>(false);
+  const [selectedGoal, setSelectedGoal] = useState<LinkedGoal | null>(null);
 
   // 수정 모드 시 기존 데이터 로드
   useEffect(() => {
     if (isEditMode && existingPost) {
       setTitle(existingPost.title);
       setContent(existingPost.content);
-      setBoardType(existingPost.boardType);
+      setBoardType(existingPost.boardType as BoardType);
       if (existingPost.linkedGoal) {
         setSelectedGoal({
           id: existingPost.linkedGoal.id,
@@ -56,11 +67,16 @@ const PostCreatePage = () => {
       return;
     }
 
+    const userGoalId =
+      selectedGoal?.id && selectedGoal.id !== "manual"
+        ? String(selectedGoal.id)
+        : null;
+
     const postData = {
       title,
       content,
       boardType,
-      userGoalId: selectedGoal?.id !== "manual" ? selectedGoal?.id : null,
+      userGoalId,
       manualGoalData:
         selectedGoal?.id === "manual"
           ? {
@@ -90,6 +106,10 @@ const PostCreatePage = () => {
   const handleBack = () =>
     navigateWithPanel(isEditMode ? `/community/${postId}` : "/community");
 
+  const handleBoardTypeChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setBoardType(e.target.value as BoardType);
+  };
+
   if (isEditMode && fetchingPost)
     return <div className={styles.loading}>데이터 로드 중...</div>;
 
@@ -107,7 +127,6 @@ const PostCreatePage = () => {
             <Button
               text={isEditMode ? "수정" : "작성"}
               onClick={handleSubmit}
-              disabled={isProcessing}
             />
           </div>
         </header>
@@ -116,9 +135,14 @@ const PostCreatePage = () => {
           <div className={styles.createBox}>
             <div className={styles.selectWrap}>
               <SelectBox
-                options={BOARD_TYPE_OPTIONS}
+                options={
+                  BOARD_TYPE_OPTIONS as unknown as {
+                    value: string;
+                    label: string;
+                  }[]
+                }
                 value={boardType}
-                onChange={(e) => setBoardType(e.target.value)}
+                onChange={handleBoardTypeChange}
               />
             </div>
 
