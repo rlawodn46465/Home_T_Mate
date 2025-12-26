@@ -21,6 +21,7 @@ export interface PostDetail {
   title: string;
   content: string;
   boardType: BoardType;
+  commentCount: number;
   createdAt: string;
   author: {
     id: string;
