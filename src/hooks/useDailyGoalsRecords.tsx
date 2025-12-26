@@ -1,17 +1,27 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { format } from "date-fns";
 import { fetchDailyExerciseRecords } from "../services/api/goalApi";
+import type { DailyRecord } from "../types/goal";
+
+interface UseDailyExerciseRecordsReturn {
+  records: DailyRecord[];
+  isLoading: boolean;
+  error: Error | null;
+  refetch: () => void;
+}
 
 // 특정 날짜의 모든 운동 기록 불러오기
-const useDailyExerciseRecords = (selectedDate) => {
-  const [records, setRecords] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+const useDailyExerciseRecords = (
+  selectedDate: Date | null
+): UseDailyExerciseRecordsReturn => {
+  const [records, setRecords] = useState<DailyRecord[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
 
   // selectedDate를 'YYYY-MM-DD' 문자열로 변환
   const dateString = selectedDate ? format(selectedDate, "yyyy-MM-dd") : null;
 
-  const fetchRecords = async (date) => {
+  const fetchRecords = useCallback(async (date: string | null) => {
     if (!date) {
       setRecords([]);
       return;
@@ -30,12 +40,12 @@ const useDailyExerciseRecords = (selectedDate) => {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     // 날짜가 변경될 때마다 데이터를 다시 불러옵니다.
     fetchRecords(dateString);
-  }, [dateString]);
+  }, [dateString, fetchRecords]);
 
   // 수동으로 데이터를 다시 불러오는 함수 (예: 운동 기록 후)
   const refetch = () => {

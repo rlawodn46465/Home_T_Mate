@@ -1,12 +1,18 @@
 import { useState, useCallback } from "react";
 import { deleteGoal } from "../services/api/goalApi";
 
-// 목표 삭제 기능
-export const useGoalDelete = () => {
-  const [isDeleting, setIsDeleting] = useState(false);
-  const [error, setError] = useState(null);
+interface UseGoalDeleteReturn {
+  isDeleting: boolean;
+  error: string | null;
+  deleteGoalHandler: (goalId: string) => Promise<void>;
+}
 
-  const deleteGoalHandler = useCallback(async (goalId) => {
+// 목표 삭제 기능
+export const useGoalDelete = (): UseGoalDeleteReturn => {
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const deleteGoalHandler = useCallback(async (goalId: string) => {
     setIsDeleting(true);
     setError(null);
 

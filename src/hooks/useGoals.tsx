@@ -1,11 +1,12 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchGoals, fetchTodayGoals } from "../services/api/goalApi";
+import type { GoalDetail, TodayGoal } from "../types/goal";
 
 // 목표 목록 상태 관리, API 통신 훅
 export const useGoals = () => {
-  const [goals, setGoals] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [goals, setGoals] = useState<GoalDetail[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const refreshGoals = useCallback(async () => {
     setLoading(true);
@@ -30,9 +31,9 @@ export const useGoals = () => {
 };
 
 export const useTodayGoals = () => {
-  const [goals, setGoals] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [goals, setGoals] = useState<TodayGoal[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
 
   const loadTodayGoals = useCallback(async () => {
     setIsLoading(true);

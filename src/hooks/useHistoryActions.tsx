@@ -3,17 +3,30 @@ import {
   deleteExerciseSession,
   updateExerciseSession,
 } from "../services/api/historyApi";
+import type { SaveWorkoutRequest } from "../types/history";
 
-export const useHistoryActions = (refetchHistory) => {
-  const [isProcessing, setIsProcessing] = useState(false);
-  const [error, setError] = useState(null);
+interface UseHistoryActionsReturn {
+  isProcessing: boolean;
+  error: Error | null;
+  handleDelete: (recordId: string) => Promise<boolean>;
+  handleUpdate: (
+    recordId: string,
+    updatedData: Partial<SaveWorkoutRequest>
+  ) => Promise<boolean>;
+}
 
-  const handleDelete = async (recordId) => {
+export const useHistoryActions = (
+  refetchHistory?: () => void
+): UseHistoryActionsReturn => {
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const handleDelete = async (recordId: string): Promise<boolean> => {
     setIsProcessing(true);
     setError(null);
     try {
       await deleteExerciseSession(recordId);
-      if (typeof refetchHistory === "function") {
+      if (refetchHistory) {
         refetchHistory();
       }
       return true;
@@ -26,12 +39,15 @@ export const useHistoryActions = (refetchHistory) => {
     }
   };
 
-  const handleUpdate = async (recordId, updatedData) => {
+  const handleUpdate = async (
+    recordId: string,
+    updatedData: Partial<SaveWorkoutRequest>
+  ): Promise<boolean> => {
     setIsProcessing(true);
     setError(null);
     try {
       await updateExerciseSession(recordId, updatedData);
-      if (typeof refetchHistory === "function") {
+      if (refetchHistory) {
         refetchHistory();
       }
       return true;

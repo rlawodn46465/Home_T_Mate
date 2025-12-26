@@ -1,11 +1,28 @@
 import { useState, useCallback } from "react";
 import { createPost, updatePost } from "../services/api/postApi";
+import type { SavePostRequest } from "../types/post";
 
-export const usePostCreate = () => {
-  const [isProcessing, setIsProcessing] = useState(false);
+type SavePostResult =
+  | { id: string }
+  | { postId: string; message: string }
+  | null;
+
+interface UsePostCreateReturn {
+  savePost: (
+    postData: SavePostRequest,
+    postId?: string | null
+  ) => Promise<SavePostResult>;
+  isProcessing: boolean;
+}
+
+export const usePostCreate = (): UsePostCreateReturn => {
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
 
   const savePost = useCallback(
-    async (postData, postId = null) => {
+    async (
+      postData: SavePostRequest,
+      postId: string | null = null
+    ): Promise<SavePostResult> => {
       if (isProcessing) return null;
 
       setIsProcessing(true);

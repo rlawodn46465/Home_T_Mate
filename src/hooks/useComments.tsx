@@ -5,15 +5,19 @@ import {
   deleteComment,
 } from "../services/api/commentApi";
 import { useAuth } from "./useAuth";
+import type { Comment } from "../types/comment";
 
-export const useComments = (postId, initialCommentCount = 0) => {
+export const useComments = (
+  postId: string | undefined,
+  initialCommentCount: number = 0
+) => {
   const { user } = useAuth();
-  const [comments, setComments] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [commentCount, setCommentCount] = useState(initialCommentCount); // 게시글의 댓글 수 상태
+  const [comments, setComments] = useState<Comment[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+  const [commentCount, setCommentCount] = useState<number>(initialCommentCount);
 
-  // 1. 댓글 목록 조회
+  // 댓글 목록 조회
   const loadComments = useCallback(async () => {
     if (!postId) return;
     setLoading(true);
@@ -31,15 +35,13 @@ export const useComments = (postId, initialCommentCount = 0) => {
 
   // 2. 댓글 작성
   const handleCreateComment = useCallback(
-    async (content) => {
-      if (!content.trim() || !user) return;
+    async (content: string): Promise<boolean> => {
+      if (!content.trim() || !user || !postId) return false;
 
       try {
         const newComment = await createComment(postId, { content });
-
         setComments((prev) => [...prev, newComment]);
         setCommentCount((prev) => prev + 1);
-
         return true;
       } catch (err) {
         alert(err.message || "댓글 작성에 실패했습니다.");
@@ -51,10 +53,14 @@ export const useComments = (postId, initialCommentCount = 0) => {
 
   // 3. 댓글 삭제
   const handleDeleteComment = useCallback(
-    async (commentId, authorId) => {
-      const currentUserId = user?.user.id || user?.user._id;
+    async (commentId: string, authorId: string) => {
+      if (!user) {
+        alert("로그인이 필요한 서비스입니다.");
+        return;
+      }
+      const currentUserId = user.id;
 
-      if (!user || String(currentUserId) !== String(authorId)) {
+      if (String(currentUserId) !== String(authorId)) {
         alert("본인이 작성한 댓글만 삭제할 수 있습니다.");
         return;
       }
@@ -78,7 +84,7 @@ export const useComments = (postId, initialCommentCount = 0) => {
         console.error("댓글 삭제 실패:", err);
       }
     },
-    [user, deleteComment]
+    [user]
   );
 
   useEffect(() => {

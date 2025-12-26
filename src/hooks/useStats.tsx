@@ -1,10 +1,11 @@
 import { useState, useEffect, useCallback } from "react";
 import { fetchWeekly, fetchWeight } from "../services/api/statApi";
+import type { WeeklyStatsResponse, WeightStatItem } from "../types/stat";
 
 export const useFetchWeekly = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [data, setData] = useState<WeeklyStatsResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -27,9 +28,9 @@ export const useFetchWeekly = () => {
 };
 
 export const useFetchWeight = () => {
-  const [data, setData] = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [data, setData] = useState<WeightStatItem[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);

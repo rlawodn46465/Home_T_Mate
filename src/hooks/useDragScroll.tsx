@@ -1,5 +1,5 @@
 import { useState, useCallback, useRef } from "react";
-
+import type {MouseEvent} from "react";
 // [1. 커스텀 훅 import]
 // import { useDragScroll } from '경로';
 // [2. 훅 호출]
@@ -23,10 +23,23 @@ import { useState, useCallback, useRef } from "react";
 // }
 
 // 마우스 이동 거리기 값(px)보다 작으면 단순 클릭 간주
+
+interface UseDragScrollReturn {
+  scrollRef: React.RefObject<HTMLDivElement>;
+  isDragging: boolean;
+  dragHandlers: {
+    onMouseDown: (e: MouseEvent<HTMLDivElement>) => void;
+    onMouseLeave: () => void;
+    onMouseUp: () => void;
+    onMouseMove: (e: MouseEvent<HTMLDivElement>) => void;
+  };
+  handleTabClick: <T>(setter: (value: T) => void, value: T) => void;
+}
+
 const DRAG_THRESHOLD = 5;
 
-export const useDragScroll = () => {
-  const scrollRef = useRef(null);
+export const useDragScroll = (): UseDragScrollReturn => {
+  const scrollRef = useRef<HTMLDivElement>(null);
   const [isDragging, setIsDragging] = useState(false);
   const [startX, setStartX] = useState(0);
   const [startY, setStartY] = useState(0);
@@ -34,7 +47,7 @@ export const useDragScroll = () => {
   const [isMoved, setIsMoved] = useState(false);
 
   // 드래그 시작
-  const onMouseDown = useCallback((e) => {
+  const onMouseDown = useCallback((e: MouseEvent<HTMLDivElement>) => {
     if (!scrollRef.current) return;
 
     // 드래그 중, 탭 클릭 이벤트 방지
@@ -67,7 +80,7 @@ export const useDragScroll = () => {
 
   // 스크롤
   const onMouseMove = useCallback(
-    (e) => {
+    (e: MouseEvent<HTMLDivElement>) => {
       if (!isDragging || !scrollRef.current) return;
       e.preventDefault();
 
@@ -90,7 +103,7 @@ export const useDragScroll = () => {
 
   // 드래그 중이면 클릭 무시
   const handleTabClick = useCallback(
-    (setter, value) => {
+    <T extends unknown>(setter: (value: T) => void, value: T) => {
       if (isMoved) return;
       setter(value);
     },

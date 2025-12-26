@@ -1,10 +1,16 @@
 import { useState, useEffect } from "react";
 import { fetchExercises } from "../services/api/goalApi";
+import type { ExerciseMaster, ExerciseFilters } from "../types/exercise";
+
+interface UseExercisesReturn {
+  exercises: ExerciseMaster[];
+  isLoading: boolean;
+}
 
 // 운동 마스터 목록 관리
-export const useExercises = (filters) => {
-  const [exercises, setExercises] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+export const useExercises = (filters: ExerciseFilters): UseExercisesReturn => {
+  const [exercises, setExercises] = useState<ExerciseMaster[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!filters) return;

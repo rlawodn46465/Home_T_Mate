@@ -4,25 +4,45 @@ import {
   useState,
   useCallback,
   useEffect,
+  useMemo,
 } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   handleSocialLoginSuccess,
   logoutUser,
 } from "../services/api/authService";
+import type { UserInfo } from "../services/api/authService";
 import { clearAuthTokens } from "../services/api/api";
 
-const AuthContext = createContext(null);
+export interface AuthContextType {
+  user: UserInfo | null;
+  isAuthenticated: boolean;
+  isAuthLoading: boolean;
+  handleLogout: () => Promise<void>;
+  loadUser: (token?: string) => Promise<UserInfo>;
+}
 
-export const useAuth = () => useContext(AuthContext);
+interface AuthProviderProps {
+  children: React.ReactNode;
+}
 
-export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null);
-  const [isAuthLoading, setIsAuthLoading] = useState(true);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
+
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};
+
+export const AuthProvider = ({ children }: AuthProviderProps) => {
+  const [user, setUser] = useState<UserInfo | null>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState<boolean>(true);
   const navigate = useNavigate();
 
   // 사용자 정보를 로드하고 상태를 업데이트하는 함수
-  const loadUser = useCallback(async (token = null) => {
+  const loadUser = useCallback(async (token?: string): Promise<UserInfo> => {
     try {
       setIsAuthLoading(true);
       // 토큰을 설정하고 사용자 정보 가져오기
@@ -44,13 +64,11 @@ export const AuthProvider = ({ children }) => {
   const handleLogout = useCallback(async () => {
     try {
       await logoutUser();
-      setUser(null);
-      // 로그아웃 후 로그인 페이지로 이동
-      navigate("/");
     } catch (error) {
       console.error("로그아웃 처리 중 오류 발생: ", error);
-      // 서버 로그아웃이 실패해도 클라이언트 상태는 초기화
+    } finally {
       setUser(null);
+      clearAuthTokens();
       navigate("/");
     }
   }, [navigate]);
@@ -72,13 +90,16 @@ export const AuthProvider = ({ children }) => {
     checkInitialAuth();
   }, []);
 
-  const value = {
-    user,
-    isAuthenticated: !!user, // user 객체가 존재하면 인증된 상
-    isAuthLoading,
-    handleLogout,
-    loadUser,
-  };
+  const value = useMemo(
+    () => ({
+      user,
+      isAuthenticated: !!user,
+      isAuthLoading,
+      handleLogout,
+      loadUser,
+    }),
+    [user, isAuthLoading, handleLogout, loadUser]
+  );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };

@@ -4,12 +4,13 @@ import {
   saveExerciseSession,
   updateExerciseSession,
 } from "../services/api/historyApi";
+import type { MonthlyHistoryItem, SaveWorkoutRequest } from "../types/history";
 
 // 목표 목록 상태 관리, API 통신 훅
 export const useHistorys = () => {
-  const [historys, setHistorys] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const [historys, setHistorys] = useState<MonthlyHistoryItem[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const refreshHistorys = useCallback(async () => {
     setLoading(true);
@@ -37,11 +38,13 @@ export const useHistorys = () => {
 
 // 운동 기록 저장
 export const useCreateHistory = () => {
-  const [isSaving, setIsSaving] = useState(false);
-  const [saveError, setSaveError] = useState(null);
+  const [isSaving, setIsSaving] = useState<boolean>(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // 운동 기록을 서버에 저장
-  const createHistory = async (workoutData) => {
+  const createHistory = async (
+    workoutData: SaveWorkoutRequest
+  ): Promise<boolean> => {
     setIsSaving(true);
     setSaveError(null);
     try {
@@ -72,12 +75,12 @@ export const useCreateHistory = () => {
 };
 
 // 운동 기록 수정
-export const useUpdateHistory = (recordId) => {
-  const [isUpdating, setIsUpdating] = useState(false);
-  const [updateError, setUpdateError] = useState(null);
+export const useUpdateHistory = (recordId: string | undefined) => {
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [updateError, setUpdateError] = useState<string | null>(null);
 
   const updateHistory = useCallback(
-    async (data) => {
+    async (data: Partial<SaveWorkoutRequest>): Promise<boolean> => {
       if (!recordId) {
         setUpdateError("수정할 기록 ID가 누락되었습니다.");
         return false;
