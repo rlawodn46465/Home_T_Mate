@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../hooks/useAuth";
 
@@ -9,43 +9,49 @@ const SocialAuthRedirectHandler = () => {
   const location = useLocation();
   const { loadUser } = useAuth();
 
+  const isprocessing = useRef(false);
+
   useEffect(() => {
+    if (isprocessing.current) return;
+    isprocessing.current = true;
+
     const searchParams = new URLSearchParams(location.search);
     const serverAuthToken = searchParams.get("token");
     const currentPath = location.pathname;
 
-    const originalPathWithQuery =
-      sessionStorage.getItem(ORIGINAL_PATH_KEY) || "/";
-    sessionStorage.removeItem(ORIGINAL_PATH_KEY); // 사용 후 바로 삭제
+    const savedPath = sessionStorage.getItem(ORIGINAL_PATH_KEY);
+    const originalPath = savedPath ? savedPath.split("?")[0] : "/community";
 
-    const originalPath = originalPathWithQuery.split("?")[0];
+    sessionStorage.removeItem(ORIGINAL_PATH_KEY);
 
     const processLogin = async () => {
-      let targetPanel = "login";
+      let targetPanel = "dashboard";
 
       try {
-        await loadUser(serverAuthToken);
-        if (currentPath === "/login/signup-complete") {
-          targetPanel = "onboarding"; // 신규 회원 -> 온보딩
-          console.log("🚨 신규 가입자 감지: 'onboarding' 패널로 이동합니다.");
-        } else if (currentPath === "/login/success") {
-          targetPanel = "dashboard"; // 기존 회원 -> 대시보드
-          console.log("✅ 기존 사용자 감지: 'dashboard' 패널로 이동합니다.");
+        if (serverAuthToken) {
+          await loadUser(serverAuthToken);
+        }
+
+        if (currentPath.includes("signup-complete")) {
+          targetPanel = "onboarding";
         } else {
           targetPanel = "dashboard";
         }
       } catch (error) {
         console.error("로그인 처리 실패: ", error);
-        targetPanel = "login";
+        return navigate("/login", { replace: true });
       }
-      const finalRedirectUrl = `${originalPath}?panel=${targetPanel}`;
 
+      const baseRoute = originalPath === "/" ? "/community" : originalPath;
+      const finalRedirectUrl = `${baseRoute}?panel=${targetPanel}`;
+
+      console.log(`🚀 최종 이동 경로: ${finalRedirectUrl}`);
       navigate(finalRedirectUrl, { replace: true });
     };
+
     processLogin();
   }, [location.pathname, location.search, navigate, loadUser]);
 
-  // 로딩 UI
   return (
     <div
       style={{
@@ -56,9 +62,7 @@ const SocialAuthRedirectHandler = () => {
         background: "#f9f9f9",
       }}
     >
-      <p style={{ display: "flex", alignItems: "center", fontWeight: "bold" }}>
-        로그인 처리 중입니다...
-      </p>
+      <p style={{ fontWeight: "bold" }}>로그인 처리 중입니다...</p>
     </div>
   );
 };
