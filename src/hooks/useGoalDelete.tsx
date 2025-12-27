@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
-import { deleteGoal } from "../services/api/goalApi";
+import { useAppDispatch } from "../store/hooks";
+import { deleteGoalThunk } from "../store/slices/goalSlice";
 
 interface UseGoalDeleteReturn {
   isDeleting: boolean;
@@ -9,34 +10,29 @@ interface UseGoalDeleteReturn {
 
 // 목표 삭제 기능
 export const useGoalDelete = (): UseGoalDeleteReturn => {
+  const dispatch = useAppDispatch();
   const [isDeleting, setIsDeleting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const deleteGoalHandler = useCallback(async (goalId: string) => {
-    setIsDeleting(true);
-    setError(null);
+  const deleteGoalHandler = useCallback(
+    async (goalId: string) => {
+      if (!goalId) return;
 
-    try {
-      if (!goalId) {
-        throw new Error("삭제할 목표 ID가 필요합니다.");
+      setIsDeleting(true);
+      setError(null);
+
+      try {
+        await dispatch(deleteGoalThunk(goalId)).unwrap();
+      } catch (err: any) {
+        const errorMessage = err?.message || "목표 삭제에 실패했습니다.";
+        setError(errorMessage);
+        throw new Error(errorMessage);
+      } finally {
+        setIsDeleting(false);
       }
+    },
+    [dispatch]
+  );
 
-      await deleteGoal(goalId);
-    } catch (err) {
-      const errorMessage =
-        err.response?.data?.message || err.message || "알 수 없는 오류";
-      setError(errorMessage);
-      console.log(`목표 삭제 실패 (ID: ${goalId}): `, err);
-
-      throw new Error(`목표 삭제 실패: ${errorMessage}`);
-    } finally {
-      setIsDeleting(false);
-    }
-  }, []);
-
-  return {
-    isDeleting,
-    error,
-    deleteGoalHandler,
-  };
+  return { isDeleting, error, deleteGoalHandler };
 };

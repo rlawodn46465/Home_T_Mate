@@ -1,6 +1,10 @@
-import { useState, useEffect, useCallback } from "react";
-import { fetchGoalDetail } from "../services/api/goalApi";
+import { useEffect, useCallback } from "react";
 import type { GoalDetail } from "../types/goal";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
+import {
+  clearSelectedGoal,
+  fetchGoalDetailThunk,
+} from "../store/slices/goalSlice";
 
 interface UseGoalDetailReturn {
   goal: GoalDetail | null;
@@ -14,32 +18,32 @@ export const useGoalDetail = (
   goalId: string | undefined,
   shouldFetch: boolean = true
 ): UseGoalDetailReturn => {
-  const [goal, setGoal] = useState<GoalDetail | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const { selectedGoal, status, error } = useAppSelector(
+    (state) => state.goals
+  );
 
   const refetchDetail = useCallback(async () => {
     if (!goalId || !shouldFetch) return;
 
-    setLoading(true);
-    setError(null);
     try {
-      const data = await fetchGoalDetail(goalId);
-      setGoal(data);
+      await dispatch(fetchGoalDetailThunk(goalId)).unwrap();
     } catch (err) {
-      const errorMessage =
-        err.response?.data?.message || err.message || "알 수 없는 오류";
-      console.error(`목표 상세 정보 로드 실패 (ID: ${goalId}): `, errorMessage);
-      setError(`목표 상세 정보를 불러오는 데 실패했습니다: ${errorMessage}`);
-      setGoal(null);
-    } finally {
-      setLoading(false);
+      console.error(`모표 로드 실패:`, err);
     }
-  }, [goalId, shouldFetch]);
+  }, [goalId, shouldFetch, dispatch]);
 
   useEffect(() => {
     refetchDetail();
-  }, [refetchDetail]);
+    return () => {
+      dispatch(clearSelectedGoal());
+    };
+  }, [refetchDetail, dispatch]);
 
-  return { goal, loading, error, refetchDetail };
+  return {
+    goal: selectedGoal,
+    loading: status === "loading",
+    error: error,
+    refetchDetail,
+  };
 };
