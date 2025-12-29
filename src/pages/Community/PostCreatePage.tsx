@@ -1,9 +1,8 @@
 import { useCallback, useEffect, useState } from "react";
 import type { ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
-import { usePostCreate } from "../../hooks/usePostCreate";
+import { usePostForm, usePostDetail } from "../../hooks/usePosts";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
-import { usePostDetail } from "../../hooks/usePostDetail";
 
 import Button from "../../components/common/Button";
 import SelectBox from "../../components/ui/Community/SelectBox";
@@ -30,11 +29,9 @@ const PostCreatePage = () => {
   const { postId } = useParams<{ postId: string }>();
   const isEditMode = !!postId;
 
-  const { savePost, isProcessing } = usePostCreate();
+  const { savePost, isProcessing } = usePostForm();
+  const { post: existingPost, loading: fetchingPost } = usePostDetail(postId);
   const { navigateWithPanel } = usePersistentPanel();
-  const { post: existingPost, loading: fetchingPost } = usePostDetail(
-    postId || ""
-  );
 
   // 폼 필드 상태
   const [title, setTitle] = useState<string>("");

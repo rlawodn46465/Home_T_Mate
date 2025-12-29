@@ -1,10 +1,9 @@
 import { useCallback, useState, type ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./PostDetailPage.module.css";
-import { usePostDetail } from "../../hooks/usePostDetail";
+import { usePostDetail, useGoalDownload } from "../../hooks/usePosts";
 import { useComments } from "../../hooks/useComments";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
-import { useGoalDownload } from "../../hooks/useGoalDownload";
 import PageHeader from "../../components/common/PageHeader";
 import CommentList from "../../components/ui/Community/CommentList";
 import Button from "../../components/common/Button";
@@ -30,7 +29,7 @@ const PostDetailPage = () => {
   const { navigateWithPanel } = usePersistentPanel();
   const { handleDownload, isDownloading } = useGoalDownload();
   const { post, loading, error, isAuthor, handleToggleLike, handleDeletePost } =
-    usePostDetail(postId || "");
+    usePostDetail(postId);
 
   const [newCommentContent, setNewCommentContent] = useState<string>("");
   const [isInputFocused, setIsInputFocused] = useState<boolean>(false);

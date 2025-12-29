@@ -18,13 +18,8 @@ interface QueryParams {
 const CommunityPage = () => {
   const { isAuthenticated } = useAuth();
   const { navigateWithPanel } = usePersistentPanel();
-
-  // 게시판 타입 초기값 (null일 경우 전체 조회)
-  const initialBoardType = null;
-
-  // 게시글 관련 커스텀 훅
   const { posts, pagination, isLoading, error, queryParams, setQueryParams } =
-    usePosts({ boardType: initialBoardType });
+    usePosts();
 
   // 필터, 검색, 정렬 조건 변경 시 호출
   const handleFilterChange = (newFilters: Partial<QueryParams>) => {
