@@ -3,8 +3,7 @@ import GoalsDetailHeader from "../../components/ui/Goal/GoalList/GoalsDetailHead
 import ExerciseList from "../../components/ui/Goal/GoalList/ExerciseList";
 import GoalsSummary from "../../components/ui/Goal/GoalList/GoalsSummary";
 import TabNavigation from "../../components/common/TabNavigation";
-import { useGoalDetail } from "../../hooks/useGoalDetail";
-import { useGoalDelete } from "../../hooks/useGoalDelete";
+import { useGoalDetail, useGoalDelete } from "../../hooks/useGoals";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 import styles from "./GoalsDetailPage.module.css";
@@ -41,15 +40,14 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
   const { navigateToPanel, currentPath } = usePersistentPanel();
   const [activeTab, setActiveTab] = useState<TabType>(TABS[0]);
 
-  // 데이터 로딩 및 삭제 관련 커스텀 훅
   const {
     goal,
     loading: detailLoading,
     error: detailError,
-  } = useGoalDetail(String(goalId), true);
+  } = useGoalDetail(String(goalId));
+  const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
   const goalDetail = goal as unknown as GoalDetail;
-  const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
   // 뒤로가기 로직
   const handleGoBack = useCallback(() => {
@@ -78,7 +76,7 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
     if (window.confirm(`${goalDetail.name} 목표를 정말 삭제하시겠습니까?`)) {
       try {
         await deleteGoalHandler(String(goalId));
-        alert("목표가 성공적으로 삭제되었습니다.");
+        alert("삭제되었습니다.");
         navigateToPanel("?panel=goal", currentPath);
       } catch (error) {
         alert(error.message);

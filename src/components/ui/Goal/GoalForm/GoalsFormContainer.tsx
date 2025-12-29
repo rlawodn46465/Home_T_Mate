@@ -3,8 +3,7 @@ import styles from "./GoalsFormContainer.module.css";
 import GoalsExerciseList from "./GoalsExerciseList";
 import GoalsInfoSection from "./GoalsInfoSection";
 import ExerciseSelectModal from "../../ExerciseSelect/ExerciseSelectModal";
-import { useGoalSave } from "../../../../hooks/useGoalSave";
-import { useGoalDetail } from "../../../../hooks/useGoalDetail";
+import { useGoalSave, useGoalDetail } from "../../../../hooks/useGoals";
 import useGoalForm from "../../../../hooks/useGoalForm";
 import { usePersistentPanel } from "../../../../hooks/usePersistentPanel";
 
@@ -32,6 +31,7 @@ const GoalsFormContainer = ({
     loading: detailLoading,
     error: detailError,
   } = useGoalDetail(goalId, isEditMode);
+  const { isSaving, saveGoalHandler } = useGoalSave();
 
   const {
     goalForm,
@@ -44,8 +44,6 @@ const GoalsFormContainer = ({
     handleRemoveSet,
     getGoalDataForSave,
   } = useGoalForm(isEditMode, initialGoal);
-
-  const { isSaving, saveGoalHandler } = useGoalSave(isEditMode, goalId);
 
   const handleCloseSelectModal = useCallback(() => {
     setCurrentScreen(SCREEN.FORM);
@@ -71,14 +69,17 @@ const GoalsFormContainer = ({
       return;
     }
 
-    const goalDataToSave = getGoalDataForSave();
-
     try {
-      const response = await saveGoalHandler(goalDataToSave);
-      alert(response?.message || "성공적으로 저장되었습니다.");
+      const goalDataToSave = getGoalDataForSave();
+      const response = await saveGoalHandler(
+        goalDataToSave,
+        isEditMode,
+        goalId
+      );
+      alert(response.message);
       navigateToPanel("?panel=goal");
     } catch (error) {
-      alert(error.message || "저장 중 오류가 발생했습니다.");
+      alert(error.message);
     }
   }, [
     goalForm,

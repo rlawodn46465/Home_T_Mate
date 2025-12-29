@@ -3,8 +3,7 @@ import TabNavigation from "../../components/ui/Goal/GoalList/TabNavigation";
 import GoalsHeader from "../../components/ui/Goal/GoalList/GoalsHeader";
 import BodyPartFilter from "../../components/ui/Goal/GoalList/BodyPartFilter";
 import GoalItemCard from "../../components/ui/Goal/GoalList/GoalItemCard";
-import { useGoals } from "../../hooks/useGoals";
-import { useGoalDelete } from "../../hooks/useGoalDelete";
+import { useGoals, useGoalDelete } from "../../hooks/useGoals";
 
 import styles from "./GoalsListPage.module.css";
 
@@ -41,7 +40,7 @@ const GoalsListPage = () => {
   const [activeStatus, setActiveStatus] = useState<GoalStatus>("진행중");
   const [activePart, setActivePart] = useState<BodyPart | string>("전체");
 
-  const { goals, refreshGoals } = useGoals();
+  const { goals, refreshGoals, loading: isLoading } = useGoals();
   const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
   // 필터 조건에 따른 목표 리스트 계산
@@ -62,18 +61,14 @@ const GoalsListPage = () => {
     });
   }, [goals, activeTab, activeStatus, activePart]);
 
-  // 목표 아이템 액션 핸들러 (삭제 등)
   const handleItemAction = useCallback(
     async (id: string | number, action: string) => {
-      if (action === "삭제") {
-        if (!window.confirm("정말 목표를 삭제하시겠습니까?")) return;
-
+      if (action === "삭제" && window.confirm("정말 삭제하시겠습니까?")) {
         try {
           await deleteGoalHandler(String(id));
-          alert("목표가 성공적으로 삭제되었습니다.");
           refreshGoals();
-        } catch (error) {
-          alert(error.message || "목표 삭제 중 오류가 발생했습니다.");
+        } catch (error: any) {
+          alert(error.message);
         }
       }
     },

@@ -1,12 +1,16 @@
-import { memo } from "react";
+import { memo, useEffect } from "react";
 import styles from "./TodayGoal.module.css";
-import { useTodayGoals } from "../../../hooks/useGoals";
+import { useGoals } from "../../../hooks/useGoals";
 import Spinner from "../../common/Spinner";
 import ErrorMessage from "../../common/ErrorMessage";
 import TodayGoalSlider from "./TodayGoalSlider";
 
 const TodayGoal = () => {
-  const { goals, isLoading, error, loadTodayGoals } = useTodayGoals();
+  const { todayGoals, loading: isLoading, error, loadTodayGoals } = useGoals();
+
+  useEffect(() => {
+    loadTodayGoals();
+  }, [loadTodayGoals]);
 
   if (isLoading) {
     return (
@@ -31,7 +35,7 @@ const TodayGoal = () => {
     <section className={styles.section}>
       <h4 className="section-title">오늘 목표</h4>
       <div className={styles.container}>
-        <TodayGoalSlider goals={goals ?? []} />
+        <TodayGoalSlider goals={todayGoals ?? []} />
       </div>
     </section>
   );
