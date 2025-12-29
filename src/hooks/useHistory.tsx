@@ -1,161 +1,107 @@
-import { useState, useEffect, useCallback } from "react";
+import { useEffect, useCallback } from "react";
+import type { SaveWorkoutRequest } from "../types/history";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import {
-  deleteExerciseSession,
-  fetchHistorys,
-  fetchMonthlyHistory,
-  saveExerciseSession,
-  updateExerciseSession,
-} from "../services/api/historyApi";
-import type { MonthlyHistoryItem, SaveWorkoutRequest } from "../types/history";
-
-// 목표 목록 상태 관리, API 통신 훅
-export const useHistorys = () => {
-  const [historys, setHistorys] = useState<MonthlyHistoryItem[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const refreshHistorys = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      const data = await fetchHistorys();
-      setHistorys(data);
-    } catch (err) {
-      console.error(
-        "운동 기록 불러오기 실패:",
-        err.response?.data || err.message
-      );
-      setError("운동 기록을 불러오는 데 실패했습니다.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    refreshHistorys();
-  }, [refreshHistorys]);
-
-  return { historys, loading, error, refreshHistorys };
-};
+  createHistoryThunk,
+  deleteHistoryThunk,
+  fetchMonthlyHistoryThunk,
+  fetchSingleHistoryThunk,
+  updateHistoryThunk,
+} from "../store/slices/historySlice";
 
 // 월별 운동 기록 조회
 export const useMonthlyHistory = (year?: number, month?: number) => {
-  const [historyData, setHistoryData] = useState<MonthlyHistoryItem[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [error, setError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
 
-  const refetch = useCallback(async () => {
-    if (year === undefined || month === undefined) return;
+  const { monthly, fetchMonthly } = useAppSelector((state) => state.history);
 
-    setIsLoading(true);
-    setError(null);
-    try {
-      const data = await fetchMonthlyHistory(year, month);
-      setHistoryData(data);
-    } catch (err: any) {
-      setError("데이터를 불러오는 중 문제가 발생했습니다.");
-      setHistoryData([]);
-    } finally {
-      setIsLoading(false);
+  const refetch = useCallback(() => {
+    if (year && month) {
+      dispatch(fetchMonthlyHistoryThunk({ year, month }));
     }
-  }, [year, month]);
+  }, [dispatch, year, month]);
 
   useEffect(() => {
     refetch();
   }, [refetch]);
 
-  return { historyData, isLoading, error, refetch };
+  return {
+    historyData: monthly,
+    isLoading: fetchMonthly.status === "loading",
+    error: fetchMonthly.error,
+    refetch,
+  };
+};
+
+// 단일 기록 조회
+export const useSingleHistory = (recordId?: string) => {
+  const dispatch = useAppDispatch();
+  const { single, fetchSingle } = useAppSelector((state) => state.history);
+
+  useEffect(() => {
+    if (recordId) {
+      dispatch(fetchSingleHistoryThunk(recordId));
+    }
+  }, [dispatch, recordId]);
+
+  return {
+    record: single,
+    isLoading: fetchSingle.status === "loading",
+    error: fetchSingle.error,
+  };
 };
 
 // 운동 기록 저장
 export const useCreateHistory = () => {
-  const [isSaving, setIsSaving] = useState<boolean>(false);
-  const [saveError, setSaveError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const save = useAppSelector((state) => state.history.save);
 
-  // 운동 기록을 서버에 저장
-  const createHistory = async (
-    workoutData: SaveWorkoutRequest
-  ): Promise<boolean> => {
-    setIsSaving(true);
-    setSaveError(null);
-    try {
-      const result = await saveExerciseSession(workoutData);
-      console.log("운동 기록 저장 성공:", result.message);
-      return true;
-    } catch (error) {
-      console.error("운동 기록 저장 실패:", error);
-      let errorMessage = "알 수 없는 오류가 발생했습니다.";
-
-      if (error.response) {
-        errorMessage =
-          error.response.data?.message ||
-          `서버 오류 발생 (Status: ${error.response.status})`;
-      } else if (error.request) {
-        errorMessage = "네트워크 연결 오류 또는 서버 응답 없음.";
-      } else {
-        errorMessage = error.message;
-      }
-      setSaveError(errorMessage);
-      return false;
-    } finally {
-      setIsSaving(false);
-    }
+  const createHistory = async (data: SaveWorkoutRequest) => {
+    if (save.status === "loading") return false;
+    await dispatch(createHistoryThunk(data)).unwrap();
+    return true;
   };
 
-  return { isSaving, saveError, createHistory };
+  return {
+    isSaving: save.status === "loading",
+    saveError: save.error,
+    createHistory,
+  };
 };
 
 // 운동 기록 수정
 export const useUpdateHistory = (recordId: string | undefined) => {
-  const [isUpdating, setIsUpdating] = useState<boolean>(false);
-  const [updateError, setUpdateError] = useState<string | null>(null);
+  const dispatch = useAppDispatch();
+  const save = useAppSelector((state) => state.history.save);
 
-  const updateHistory = useCallback(
-    async (data: Partial<SaveWorkoutRequest>): Promise<boolean> => {
-      if (!recordId) {
-        setUpdateError("수정할 기록 ID가 누락되었습니다.");
-        return false;
-      }
+  const updateHistory = async (data: Partial<SaveWorkoutRequest>) => {
+    if (!recordId || save.status === "loading") return false;
+    await dispatch(updateHistoryThunk({ recordId, data })).unwrap();
+    return true;
+  };
 
-      setIsUpdating(true);
-      setUpdateError(null);
-
-      try {
-        await updateExerciseSession(recordId, data);
-        return true;
-      } catch (err) {
-        console.error("운동 기록 수정 중 오류 발생:", err);
-        setUpdateError(err.message || "기록 수정에 실패했습니다.");
-        return false;
-      } finally {
-        setIsUpdating(false);
-      }
-    },
-    [recordId]
-  );
-
-  return { isUpdating, updateError, updateHistory };
+  return {
+    isUpdating: save.status === "loading",
+    updateError: save.error,
+    updateHistory,
+  };
 };
 
 // 운동 기록 삭제
-export const useDeleteActions = (refetchCallback?: () => void) => {
-  const [isProcessing, setIsProcessing] = useState<boolean>(false);
-  const [error, setError] = useState<Error | null>(null);
+export const useDeleteActions = (refetch?: () => void) => {
+  const dispatch = useAppDispatch();
+  const save = useAppSelector((state) => state.history.save);
 
-  const deleteHistory = async (recordId: string): Promise<boolean> => {
-    setIsProcessing(true);
-    setError(null);
-    try {
-      await deleteExerciseSession(recordId);
-      if (refetchCallback) refetchCallback();
-      return true;
-    } catch (err: any) {
-      setError(err);
-      return false;
-    } finally {
-      setIsProcessing(false);
-    }
+  const deleteHistory = async (recordId: string) => {
+    if (save.status === "loading") return false;
+    await dispatch(deleteHistoryThunk(recordId)).unwrap();
+    refetch?.();
+    return true;
   };
 
-  return { isProcessing, error, deleteHistory };
+  return {
+    isProcessing: save.status === "loading",
+    error: save.error,
+    deleteHistory,
+  };
 };

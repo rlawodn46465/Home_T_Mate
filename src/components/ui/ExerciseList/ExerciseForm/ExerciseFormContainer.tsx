@@ -1,10 +1,9 @@
-import { useEffect, useState } from "react";
 import styles from "./ExerciseFormContainer.module.css";
 import ExerciseInfoSection from "./ExerciseInfoSection";
-import { fetchSingleRecord } from "../../../../services/api/historyApi";
 import { usePersistentPanel } from "../../../../hooks/usePersistentPanel";
 import Spinner from "../../../common/Spinner";
 import ErrorMessage from "../../../common/ErrorMessage";
+import { useSingleHistory } from "../../../../hooks/useHistory";
 
 interface ExerciseFormContainerProps {
   recordId?: string;
@@ -12,25 +11,7 @@ interface ExerciseFormContainerProps {
 
 const ExerciseFormContainer = ({ recordId }: ExerciseFormContainerProps) => {
   const { navigateToPanel } = usePersistentPanel();
-  const [initialData, setInitialData] = useState<any>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(!!recordId);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!recordId) return;
-
-    const loadRecord = async () => {
-      try {
-        const data = await fetchSingleRecord(recordId);
-        setInitialData(data);
-      } catch (err) {
-        setError("기록을 불러오는 데 실패했습니다.");
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    loadRecord();
-  }, [recordId]);
+  const { record, isLoading, error } = useSingleHistory(recordId);
 
   if (isLoading) return <Spinner text="데이터를 불러오는 중입니다..." />;
   if (error) return <ErrorMessage message={error} />;
@@ -51,11 +32,9 @@ const ExerciseFormContainer = ({ recordId }: ExerciseFormContainerProps) => {
 
       <ExerciseInfoSection
         recordId={recordId}
-        initialData={initialData}
-        type={initialData?.type || null}
-        initialDate={
-          initialData?.date ? new Date(initialData.date) : new Date()
-        }
+        initialData={record}
+        type={record?.type || null}
+        initialDate={record?.date ? new Date(record.date) : new Date()}
       />
     </div>
   );
