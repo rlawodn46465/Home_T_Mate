@@ -8,8 +8,7 @@ import ExerciseList from "../../components/ui/ExerciseList/ExerciseList";
 import Spinner from "../../components/common/Spinner";
 import ErrorMessage from "../../components/common/ErrorMessage";
 
-import { useMonthlyHistory } from "../../hooks/useMonthlyHistory";
-import { useHistoryActions } from "../../hooks/useHistoryActions";
+import { useMonthlyHistory, useDeleteActions } from "../../hooks/useHistory";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 import styles from "./ExerciseListPage.module.css";
@@ -48,7 +47,7 @@ const ExerciseListPage = () => {
     currentMonthDate.getFullYear(),
     currentMonthDate.getMonth() + 1
   );
-  const { isProcessing, handleDelete } = useHistoryActions(refetch);
+  const { isProcessing, deleteHistory } = useDeleteActions(refetch);
 
   // 캘린더에 표시할 날짜별 운동 부위 데이터 가공
   const monthlyDots = useMemo(() => {
@@ -92,7 +91,7 @@ const ExerciseListPage = () => {
 
   // 기록 삭제 처리
   const handleDeleteRecord = async (recordId: string | number) => {
-    const success = await handleDelete(String(recordId));
+    const success = await deleteHistory(String(recordId));
     if (success) {
       alert("✅ 운동 기록이 삭제되었습니다!");
     } else {

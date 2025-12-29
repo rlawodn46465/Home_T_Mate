@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
 import {
+  deleteExerciseSession,
   fetchHistorys,
+  fetchMonthlyHistory,
   saveExerciseSession,
   updateExerciseSession,
 } from "../services/api/historyApi";
@@ -34,6 +36,35 @@ export const useHistorys = () => {
   }, [refreshHistorys]);
 
   return { historys, loading, error, refreshHistorys };
+};
+
+// 월별 운동 기록 조회
+export const useMonthlyHistory = (year?: number, month?: number) => {
+  const [historyData, setHistoryData] = useState<MonthlyHistoryItem[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const refetch = useCallback(async () => {
+    if (year === undefined || month === undefined) return;
+
+    setIsLoading(true);
+    setError(null);
+    try {
+      const data = await fetchMonthlyHistory(year, month);
+      setHistoryData(data);
+    } catch (err: any) {
+      setError("데이터를 불러오는 중 문제가 발생했습니다.");
+      setHistoryData([]);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [year, month]);
+
+  useEffect(() => {
+    refetch();
+  }, [refetch]);
+
+  return { historyData, isLoading, error, refetch };
 };
 
 // 운동 기록 저장
@@ -104,4 +135,27 @@ export const useUpdateHistory = (recordId: string | undefined) => {
   );
 
   return { isUpdating, updateError, updateHistory };
+};
+
+// 운동 기록 삭제
+export const useDeleteActions = (refetchCallback?: () => void) => {
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+  const [error, setError] = useState<Error | null>(null);
+
+  const deleteHistory = async (recordId: string): Promise<boolean> => {
+    setIsProcessing(true);
+    setError(null);
+    try {
+      await deleteExerciseSession(recordId);
+      if (refetchCallback) refetchCallback();
+      return true;
+    } catch (err: any) {
+      setError(err);
+      return false;
+    } finally {
+      setIsProcessing(false);
+    }
+  };
+
+  return { isProcessing, error, deleteHistory };
 };
