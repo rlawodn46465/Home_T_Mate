@@ -4,7 +4,7 @@ import {
   handleSocialLoginSuccess,
   logoutUser,
 } from "../../services/api/authService";
-import type { LoginResponse, UserInfo } from "../../services/api/authService";
+import type { UserInfo } from "../../services/api/authService";
 import { clearAuthTokens } from "../../services/api/api";
 
 export interface AuthState {
@@ -24,9 +24,9 @@ const initialState: AuthState = {
 // 사용자 정보 로드
 export const loadUserThunk = createAsyncThunk(
   "auth/loadUser",
-  async (token: string | undefined, { rejectWithValue }) => {
+  async (_, { rejectWithValue }) => {
     try {
-      const data: LoginResponse = await handleSocialLoginSuccess(token);
+      const data = await handleSocialLoginSuccess();
       return data.user;
     } catch (error: any) {
       return rejectWithValue(error.message || "인증에 실패했습니다.");
@@ -41,8 +41,11 @@ export const logoutThunk = createAsyncThunk<null, void>(
     try {
       await logoutUser();
       return null;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("알 수 없는 오류");
     } finally {
       clearAuthTokens();
     }

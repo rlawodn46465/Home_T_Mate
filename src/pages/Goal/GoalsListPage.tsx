@@ -40,7 +40,7 @@ const GoalsListPage = () => {
   const [activeStatus, setActiveStatus] = useState<GoalStatus>("진행중");
   const [activePart, setActivePart] = useState<BodyPart | string>("전체");
 
-  const { goals, refreshGoals, loading: isLoading } = useGoals();
+  const { goals } = useGoals();
   const { isDeleting, deleteGoalHandler } = useGoalDelete();
 
   // 필터 조건에 따른 목표 리스트 계산
@@ -66,13 +66,12 @@ const GoalsListPage = () => {
       if (action === "삭제" && window.confirm("정말 삭제하시겠습니까?")) {
         try {
           await deleteGoalHandler(String(id));
-          refreshGoals();
         } catch (error: any) {
           alert(error.message);
         }
       }
     },
-    [deleteGoalHandler, refreshGoals]
+    [deleteGoalHandler]
   );
 
   return (

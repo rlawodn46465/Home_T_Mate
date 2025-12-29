@@ -1,14 +1,7 @@
+import type { GoalDetail } from "../../../../types/goal";
 import MuscleMap from "../../../common/MuscleMap";
 import styles from "./GoalsSummary.module.css";
 import WeekDaySelector from "./WeekDaySelector";
-
-interface GoalDetail {
-  progress: number;
-  parts: string[];
-  currentWeek: number;
-  targetWeek?: number;
-  type: "루틴" | "챌린지" | string;
-}
 
 interface GoalsSummaryProps {
   goalDetail: GoalDetail;
@@ -17,6 +10,8 @@ interface GoalsSummaryProps {
 
 const GoalsSummary = ({ goalDetail, allGoalDays }: GoalsSummaryProps) => {
   const progressPercent = (goalDetail.progress * 100).toFixed(0);
+
+  const isChallenge = goalDetail.goalType === "CHALLENGE";
 
   return (
     <div className={styles.goalSummary}>
@@ -33,7 +28,7 @@ const GoalsSummary = ({ goalDetail, allGoalDays }: GoalsSummaryProps) => {
         <div className={`${styles.summaryTextItem} ${styles.week}`}>
           요일 : <WeekDaySelector selectedDays={allGoalDays} />
         </div>
-        {goalDetail.type === "챌린지" && (
+        {isChallenge && (
           <div>
             <div className={styles.summaryTextItem}>
               <p>진행도 : </p>
@@ -46,7 +41,7 @@ const GoalsSummary = ({ goalDetail, allGoalDays }: GoalsSummaryProps) => {
               </div>
             </div>
             <div className={styles.summaryTextItem}>
-              목표주차 : {goalDetail.targetWeek}주차
+              목표주차 : {goalDetail.durationWeek ?? "-"}주차
             </div>
           </div>
         )}

@@ -8,26 +8,6 @@ import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 import styles from "./GoalsDetailPage.module.css";
 
-interface Exercise {
-  id: string | number;
-  name: string;
-  days: string[];
-  [key: string]: any;
-}
-
-interface GoalDetail {
-  id: string | number;
-  name: string;
-  type: "Challenge" | "Routine" | string;
-  createdAt: string;
-  creator: string;
-  exercises: Exercise[];
-  progress: number;
-  parts: string[];
-  currentWeek: number;
-  [key: string]: any;
-}
-
 interface GoalsDetailPageProps {
   goalId: string | number;
 }
@@ -45,9 +25,7 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
     loading: detailLoading,
     error: detailError,
   } = useGoalDetail(String(goalId));
-  const { isDeleting, deleteGoalHandler } = useGoalDelete();
-
-  const goalDetail = goal as unknown as GoalDetail;
+  const { isDeleting, deleteGoalHandler, error: deleteError } = useGoalDelete();
 
   // 뒤로가기 로직
   const handleGoBack = useCallback(() => {
@@ -57,8 +35,10 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
 
   // 수정 페이지로 이동
   const handleEdit = useCallback(() => {
-    const newQuery = `?panel=goals-form&goalId=${goalId}&isEditMode=true`; // isEditMode 명시
-    navigateToPanel(newQuery, currentPath);
+    navigateToPanel(
+      `?panel=goals-form&goalId=${goalId}&isEditMode=true`,
+      currentPath
+    );
   }, [navigateToPanel, goalId, currentPath]);
 
   // 운동 상세 페이지로 이동
@@ -72,8 +52,8 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
 
   // 목표 삭제
   const handleDelete = async () => {
-    if (!goalDetail) return;
-    if (window.confirm(`${goalDetail.name} 목표를 정말 삭제하시겠습니까?`)) {
+    if (!goal) return;
+    if (window.confirm(`${goal.name} 목표를 정말 삭제하시겠습니까?`)) {
       try {
         await deleteGoalHandler(String(goalId));
         alert("삭제되었습니다.");
@@ -91,7 +71,7 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
         <GoalsDetailHeader
           title="목표 상세"
           onGoBack={handleGoBack}
-          showBackButton={true}
+          showBackButton
         />
         <p className="goals-detail-page__error-message">
           {isDeleting ? "목표 삭제 중..." : "목표 정보를 불러오는 중입니다."}
@@ -101,22 +81,22 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
   }
 
   // 데이터 로딩 실패/없음 처리
-  if (detailError || !goalDetail) {
+  if (detailError || deleteError || !goal) {
     return (
       <div className="goals-detail-page">
         <GoalsDetailHeader
           title="목표 상세"
           onGoBack={handleGoBack}
-          showBackButton={true}
+          showBackButton
         />
-        <p className="goals-detail-page__error-message">{detailError}</p>
+        <p>{detailError || deleteError || "목표 정보 없음"}</p>
       </div>
     );
   }
 
-  // 목표 시작 및 종료 (테스트용)
-  const handleStartGoal = () => alert(`목표 시작: ${goalDetail.name}!`);
-  const handleEndGoal = () => alert(`목표 종료: ${goalDetail.name}!`);
+  // 목표 시작 및 종료(테스트용)
+  const handleStartGoal = () => alert(`목표 시작: ${goal.name}!`);
+  const handleEndGoal = () => alert(`목표 종료: ${goal.name}!`);
 
   // 생성일 포맷팅 함수
   const formatCreationDate = (isoString: string) => {
@@ -135,29 +115,25 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
     }
   };
 
-  const currentExercises = goalDetail.exercises || [];
-
   // 현재 요일 계산
   const currentDay = new Date()
     .toLocaleDateString("ko-KR", { weekday: "short" })
     .replace("요일", "");
 
   // 오늘 운동 리스트 필터링
-  const todayExercises = goalDetail.exercises.filter((ex) =>
+  const todayExercises = goal.exercises.filter((ex) =>
     ex.days.includes(currentDay)
   );
 
   // 모든 운동의 요일을 취합
   const allGoalDays = Array.from(
-    new Set(currentExercises.flatMap((ex) => ex.days || []))
+    new Set(goal.exercises.flatMap((ex) => ex.days || []))
   );
 
   return (
     <div className={styles.goalsDetailPage}>
       <GoalsDetailHeader
-        title={
-          goalDetail.goalType === "Challenge" ? "챌린지 상세" : "루틴 상세"
-        }
+        title={goal.goalType === "CHALLENGE" ? "챌린지 상세" : "루틴 상세"}
         onEdit={handleEdit}
         onGoBack={handleGoBack}
         onDelete={handleDelete}
@@ -166,12 +142,12 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
       />
 
       <div className={styles.goalInfo}>
-        <h4>{goalDetail.name}</h4>
+        <h4>{goal.name}</h4>
         <p className={styles.goalMeta}>
-          생성일 : {formatCreationDate(goalDetail.createdAt)}
+          생성일 : {formatCreationDate(goal.createdAt)}
         </p>
-        <p className={styles.goalMeta}>제작자 : {goalDetail.creator}</p>
-        <GoalsSummary goalDetail={goalDetail} allGoalDays={allGoalDays} />
+        <p className={styles.goalMeta}>제작자 : {goal.creator}</p>
+        <GoalsSummary goalDetail={goal} allGoalDays={allGoalDays} />
       </div>
 
       <TabNavigation
@@ -183,9 +159,7 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
       <div className={styles.exerciseContent}>
         <ExerciseList
           exercises={
-            (activeTab === "오늘 운동"
-              ? todayExercises
-              : goalDetail.exercises) as any
+            (activeTab === "오늘 운동" ? todayExercises : goal.exercises) as any
           }
           onSelectExercise={handleExerciseDetailNavigation}
         />

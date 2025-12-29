@@ -6,13 +6,13 @@ import ErrorMessage from "../../common/ErrorMessage";
 import TodayGoalSlider from "./TodayGoalSlider";
 
 const TodayGoal = () => {
-  const { todayGoals, loading: isLoading, error, loadTodayGoals } = useGoals();
+  const { todayGoals, todayLoading, todayError, loadTodayGoals } = useGoals();
 
   useEffect(() => {
     loadTodayGoals();
   }, [loadTodayGoals]);
 
-  if (isLoading) {
+  if (todayLoading) {
     return (
       <div className={styles.section}>
         <Spinner text="오늘의 목표 확인 중..." />
@@ -20,7 +20,7 @@ const TodayGoal = () => {
     );
   }
 
-  if (error) {
+  if (todayError) {
     return (
       <div className={styles.section}>
         <ErrorMessage
