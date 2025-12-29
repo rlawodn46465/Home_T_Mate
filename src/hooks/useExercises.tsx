@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchExerciseDetail, fetchExercises } from "../services/api/goalApi";
+import { fetchExerciseDetail, fetchExercises } from "../services/api/exerciseApi";
 import type { ExerciseMaster, ExerciseFilters } from "../types/exercise";
 
 interface UseExercisesReturn {

@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import MuscleMap from "../../components/common/MuscleMap";
 import TabNavigation from "../../components/common/TabNavigation";
 import ExerciseInfoSection from "../../components/ui/Exercise/ExerciseInfoSection";
 import ExerciseRecordSection from "../../components/ui/Exercise/ExerciseRecordSection";
-import { fetchExerciseDetail } from "../../services/api/goalApi";
 import PageHeader from "../../components/common/PageHeader";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 import Spinner from "../../components/common/Spinner";
