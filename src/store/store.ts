@@ -4,6 +4,8 @@ import goalsReducer from "./slices/goalsSlice";
 import historyReducer from "./slices/historySlice";
 import exerciseReducer from "./slices/exerciseSlice";
 import commentReducer from "./slices/commentSlice";
+import statRuducer from "./slices/statSlice";
+
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +14,7 @@ export const store = configureStore({
     history: historyReducer,
     exercise: exerciseReducer,
     comment: commentReducer,
+    stat: statRuducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
