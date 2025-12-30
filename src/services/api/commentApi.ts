@@ -1,5 +1,5 @@
 import api from "./api"; // 기본 API 인스턴스
-import type { Comment, CreateCommentData } from "../../types/comment";
+import type { CommentDTO, CreateCommentData } from "../../types/comment";
 
 interface ApiResponse<T> {
   success: boolean;
@@ -10,8 +10,8 @@ interface ApiResponse<T> {
 const API_COMMENT_PATH = "/api/v1/comments";
 
 // 게시글의 댓글 목록 조회
-export const fetchComments = async (postId: string): Promise<Comment[]> => {
-  const response = await api.get<ApiResponse<Comment[]>>(
+export const fetchComments = async (postId: string): Promise<CommentDTO[]> => {
+  const response = await api.get<ApiResponse<CommentDTO[]>>(
     `${API_COMMENT_PATH}/posts/${postId}`
   );
   return response.data.data;
@@ -21,8 +21,8 @@ export const fetchComments = async (postId: string): Promise<Comment[]> => {
 export const createComment = async (
   postId: string,
   commentData: CreateCommentData
-): Promise<Comment> => {
-  const response = await api.post<ApiResponse<Comment>>(
+): Promise<CommentDTO> => {
+  const response = await api.post<ApiResponse<CommentDTO>>(
     `${API_COMMENT_PATH}/posts/${postId}`,
     commentData
   );

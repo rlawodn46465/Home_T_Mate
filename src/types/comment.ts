@@ -3,7 +3,7 @@ export interface CommentAuthor {
   nickname: string;
 }
 
-export interface Comment {
+export interface CommentDTO  {
   id: string;
   content: string;
   author: CommentAuthor;

@@ -1,4 +1,4 @@
-import { useCallback, useState, type ChangeEvent } from "react";
+import { useState, type ChangeEvent } from "react";
 import { useParams } from "react-router-dom";
 import styles from "./PostDetailPage.module.css";
 import { usePostDetail, useGoalDownload } from "../../hooks/usePosts";
@@ -37,22 +37,15 @@ const PostDetailPage = () => {
   const {
     comments,
     loading: commentsLoading,
-    handleCreateComment,
-    handleDeleteComment,
-  } = useComments(postId || "", post?.commentCount);
+    create,
+    remove,
+  } = useComments(postId);
 
   // 댓글 작성 로직 통합
-  const onSubmitComment = useCallback(async () => {
-    if (!newCommentContent.trim()) {
-      alert("댓글 내용을 입력해주세요.");
-      return;
-    }
-    const success = await handleCreateComment(newCommentContent);
-    if (success) {
-      setNewCommentContent("");
-      setIsInputFocused(false);
-    }
-  }, [newCommentContent, handleCreateComment]);
+  const onSubmitComment = async () => {
+    const success = await create(newCommentContent);
+    if (success) setNewCommentContent("");
+  };
 
   // 날짜 포맷팅 함수
   const formatDate = (dateString?: string): string => {
@@ -175,7 +168,7 @@ const PostDetailPage = () => {
           <CommentList
             comments={comments}
             isLoading={commentsLoading}
-            onDelete={handleDeleteComment}
+            onDelete={remove}
           />
         </section>
       </div>
