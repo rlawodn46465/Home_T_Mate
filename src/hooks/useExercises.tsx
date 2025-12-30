@@ -1,6 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
-import { fetchExerciseDetail, fetchExercises } from "../services/api/exerciseApi";
 import type { ExerciseMaster, ExerciseFilters } from "../types/exercise";
+import { useDispatch, useSelector } from "react-redux";
+import type { AppDispatch, RootState } from "../store/store";
+import {
+  clearExerciseDetail,
+  fetchExerciseDetailThunk,
+  fetchExercisesThunk,
+} from "../store/slices/exerciseSlice";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 
 interface UseExercisesReturn {
   exercises: ExerciseMaster[];
@@ -30,90 +37,60 @@ export interface ExerciseDetailData {
 }
 
 // 운동 마스터 목록 관리
-export const useExercises = (filters: ExerciseFilters): UseExercisesReturn => {
-  const [exercises, setExercises] = useState<ExerciseMaster[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+export const useExercises = (filters: ExerciseFilters) => {
+  const dispatch = useAppDispatch();
+
+  const exercises = useAppSelector((state) => state.exercise.list);
+  const fetchList = useAppSelector((state) => state.exercise.fetchList);
 
   useEffect(() => {
-    if (!filters) return;
+    dispatch(fetchExercisesThunk(filters));
+  }, [dispatch, filters]);
 
-    let isCancelled = false;
-    const loadExercises = async () => {
-      setIsLoading(true);
-      try {
-        // 필터 없이 전체 운동 마스터 목록 로드 (캐시 필요 시 여기에 로직 추가)
-        const data = await fetchExercises(filters);
-        if (!isCancelled) {
-          setExercises(data);
-        }
-      } catch (err) {
-        console.error("운동 마스터 목록 로드 실패:", err);
-        setExercises([]);
-      }
+  const refreshExercises = useCallback(() => {
+    dispatch(fetchExercisesThunk(filters));
+  }, [dispatch, filters]);
 
-      if (!isCancelled) {
-        setIsLoading(false);
-      }
-    };
-    loadExercises();
+  return {
+    exercises,
 
-    return () => {
-      isCancelled = true;
-    };
-  }, [filters]);
+    isLoading: fetchList.status === "loading",
+    error: fetchList.error,
 
-  return { exercises, isLoading };
+    refreshExercises,
+  };
 };
 
 // 특정 운동 상세 정보 조회
 export const useExerciseDetail = (exerciseId: string | number) => {
-  const [detailData, setDetailData] = useState<ExerciseDetailData | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [persistedMemo, setPersistedMemo] = useState<string>("");
+  const dispatch = useDispatch<AppDispatch>();
 
-  const loadDetail = useCallback(async () => {
-    if (!exerciseId) {
-      setError("유효한 운동 ID가 없습니다.");
-      setIsLoading(false);
-      return;
-    }
+  const id = String(exerciseId);
 
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const data = await fetchExerciseDetail(String(exerciseId));
-      setDetailData(data as unknown as ExerciseDetailData);
-
-      // 기존 메모가 존재한다면 상태에 동기화
-      if (data.myStats?.memo) {
-        setPersistedMemo(data.myStats.memo);
-      }
-    } catch (err: any) {
-      console.error("운동 상세 로드 실패:", err);
-      setError(err.message || "정보를 불러오는 데 실패했습니다.");
-    } finally {
-      setIsLoading(false);
-    }
-  }, [exerciseId]);
+  const detail = useAppSelector((state) => state.exercise.detailMap[id]);
+  const fetchDetail = useAppSelector((state) => state.exercise.fetchDetail);
 
   useEffect(() => {
-    loadDetail();
-  }, [loadDetail]);
+    if (!detail && fetchDetail.status !== "loading") {
+      dispatch(fetchExerciseDetailThunk(id));
+    }
+  }, [dispatch, id, detail, fetchDetail.status]);
 
-  // 메모 업데이트 핸들러 (로컬 상태 업데이트)
-  const handleMemoUpdate = (newMemo: string) => {
-    setPersistedMemo(newMemo);
-    // 참고: 실제 DB 반영이 필요한 경우 여기서 추가 API 호출 가능
-  };
+  const refetch = useCallback(() => {
+    dispatch(fetchExerciseDetailThunk(id));
+  }, [dispatch, id]);
+
+  const clear = useCallback(() => {
+    dispatch(clearExerciseDetail(id));
+  }, [dispatch, id]);
 
   return {
-    detailData,
-    isLoading,
-    error,
-    persistedMemo,
-    handleMemoUpdate,
-    refetch: loadDetail,
+    detailData: detail,
+
+    isLoading: fetchDetail.status === "loading",
+    error: fetchDetail.error,
+
+    refetch,
+    clear,
   };
 };

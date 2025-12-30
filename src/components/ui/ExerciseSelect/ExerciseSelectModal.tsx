@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ChangeEvent, MouseEvent } from "react";
 import styles from "./ExerciseSelectModal.module.css";
 import { useExercises } from "../../../hooks/useExercises";
@@ -40,6 +40,17 @@ const ExerciseSelectModal = ({
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedExercises, setSelectedExercises] = useState([]);
 
+  const filters = useMemo(
+    () => ({
+      part: selectedPart === "전체" ? "" : selectedPart,
+      tool: selectedTool === "전체" ? "" : selectedTool,
+      search: searchTerm,
+    }),
+    [selectedPart, selectedTool, searchTerm]
+  );
+
+  const { exercises, isLoading } = useExercises(filters);
+
   const {
     scrollRef: partRef,
     dragHandlers: partHandlers,
@@ -50,17 +61,6 @@ const ExerciseSelectModal = ({
     dragHandlers: toolHandlers,
     handleTabClick: onToolClick,
   } = useDragScroll<HTMLDivElement>();
-
-  const filters = useMemo(
-    () => ({
-      part: selectedPart === "전체" ? "" : selectedPart,
-      tool: selectedTool === "전체" ? "" : selectedTool,
-      search: searchTerm,
-    }),
-    [selectedPart, selectedTool, searchTerm]
-  );
-
-  const { exercises = [], isLoading } = useExercises(filters);
 
   const toggleExercise = (ex: any) => {
     setSelectedExercises((prev) =>
