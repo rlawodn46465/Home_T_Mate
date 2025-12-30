@@ -83,10 +83,12 @@ const PostCreatePage = () => {
           : null,
     };
 
-    const result = await savePost(postData, postId);
-    if (result) {
+    try {
+      await savePost(postData, postId);
       alert(isEditMode ? "수정되었습니다." : "등록되었습니다.");
       navigateWithPanel(isEditMode ? `/community/${postId}` : "/community");
+    } catch (e) {
+      alert(isEditMode ? "수정에 실패했습니다." : "등록에 실패했습니다.");
     }
   }, [
     title,
@@ -124,6 +126,7 @@ const PostCreatePage = () => {
             <Button
               text={isEditMode ? "수정" : "작성"}
               onClick={handleSubmit}
+              disabled={isProcessing}
             />
           </div>
         </header>

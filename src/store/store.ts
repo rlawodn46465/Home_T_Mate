@@ -5,7 +5,7 @@ import historyReducer from "./slices/historySlice";
 import exerciseReducer from "./slices/exerciseSlice";
 import commentReducer from "./slices/commentSlice";
 import statRuducer from "./slices/statSlice";
-
+import postRuducer from "./slices/postSlice";
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +15,7 @@ export const store = configureStore({
     exercise: exerciseReducer,
     comment: commentReducer,
     stat: statRuducer,
+    post: postRuducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({

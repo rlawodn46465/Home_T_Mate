@@ -7,6 +7,10 @@ import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 import PageHeader from "../../components/common/PageHeader";
 import CommentList from "../../components/ui/Community/CommentList";
 import Button from "../../components/common/Button";
+import { useAuth } from "../../hooks/useAuth";
+import { fetchPostsThunk } from "../../store/slices/postSlice";
+import { useDispatch } from "react-redux";
+import type { AppDispatch } from "../../store/store";
 
 interface HeartIconProps {
   filled: boolean;
@@ -25,14 +29,22 @@ const HeartIcon = ({ filled }: HeartIconProps) => (
 );
 
 const PostDetailPage = () => {
+  const dispatch = useDispatch<AppDispatch>();
   const { postId } = useParams<{ postId: string }>();
   const { navigateWithPanel } = usePersistentPanel();
+  const { user } = useAuth();
+  const {
+    post,
+    loading,
+    error,
+    handleToggleLike,
+    handleDeletePost,
+    removeLoading,
+  } = usePostDetail(postId);
   const { handleDownload, isDownloading } = useGoalDownload();
-  const { post, loading, error, isAuthor, handleToggleLike, handleDeletePost } =
-    usePostDetail(postId);
 
-  const [newCommentContent, setNewCommentContent] = useState<string>("");
-  const [isInputFocused, setIsInputFocused] = useState<boolean>(false);
+  const [newCommentContent, setNewCommentContent] = useState("");
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   const {
     comments,
@@ -41,6 +53,8 @@ const PostDetailPage = () => {
     remove,
   } = useComments(postId);
 
+  const isAuthor = post?.author?.id === user?.id;
+
   // 댓글 작성 로직 통합
   const onSubmitComment = async () => {
     const success = await create(newCommentContent);
@@ -48,10 +62,25 @@ const PostDetailPage = () => {
   };
 
   // 날짜 포맷팅 함수
-  const formatDate = (dateString?: string): string => {
+  const formatDate = (dateString?: string) => {
     if (!dateString) return "";
     const date = new Date(dateString);
     return date.toISOString().split("T")[0];
+  };
+
+  // 삭제 핸들러
+  const handleDeleteWithConfirm = async () => {
+    const confirmed = window.confirm("정말 이 게시글을 삭제하시겠습니까?");
+    if (!confirmed) return;
+
+    try {
+      await handleDeletePost();
+      alert("삭제되었습니다.");
+      dispatch(fetchPostsThunk());
+      navigateWithPanel("/community");
+    } catch {
+      alert("삭제에 실패했습니다.");
+    }
   };
 
   if (loading) return <div className={styles.loading}>로딩 중...</div>;
@@ -87,7 +116,7 @@ const PostDetailPage = () => {
           </div>
         </header>
 
-        <hr className={styles.divider} />
+        <hr />
 
         <article className={styles.postBody}>
           {post.images?.length > 0 && (
@@ -114,7 +143,7 @@ const PostDetailPage = () => {
                 type="button"
                 className={styles.downloadBtn}
                 disabled={isDownloading}
-                onClick={() => handleDownload(post.id, post.linkedGoal.name)}
+                onClick={() => handleDownload(post.id)}
               >
                 {isDownloading ? "가져오는 중..." : "🔥 이 루틴 내 목록에 담기"}
               </button>
@@ -128,7 +157,11 @@ const PostDetailPage = () => {
               text="수정"
               onClick={() => navigateWithPanel(`/community/edit/${postId}`)}
             />
-            <Button text="삭제" onClick={handleDeletePost} />
+            <Button
+              text={removeLoading ? "삭제 중..." : "삭제"}
+              onClick={handleDeleteWithConfirm}
+              disabled={removeLoading}
+            />
           </div>
         )}
 
