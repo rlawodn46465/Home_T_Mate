@@ -26,7 +26,7 @@ const GoalsSummary = ({ goalDetail, allGoalDays }: GoalsSummaryProps) => {
           부위 : {goalDetail.parts.join(", ")}
         </div>
         <div className={`${styles.summaryTextItem} ${styles.week}`}>
-          요일 : <WeekDaySelector selectedDays={allGoalDays} />
+          <WeekDaySelector selectedDays={allGoalDays} />
         </div>
         {isChallenge && (
           <div>

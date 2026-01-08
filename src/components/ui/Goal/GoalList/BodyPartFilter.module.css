@@ -5,22 +5,26 @@
 .bodyPartFilter {
   display: flex;
   flex-wrap: wrap;
-  gap: 4px;
-  padding-bottom: 10px;
+  gap: 6px;
 }
 
 .filterButton {
-  padding: 4px 18px;
-  border: none;
+  padding: 6px 16px;
+  border: 1px solid var(--gray-020);
   border-radius: 20px;
-  background-color: white;
-  font-size: 14px;
+  background-color: var(--gray-000);
+  font-size: 13px;
   font-weight: 500;
+  color: var(--gray-070);
   cursor: pointer;
-  transition: all 0.2s;
+}
+
+.filterButton:hover {
+  background-color: var(--gray-005);
 }
 
 .active {
-  background-color: rgba(81, 85, 163, 1);
-  color: white;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
+  border-color: var(--primary-050);
 }

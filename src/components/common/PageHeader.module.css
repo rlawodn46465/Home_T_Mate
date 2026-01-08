@@ -2,14 +2,14 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1rem 0;
+  padding: 16px 0;
 }
 
 .title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 20px;
   font-weight: 700;
-  color: #333;
+  color: var(--gray-090);
 }
 
 .backButton {
@@ -18,7 +18,7 @@
   padding: 0;
   font: inherit;
   cursor: pointer;
-  color: rgba(231, 46, 40, 1);
+  color: var(--danger-050);
   font-weight: 500;
   transition: opacity 0.2s ease;
 }

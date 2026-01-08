@@ -1,21 +1,17 @@
 .container {
   width: 100%;
-  min-height: 100px;
 }
 
 .noData {
-  padding: 40px 20px;
+  padding: 40px 16px;
   text-align: center;
-  color: #999;
   font-size: 14px;
-  line-height: 1.6;
-  background-color: #fcfcfc;
-  border-radius: 12px;
-  margin-top: 10px;
-  border: 1px dashed #eee;
+  color: var(--gray-050);
+  border: 1px dashed var(--gray-020);
+  border-radius: 8px;
 }
 
 .highlight {
-  color: #6610f2;
-  font-weight: 600;
+  color: var(--secondary-050);
+  font-weight: 700;
 }

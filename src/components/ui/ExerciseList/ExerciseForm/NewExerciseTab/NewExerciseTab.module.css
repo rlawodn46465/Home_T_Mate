@@ -1,48 +1,51 @@
 .container {
-  padding-bottom: 90px;
+  padding-bottom: 96px;
   position: relative;
+  background-color: var(--gray-000);
 }
 
 .loadingOverlay {
   position: absolute;
   inset: 0;
-  background: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.75);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  color: #6610f2;
+  color: var(--primary-060);
   font-weight: 600;
 }
 
 .dateSection {
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .collapsedCalendar {
-  background: white;
-  padding: 14px 16px;
-  border-radius: 12px;
+  background: var(--gray-000);
+  padding: 12px 16px;
+  border-radius: 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border: 1px solid #eee;
+  border: 1px solid var(--gray-020);
   cursor: pointer;
 }
 
 .selectedDateText {
   font-weight: 700;
-  color: #6610f2;
+  color: var(--primary-060);
 }
 
 .actionArea {
   position: fixed;
-  bottom: 0; left: 0; right: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
   padding: 16px;
-  background: white;
+  background: var(--gray-000);
+  border-top: 1px solid var(--gray-020);
   display: flex;
   justify-content: center;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.05);
   z-index: 100;
 }
 
@@ -50,8 +53,8 @@
   max-width: 480px;
   width: 100%;
   padding: 14px;
-  background-color: #6610f2;
-  color: white;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
   border: none;
   border-radius: 12px;
   font-size: 16px;
@@ -60,7 +63,7 @@
 }
 
 .saveButton:disabled {
-  background-color: #e0e0e0;
-  color: #999;
+  background-color: var(--gray-030);
+  color: var(--gray-050);
   cursor: not-allowed;
 }

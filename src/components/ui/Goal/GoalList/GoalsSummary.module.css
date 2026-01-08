@@ -1,43 +1,53 @@
 .goalSummary {
   display: flex;
-  gap: 10px;
+  gap: 12px;
+  margin-top: 12px;
+  padding: 12px;
+  border: 1px solid var(--gray-020);
+  border-radius: 12px;
+  background-color: var(--gray-000);
 }
 
 .bodyPartDisplay {
   width: 80px;
+  flex-shrink: 0;
 }
 
 .summaryText {
-  /* 추가적인 스타일이 필요할 경우를 대비해 정의 */
+  flex: 1;
 }
 
 .summaryTextItem {
   display: flex;
   align-items: center;
-  font-size: 14px;
+  font-size: 13px;
+  color: var(--gray-080);
   margin-bottom: 6px;
+}
+
+.week {
+  align-items: flex-start;
 }
 
 .progressBarWrapper {
   display: flex;
   align-items: center;
-  width: 160px;
+  flex: 1;
   height: 6px;
+  background-color: var(--gray-010);
   border-radius: 3px;
-  background-color: rgba(220, 220, 220, 1);
-  margin-left: 4px;
+  margin-left: 6px;
 }
 
 .progressBar {
   height: 100%;
-  background-color: rgba(75, 179, 89, 1); /* 진행 막대 색상 */
+  background-color: var(--success-050);
   border-radius: 3px;
-  transition: width 0.3s ease;
 }
 
 .progressLabel {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 600;
-  color: rgba(152, 152, 152, 1);
-  margin-left: 5px;
+  color: var(--gray-060);
+  margin-left: 6px;
 }

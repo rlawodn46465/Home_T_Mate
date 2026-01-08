@@ -1,55 +1,51 @@
 .container {
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .inputGroup {
   display: flex;
   gap: 8px;
-  margin-bottom: 10px;
 }
 
 .input {
   flex: 1;
-  max-width: 240px;
   height: 44px;
   padding: 0 12px;
-  font-size: 16px;
-  font-weight: 500;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  outline: none;
-  transition: border-color 0.2s;
+  font-size: 15px;
+  border: 1px solid var(--gray-030);
+  border-radius: 6px;
+  background-color: var(--gray-000);
+  transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input:focus {
-  border-color: #5155a3;
+  border-color: var(--primary-050);
+  box-shadow: 0 0 0 3px rgba(0, 54, 117, 0.15);
 }
 
 .button {
   width: 80px;
   height: 44px;
+  border-radius: 6px;
   border: none;
-  border-radius: 4px;
-  background-color: #5155a3;
-  color: white;
-  font-size: 15px;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s;
 }
 
 .button:hover {
-  opacity: 0.9;
+  background-color: var(--primary-060);
 }
 
 .button:disabled {
-  background-color: #ccc;
+  background-color: var(--gray-030);
   cursor: not-allowed;
 }
 
 .message {
+  margin-top: 6px;
   font-size: 12px;
-  font-weight: 400;
-  color: #ed7020; /* 에러/주의 색상 */
-  margin-left: 2px;
+  color: var(--danger-050);
 }

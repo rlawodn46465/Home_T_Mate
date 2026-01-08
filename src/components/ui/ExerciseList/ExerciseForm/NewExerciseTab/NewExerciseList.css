@@ -1,0 +1,33 @@
+.new-exercise-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.add-exercise-area {
+  margin-top: 16px;
+  padding: 16px 0;
+  display: flex;
+  justify-content: center;
+}
+
+.add-exercise-button {
+  width: 100%;
+  max-width: 480px;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--primary-040);
+  background-color: var(--primary-005);
+  color: var(--primary-060);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-exercise-button:hover {
+  background-color: var(--primary-010);
+}
+
+.add-exercise-button:active {
+  background-color: var(--primary-020);
+}

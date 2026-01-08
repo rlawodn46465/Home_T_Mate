@@ -1,16 +1,31 @@
 .goalsHeader {
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: space-between;
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--gray-020);
+  background-color: var(--gray-000);
+}
+
+.goalsHeader h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-090);
 }
 
 .goalsDetailHeaderMenu {
   display: flex;
-  gap: 5px;
   align-items: center;
+  gap: 8px;
 }
 
 .goalsDetailIcon {
-  width: 30px;
+  width: 20px;
+  height: 20px;
   cursor: pointer;
+  opacity: 0.8;
+}
+
+.goalsDetailIcon:hover {
+  opacity: 1;
 }

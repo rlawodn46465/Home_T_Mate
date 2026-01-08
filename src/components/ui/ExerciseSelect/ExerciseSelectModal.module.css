@@ -1,24 +1,23 @@
 .overlay {
   position: fixed;
   inset: 0;
-  background-color: rgba(0, 0, 0, 0.6);
+  background-color: rgba(0, 0, 0, 0.45);
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 1000;
-  backdrop-filter: blur(2px);
 }
 
 .modalContent {
-  background-color: white;
-  border-radius: 16px;
+  background-color: var(--gray-000);
+  border-radius: 20px;
   width: 95%;
   max-width: 480px;
   height: 90vh;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.15);
 }
 
 .header {
@@ -26,13 +25,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 16px 20px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--gray-020);
 }
 
 .header h2 {
   font-size: 18px;
   font-weight: 700;
-  margin: 0;
+  color: var(--gray-090);
 }
 
 .buttonGroup {
@@ -41,61 +40,59 @@
 }
 
 .cancelBtn {
-  background: none;
-  border: 1px solid #e5e7eb;
-  color: #6b7280;
-  padding: 6px 12px;
-  border-radius: 8px;
-  cursor: pointer;
+  background: var(--gray-000);
+  border: 1px solid var(--gray-030);
+  color: var(--gray-070);
+  padding: 6px 14px;
+  border-radius: 10px;
   font-size: 14px;
+  cursor: pointer;
 }
 
 .addBtn {
-  background-color: #4f46e5;
+  background-color: var(--primary-050);
   border: none;
-  color: white;
-  padding: 6px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
+  color: var(--gray-000);
+  padding: 6px 16px;
+  border-radius: 10px;
   font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
 }
 
 .addBtn:disabled {
-  background-color: #c7d2fe;
+  background-color: var(--primary-020);
+  color: var(--gray-040);
   cursor: not-allowed;
 }
 
 .searchContainer {
   padding: 16px;
-  background-color: #f9fafb;
+  background-color: var(--gray-005);
 }
 
 .searchInput {
   width: 100%;
   padding: 12px 16px;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  border-radius: 12px;
+  border: 1px solid var(--gray-030);
   font-size: 15px;
-  outline: none;
-  transition: border-color 0.2s;
 }
 
 .searchInput:focus {
-  border-color: #4f46e5;
+  outline: none;
+  border-color: var(--primary-050);
 }
 
 .categorySection {
   padding: 8px 16px;
-  border-bottom: 1px solid #f3f4f6;
+  border-bottom: 1px solid var(--gray-020);
 }
 
 .tabScroll {
   display: flex;
   overflow-x: auto;
   gap: 8px;
-  padding: 8px 0;
-  scrollbar-width: none;
 }
 
 .tabScroll::-webkit-scrollbar {
@@ -104,18 +101,17 @@
 
 .categoryTab {
   padding: 6px 14px;
-  background-color: #f3f4f6;
   border: none;
   border-radius: 20px;
+  background-color: var(--gray-010);
   font-size: 13px;
   white-space: nowrap;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
 .categoryTab.active {
-  background-color: #4f46e5;
-  color: white;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
   font-weight: 600;
 }
 
@@ -129,36 +125,41 @@
   display: flex;
   align-items: center;
   padding: 12px;
-  border: 1px solid #f3f4f6;
-  border-radius: 12px;
+  border: 1px solid var(--gray-020);
+  border-radius: 14px;
   margin-bottom: 10px;
   cursor: pointer;
-  transition: all 0.2s;
-  position: relative;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
 .itemRow.selected {
-  border-color: #4f46e5;
-  background-color: #f5f3ff;
+  background-color: var(--primary-005);
+  border-color: var(--primary-040);
 }
 
 .selectionIndicator {
   position: absolute;
   left: 0;
-  top: 15%;
-  height: 70%;
+  top: 20%;
+  height: 60%;
   width: 4px;
-  background-color: #4f46e5;
+  background-color: var(--primary-050);
   border-radius: 0 4px 4px 0;
 }
 
 .imageBox {
-  width: 50px;
-  height: 60px;
+  width: 52px;
+  height: 64px;
   margin-right: 12px;
+  overflow: hidden;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.imageBox svg {
+  width: 120%;
+  height: 120%;
 }
 
 .info {
@@ -166,19 +167,18 @@
 }
 
 .name {
-  font-weight: 600;
   font-size: 15px;
-  margin: 0 0 2px 0;
+  font-weight: 600;
+  color: var(--gray-090);
 }
 
 .meta {
   font-size: 12px;
-  color: #9ca3af;
-  margin: 0;
+  color: var(--gray-050);
 }
 
 .noResult {
   text-align: center;
-  padding: 60px 0;
-  color: #9ca3af;
+  padding: 48px 0;
+  color: var(--gray-050);
 }

@@ -1,21 +1,22 @@
 .weekdaySelector {
   display: flex;
-  gap: 6px;
+  gap: 4px;
 }
 
 .weekdaySelector span {
+  width: 22px;
+  height: 22px;
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 20px;
-  height: 20px;
   border-radius: 50%;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 400;
-  color: #888;
+  color: var(--gray-060);
 }
 
 .activeDay {
-  background-color: rgba(81, 85, 163, 1) !important;
-  color: #fff !important;
+  background-color: var(--primary-050);
+  color: var(--gray-000) !important;
+  font-weight: 600;
 }

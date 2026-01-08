@@ -1,8 +1,8 @@
 .header {
-  background: #ffffff;
+  background: var(--gray-000);
   padding: 16px;
   border-radius: 12px;
-  border: 1px solid #eee;
+  border: 1px solid #e5e7eb;
   margin-bottom: 20px;
 }
 
@@ -16,34 +16,31 @@
 .badge {
   font-size: 11px;
   padding: 3px 8px;
-  border-radius: 4px;
-  color: white;
+  border-radius: 6px;
+  color: var(--gray-000);
   font-weight: 700;
 }
 
 .routineBadge {
-  background-color: #6850fb;
+  background-color: var(--secondary-050);
 }
 
 .challengeBadge {
-  background-color: #ffb800;
+  background-color: var(--warning-030);
 }
 
 .title {
   flex: 1;
   font-size: 16px;
   font-weight: 700;
-  color: #333;
 }
 
 .closeButton {
   background: none;
   border: none;
   font-size: 18px;
-  color: #bbb;
+  color: #9ca3af;
   cursor: pointer;
-  padding: 4px;
-  transition: color 0.2s;
 }
 
 .closeButton:hover {
@@ -58,11 +55,10 @@
 
 .infoText {
   font-size: 12px;
-  color: #777;
-  margin: 0;
+  color: #6b7280;
 }
 
 .accent {
-  color: #6850fb;
-  font-weight: 500;
+  color: var(--secondary-050);
+  font-weight: 600;
 }

@@ -1,11 +1,12 @@
 .section {
-  margin-top: 20px;
+  margin-top: 24px;
 }
 
 .section h4 {
-  margin-bottom: 8px;
-  font-size: 16px;
-  color: #333;
+  margin-bottom: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-090);
 }
 
 .textareaContainer {
@@ -15,22 +16,26 @@
 
 .textarea {
   width: 100%;
-  height: 150px;
+  min-height: 140px;
   resize: none;
-  background-color: #f2f2f2;
-  border: 1px solid transparent;
-  border-radius: 8px;
-  padding: 12px;
+  background-color: var(--gray-010);
+  border: 1px solid var(--gray-020);
+  border-radius: 12px;
+  padding: 14px;
   font-size: 14px;
-  line-height: 1.5;
-  transition: all 0.2s ease;
-  outline: none;
+  line-height: 1.6;
+  color: var(--gray-080);
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.textarea::placeholder {
+  color: var(--gray-050);
 }
 
 .editing {
-  background-color: #ffffff;
-  border-color: #3e72b8;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  background-color: var(--gray-000);
+  border-color: var(--primary-050);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
 .buttonGroup {
@@ -41,7 +46,7 @@
 
 .btn {
   padding: 8px 16px;
-  border-radius: 6px;
+  border-radius: 10px;
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
@@ -49,16 +54,17 @@
 }
 
 .cancelBtn {
-  background-color: #eee;
-  color: #666;
+  background-color: var(--gray-020);
+  color: var(--gray-070);
 }
 
 .saveBtn {
-  background-color: #3e72b8;
-  color: white;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
 }
 
 .saveBtn:disabled {
-  background-color: #ccc;
+  background-color: var(--primary-020);
+  color: var(--gray-040);
   cursor: not-allowed;
 }

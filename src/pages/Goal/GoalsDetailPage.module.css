@@ -1,43 +1,71 @@
+.goalsDetailPage {
+  background-color: var(--gray-000);
+}
+
 .errorMessage {
   text-align: center;
-  margin-top: 50px;
-  color: #ff4d4f;
+  margin-top: 48px;
+  font-size: 14px;
+  color: var(--danger-060);
+}
+
+.goalInfo {
+  padding: 16px 8px 16px;
+  border-bottom: 1px solid var(--gray-020);
+}
+
+.goalInfo h4 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-090);
+  margin-bottom: 6px;
 }
 
 .goalMeta {
   font-size: 12px;
-  color: #888;
-  margin-bottom: 20px;
+  color: var(--gray-060);
+  margin-bottom: 4px;
 }
 
 .exerciseContent {
   padding: 0 20px;
-  max-height: 350px;
+  max-height: 360px;
   overflow-y: auto;
-  margin-bottom: 20px;
 }
 
 .goalActions {
+  padding: 16px 20px 20px;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
+  border-top: 1px solid var(--gray-020);
 }
 
 .goalActions button {
   width: 100%;
-  padding: 15px;
-  font-size: 18px;
-  font-weight: 500;
+  height: 44px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
 }
 
 .startButton {
-  background-color: rgba(81, 85, 163, 1);
-  color: #fff;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
+}
+
+.startButton:hover {
+  background-color: var(--primary-060);
 }
 
 .endButton {
-  background-color: rgba(220, 220, 220, 1);
-  color: #333;
+  background-color: var(--gray-010);
+  color: var(--gray-080);
+  border-color: var(--gray-030);
+}
+
+.endButton:hover {
+  background-color: var(--gray-020);
 }

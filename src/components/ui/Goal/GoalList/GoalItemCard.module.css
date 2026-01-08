@@ -1,7 +1,15 @@
 .goalCard {
-  margin-bottom: 20px;
+  padding: 16px;
+  border: 1px solid var(--gray-020);
+  border-radius: 12px;
   cursor: pointer;
-  transition: opacity 0.3s;
+  background-color: var(--gray-000);
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.goalCard:hover {
+  border-color: var(--primary-030);
+  background-color: var(--gray-005);
 }
 
 .goalCardDeleting {
@@ -11,102 +19,97 @@
 
 .header {
   display: flex;
-  justify-content: space-between;
-  margin-bottom: 4px;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
 }
 
 .typeTag {
-  width: 60px;
-  height: 23px;
+  width: 52px;
+  height: 22px;
+  line-height: 22px;
   text-align: center;
-  line-height: 23px;
   border-radius: 6px;
-  font-size: 12px;
-  font-weight: 500;
-  color: white;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--gray-000);
 }
 
 /* 동적 클래스명을 위한 설정 */
 .typeTag루틴 {
-  background-color: rgba(69, 58, 245, 1);
+  background-color: var(--secondary-050);
 }
 
 .typeTag챌린지 {
-  background-color: rgba(124, 124, 124, 1);
+  background-color: var(--primary-050);
 }
 
 .title {
-  width: 230px;
-  font-size: 16px;
-  font-weight: 500;
+  flex: 1;
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-090);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin: 0;
 }
 
 .options {
   position: relative;
-  z-index: 10;
 }
 
 .optionsBtn {
   background: none;
   border: none;
-  padding: 5px;
   cursor: pointer;
   display: flex;
   flex-direction: column;
   gap: 3px;
-  opacity: 0.5;
 }
 
 .optionsBtn .dot {
-  display: block;
   width: 4px;
   height: 4px;
-  background-color: #777;
+  background-color: var(--gray-050);
   border-radius: 50%;
 }
 
 .info > p {
   font-size: 12px;
-  margin-bottom: 4px;
+  color: var(--gray-070);
 }
 
 .infoProgress {
   display: flex;
-  gap: 4px;
-  font-size: 12px;
-  margin-bottom: 4px;
   align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  font-size: 13px;
+  color: var(--gray-080);
 }
 
 .progressBarWrapper {
-  display: flex;
-  align-items: center;
-  width: 250px;
+  flex: 1;
   height: 6px;
+  background-color: var(--gray-010);
   border-radius: 3px;
-  background-color: rgba(220, 220, 220, 1);
 }
 
 .progressBar {
   height: 100%;
-  background-color: rgba(75, 179, 89, 1);
+  background-color: var(--success-050);
   border-radius: 3px;
-  transition: width 0.3s ease;
+}
+
+.progressLabel {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--gray-060);
 }
 
 .progressBottom {
   display: flex;
-  gap: 20px;
+  gap: 16px;
   font-size: 12px;
-}
-
-.progressLabel {
-  font-size: 12px;
-  font-weight: 600;
-  color: rgba(152, 152, 152, 1);
-  margin-left: 5px;
+  color: var(--gray-060);
 }

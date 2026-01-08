@@ -33,7 +33,7 @@ const TodayGoal = () => {
 
   return (
     <section className={styles.section}>
-      <h4 className="section-title">오늘 목표</h4>
+      <h4>오늘 목표</h4>
       <div className={styles.container}>
         <TodayGoalSlider goals={todayGoals ?? []} />
       </div>

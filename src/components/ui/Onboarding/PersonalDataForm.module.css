@@ -1,52 +1,46 @@
 .form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
 }
 
 .inputWrapper {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-  width: 150px;
+  align-items: center;
   height: 44px;
-  background-color: rgba(235, 235, 235, 1);
-  padding: 4px 10px;
-  margin-bottom: 20px;
-  border-radius: 8px;
-  cursor: text;
-  transition: all 0.2s ease-in-out;
+  padding: 0 12px;
+  border-radius: 6px;
+  background-color: var(--gray-010);
   border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: text;
 }
 
 .inputWrapper:focus-within {
-  background-color: #ffffff;
-  border-color: rgba(104, 80, 251, 0.5);
-  box-shadow: 0 0 0 3px rgba(104, 80, 251, 0.1);
+  background-color: var(--gray-000);
+  border-color: var(--primary-050);
+  box-shadow: 0 0 0 3px rgba(0, 54, 117, 0.12);
 }
 
 .bodyInfoGroup {
   display: flex;
-  justify-content: space-between;
   gap: 12px;
 }
 
 .inputField {
   width: 80px;
-  height: 34px;
-  font-size: 20px;
+  border: none;
+  background: transparent;
+  font-size: 18px;
   font-weight: 600;
   text-align: right;
-  border: none;
   outline: none;
-  background-color: transparent;
-  color: #333;
+  color: var(--gray-090);
 }
 
 .unitText {
   font-size: 12px;
-  font-weight: 500;
-  color: #666;
-  padding-bottom: 4px;
+  color: var(--gray-070);
   white-space: nowrap;
 }

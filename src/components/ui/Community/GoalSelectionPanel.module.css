@@ -4,21 +4,25 @@
   width: 100%;
   max-width: 330px;
   min-height: 200px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   padding: 16px;
   margin-top: 10px;
-  background-color: #fff;
+  background-color: var(--gray-000);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .closeButton {
   align-self: flex-end;
   background: none;
   border: none;
-  color: #2f2f2f;
+  color: var(--gray-080);
   cursor: pointer;
   font-size: 20px;
   padding: 4px;
+}
+
+.closeButton:hover {
+  color: var(--gray-095);
 }
 
 .optionsContainer {
@@ -35,14 +39,14 @@
   font-size: 16px;
   cursor: pointer;
   font-weight: 600;
-  color: #333;
+  color: var(--gray-080);
   border-bottom: 2px solid transparent;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, border-color 0.2s ease;
 }
 
 .optionButton:hover {
-  color: #5d5fef;
-  border-bottom-color: #5d5fef;
+  color: var(--primary-060);
+  border-bottom-color: var(--primary-060);
 }
 
 .stepContainer {
@@ -62,23 +66,23 @@
 .confirmButton {
   width: 100%;
   padding: 14px;
-  background-color: #5d5fef;
-  color: white;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
   border: none;
   border-radius: 8px;
-  font-weight: bold;
+  font-weight: 700;
   cursor: pointer;
   margin-top: 12px;
 }
 
 .confirmButton:disabled {
-  background-color: #ccc;
+  background-color: var(--primary-060);
 }
 
 .listTitle {
   font-size: 14px;
   margin: 15px 0 10px;
-  color: #666;
+  color: var(--gray-070);
 }
 
 .addExerciseArea {
@@ -88,11 +92,16 @@
 }
 
 .addExerciseButton {
+  width: 100%;
   background: none;
-  border: 1px dashed #5d5fef;
-  color: #5d5fef;
+  border: 1px dashed var(--primary-050);
+  color: var(--primary-060);
   padding: 8px 16px;
   border-radius: 6px;
   cursor: pointer;
-  width: 100%;
+  font-weight: 600;
+}
+
+.addExerciseButton:hover {
+  background-color: var(--primary-005);
 }

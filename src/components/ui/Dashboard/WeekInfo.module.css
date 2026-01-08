@@ -1,11 +1,14 @@
 .container {
   margin-bottom: 20px;
+  background-color: var(--gray-000);
+  border-radius: 12px;
 }
 
 .contentWrapper {
   display: flex;
   gap: 15px;
   align-items: flex-start;
+  padding-top: 12px;
 }
 
 .muscleMapWrapper {
@@ -24,8 +27,8 @@
   display: flex;
   justify-content: space-between;
   margin-bottom: 8px;
-  font-size: 13px;
-  color: #666;
+  font-size: 12px;
+  color: var(--gray-060);
   text-align: center;
 }
 
@@ -43,11 +46,11 @@
 /* 요약 정보 영역 */
 .summaryWrapper {
   display: flex;
-  justify-content: space-around;
   align-items: center;
-  text-align: center;
-  padding: 10px 0;
-  background-color: #fcfcfc;
+  justify-content: space-between;
+  margin-top: 12px;
+  padding: 12px;
+  background-color: var(--gray-005);
   border-radius: 8px;
 }
 
@@ -61,18 +64,18 @@
 .summaryLabel {
   font-size: 12px;
   font-weight: 500;
-  color: #888;
+  color: var(--gray-060);
   margin-bottom: 4px;
 }
 
 .summaryValue {
   font-size: 22px;
   font-weight: 700;
-  color: #3e72b8;
+  color: var(--gray-090);
 }
 
 .verticalLine {
   width: 1px;
-  height: 30px;
-  background-color: rgba(189, 189, 189, 0.4);
+  height: 28px;
+  background-color: var(--gray-020);
 }

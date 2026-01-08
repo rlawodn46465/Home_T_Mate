@@ -5,59 +5,61 @@
 
 .selectButton {
   display: flex;
-  align-items: center;
   justify-content: space-between;
-  width: 100%;
+  align-items: center;
   padding: 10px 0;
-  cursor: pointer;
-  border: none;
-  background: transparent;
   font-size: 16px;
+  cursor: pointer;
 }
 
 .arrow {
-  transition: transform 0.3s;
   font-size: 10px;
+  transition: transform 0.2s;
 }
 
-.arrowOpen { transform: rotate(180deg); }
+.arrowOpen {
+  transform: rotate(180deg);
+}
 
 .dropdownList {
   position: absolute;
   top: 100%;
   left: 0;
-  z-index: 50;
   width: 100%;
-  background: white;
-  border: 1px solid #c9c9c9;
-  border-radius: 0 0 10px 10px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  background: var(--gray-000);
+  border: 1px solid var(--gray-020);
+  border-radius: 0 0 8px 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.12);
+  list-style: none;
   margin: 0;
   padding: 0;
-  list-style: none;
+  z-index: 50;
 }
 
 .dropdownItem {
   display: flex;
   justify-content: space-between;
-  align-items: center;
-  padding: 12px 15px;
+  padding: 12px 14px;
   cursor: pointer;
-  transition: background 0.2s;
 }
 
-.dropdownItem:hover { background: #f5f5f5; }
-.selected { background: #f5f5ff; }
+.dropdownItem:hover {
+  background-color: var(--gray-005);
+}
+
+.selected {
+  background-color: var(--primary-005);
+}
 
 .radioIndicator {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   border-radius: 50%;
-  border: 2px solid #ccc;
+  border: 2px solid var(--gray-030);
 }
 
 .selected .radioIndicator {
-  border-color: #5856d6;
-  background-color: #5856d6;
-  box-shadow: inset 0 0 0 3px white;
+  background-color: var(--primary-050);
+  border-color: var(--primary-050);
+  box-shadow: inset 0 0 0 3px #fff;
 }

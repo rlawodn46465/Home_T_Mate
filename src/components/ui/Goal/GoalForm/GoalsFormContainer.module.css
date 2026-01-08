@@ -1,62 +1,61 @@
 .goalsFormContainer {
-  padding: 10px;
+  padding: 8px;
+  background: var(--gray-000);
 }
 
 .header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 16px;
+}
+
+.header h2 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-090);
 }
 
 .buttonBox {
   display: flex;
-  gap: 5px;
+  gap: 8px;
 }
 
 .buttonBox button {
-  width: 70px;
-  height: 30px;
-  border-radius: 7px;
-  font-weight: 500;
+  min-width: 72px;
+  height: 36px;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .cancelButton {
-  background-color: white;
-  border: 1px solid rgba(231, 46, 40, 1);
-  color: rgba(231, 46, 40, 1);
-  cursor: pointer;
+  background: var(--gray-000);
+  border: 1px solid var(--danger-010);
+  color: var(--danger-060);
 }
 
 .cancelButton:hover {
-  background-color: rgba(254, 226, 226, 0.5);
+  background: var(--danger-005);
 }
 
 .saveButton {
-  background-color: rgba(81, 85, 163, 1);
+  background: var(--primary-050);
   border: none;
-  color: white;
-  cursor: pointer;
+  color: var(--gray-000);
 }
 
 .saveButton:hover {
-  background-color: rgba(67, 56, 202, 1);
+  background: var(--primary-060);
 }
 
 .saveButton:disabled {
-  background-color: #a5b4fc;
-  cursor: not-allowed;
-}
-
-.addExercise {
-  font-size: 18px;
-  font-weight: 600;
-  color: rgba(81, 85, 163, 1);
-  text-align: center;
+  background: var(--primary-020);
+  color: var(--gray-040);
 }
 
 .error {
-  color: rgba(231, 46, 40, 1);
+  color: var(--danger-060);
   text-align: center;
-  padding: 20px;
+  padding: 24px;
 }

@@ -1,0 +1,88 @@
+:root {
+  /* Gray Colors */
+  --gray-000: rgba(255,255,255,1); /* background, surface */
+  --gray-005: rgba(244,245,246,1); /* background, surface */
+  --gray-010: rgba(230,232,234,1); /* background, surface */
+  --gray-020: rgba(205,209,213,1);
+  --gray-030: rgba(177,184,190,1);
+  --gray-040: rgba(138,148,158,1); /* disabled */
+  --gray-050: rgba(109,120,130,1); /* disabled */
+  --gray-060: rgba(88,97,106,1);
+  --gray-070: rgba(70,76,83,1); /* subtle */
+  --gray-080: rgba(51,54,61,1);
+  --gray-090: rgba(30,33,36,1); /* basic */
+  --gray-095: rgba(19,20,22,1); /* bolder */
+  --gray-100: rgba(0,0,0,1);
+  /* Brand Colors */
+  --primary-005: rgba(236,242,254,1);
+  --primary-010: rgba(216,229,253,1); /* suface */
+  --primary-020: rgba(177,206,251,1);
+  --primary-030: rgba(134,175,249,1);
+  --primary-040: rgba(76,135,246,1);
+  --primary-050: rgba(37,110,244,1); /* base */
+  --primary-060: rgba(11,80,208,1); /* text */
+  --primary-070: rgba(8,56,145,1);
+  --primary-080: rgba(5,37,97,1);
+  --primary-090: rgba(3,22,58,1);
+  --primary-095: rgba(2,15,39,1);
+  /* secondary Colors */
+  --secondary-005: rgba(238,242,247,1); /* suface */
+  --secondary-010: rgba(214,224,235,1);
+  --secondary-020: rgba(186,203,222,1);
+  --secondary-030: rgba(144,176,213,1);
+  --secondary-040: rgba(107,150,199,1);
+  --secondary-050: rgba(52,111,178,1);
+  --secondary-060: rgba(28,88,156,1);
+  --secondary-070: rgba(6,58,116,1); /* base */
+  --secondary-080: rgba(5,43,87,1); /* text */
+  --secondary-090: rgba(3,31,63,1);
+  --secondary-095: rgba(2,22,44,1);
+  /* 위험 */
+  --danger-005: rgba(253,239,236,1); /* 배경 */
+  --danger-010: rgba(252,223,217,1); /* 보더 */
+  --danger-020: rgba(247,175,161,1);
+  --danger-030: rgba(244,135,113,1);
+  --danger-040: rgba(240,95,66,1);
+  --danger-050: rgba(222,52,18,1); /* 아이콘 */
+  --danger-060: rgba(189,44,15,1); /* 텍스트 */
+  --danger-070: rgba(138,36,15,1); 
+  --danger-080: rgba(92,24,10,1); 
+  --danger-090: rgba(57,13,5,1);
+  --danger-095: rgba(38,9,3,1);
+  /* 주의 */
+  --warning-005: rgba(255,243,219,1); /* 배경 */
+  --warning-010: rgba(255,224,163,1); /* 보더 */
+  --warning-020: rgba(255,201,92,1);
+  --warning-030: rgba(255,177,20,1);
+  --warning-040: rgba(199,133,0,1);
+  --warning-050: rgba(158,106,0,1); /* 아이콘 */
+  --warning-060: rgba(138,92,0,1); /* 텍스트 */
+  --warning-070: rgba(97,65,0,1); 
+  --warning-080: rgba(66,44,0,1); 
+  --warning-090: rgba(46,31,0,1);
+  --warning-095: rgba(36,24,0,1);
+  /* 성공 */
+  --success-005: rgba(234,246,236,1); /* 배경 */
+  --success-010: rgba(216,238,221,1); /* 보더 */
+  --success-020: rgba(169,218,180,1);
+  --success-030: rgba(126,200,142,1);
+  --success-040: rgba(63,166,84,1);
+  --success-050: rgba(34,135,56,1); /* 아이콘 */
+  --success-060: rgba(38,115,55,1); /* 텍스트 */
+  --success-070: rgba(40,93,51,1); 
+  --success-080: rgba(31,71,39,1); 
+  --success-090: rgba(18,43,24,1);
+  --success-095: rgba(14,32,18,1);
+  /* 안내 */
+  --information-005: rgba(231,244,254,1); /* 배경 */
+  --information-010: rgba(211,235,253,1); /* 보더 */
+  --information-020: rgba(158,210,250,1);
+  --information-030: rgba(95,181,247,1);
+  --information-040: rgba(32,152,243,1);
+  --information-050: rgba(11,120,203,1); /* 아이콘 */
+  --information-060: rgba(9,106,179,1); /* 텍스트 */
+  --information-070: rgba(8,86,145,1); 
+  --information-080: rgba(5,57,97,1); 
+  --information-090: rgba(3,37,63,1);
+  --information-095: rgba(2,26,44,1);
+} 

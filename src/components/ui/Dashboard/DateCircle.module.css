@@ -5,22 +5,19 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: #333;
-  transition: all 0.2s ease;
-  background-color: transparent;
+  color: var(--gray-080);
 }
 
 .today {
-  background-color: #4a508e;
+  background-color: var(--primary-050);
   color: #fff;
-  border: 2px solid #999;
 }
 
 .workout {
-  background-color: #4caf50;
-  color: #fff;
+  border: 1px solid var(--primary-050);
+  color: var(--primary-050);
 }
 
 .whiteText {

@@ -1,3 +1,4 @@
+// Header.tsx
 import list_icon from "../assets/images/list_icon.svg";
 import training_icon from "../assets/images/training_icon.svg";
 import goal_icon from "../assets/images/goal_icon.svg";
@@ -16,42 +17,47 @@ const Header = () => {
   };
 
   return (
-    <div className={styles.headerContainer}>
+    <header className={styles.header}>
       <h1 className={styles.logo}>홈트메이트</h1>
-      <ul className={styles.menuContainer}>
-        <li onClick={handleCommunityClick} className={styles.menuItem}>
-          <img src={list_icon} alt="게시판" className={styles.menuIcon} />
-          <p>게시판</p>
-        </li>
-        <li
+
+      <nav className={styles.nav}>
+        <button onClick={handleCommunityClick} className={styles.navItem}>
+          <img src={list_icon} alt="" />
+          <span>게시판</span>
+        </button>
+
+        <button
           onClick={() => navigateToPanel("?panel=record")}
-          className={styles.menuItem}
+          className={styles.navItem}
         >
-          <img src={training_icon} alt="운동" className={styles.menuIcon} />
-          <p>운동</p>
-        </li>
-        <li
+          <img src={training_icon} alt="" />
+          <span>운동</span>
+        </button>
+
+        <button
           onClick={() => navigateToPanel("?panel=goal")}
-          className={styles.menuItem}
+          className={styles.navItem}
         >
-          <img src={goal_icon} alt="목표" className={styles.menuIcon} />
-          <p>목표</p>
-        </li>
-        <li
+          <img src={goal_icon} alt="" />
+          <span>목표</span>
+        </button>
+
+        <button
           onClick={() => navigateToPanel("?panel=mypage")}
-          className={styles.menuItem}
+          className={styles.navItem}
         >
-          <img src={user_icon} alt="마이페이지" className={styles.menuIcon} />
-          <p>마이페이지</p>
-        </li>
-        <li
+          <img src={user_icon} alt="" />
+          <span>마이페이지</span>
+        </button>
+
+        <button
           onClick={handleLogout}
-          className={`${styles.menuItem} ${styles.logoutBtn}`}
+          className={`${styles.navItem} ${styles.logout}`}
         >
-          <p>로그아웃</p>
-        </li>
-      </ul>
-    </div>
+          <span>로그아웃</span>
+        </button>
+      </nav>
+    </header>
   );
 };
 

@@ -30,7 +30,7 @@ const WeekInfo = () => {
 
   return (
     <section className={styles.container}>
-      <h4 className="section-title">이번주</h4>
+      <h4>이번주</h4>
 
       <div className={styles.contentWrapper}>
         <aside className={styles.muscleMapWrapper}>

@@ -10,7 +10,7 @@
   height: 200px;
   padding: 20px 0;
   margin-bottom: 20px;
-  background-color: #f9f9fb;
+  background-color: var(--gray-005);
   border-radius: 12px;
 }
 
@@ -18,9 +18,9 @@
   display: flex;
   justify-content: center;
   gap: 30px;
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 500;
-  color: #555;
+  color: var(--gray-070);
 }
 
 .legendItem {
@@ -37,10 +37,10 @@
 
 .currentBox {
   composes: colorBox;
-  background-color: rgba(69, 58, 245, 1);
+  background-color: var(--primary-050);
 }
 
 .maxBox {
   composes: colorBox;
-  background-color: rgba(189, 189, 237, 1);
+  background-color: var(--gray-020);
 }

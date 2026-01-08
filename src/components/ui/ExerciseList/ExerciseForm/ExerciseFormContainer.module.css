@@ -2,7 +2,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 600px;
+  max-width: 640px;
   margin: 0 auto;
   background-color: #ffffff;
 }
@@ -11,41 +11,29 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 10px;
+  padding: 16px 0;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 12px;
 }
 
 .title {
   font-size: 20px;
   font-weight: 700;
-  color: #1a1a1a;
+  color: #111827;
   margin: 0;
 }
 
 .cancelBtn {
   border: none;
   background: none;
-  color: #e72e28;
-  font-size: 16px;
+  color: #dc2626;
+  font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border-radius: 6px;
-  transition: background-color 0.2s ease;
 }
 
 .cancelBtn:hover {
-  background-color: rgba(231, 46, 40, 0.05);
-}
-
-.cancelBtn:active {
-  transform: scale(0.95);
-}
-
-.centered {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 300px;
+  background-color: rgba(220, 38, 38, 0.08);
 }

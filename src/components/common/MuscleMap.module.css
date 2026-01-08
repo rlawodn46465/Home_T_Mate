@@ -1,20 +1,20 @@
 .body {
-  stroke: #7c7c7c;
+  stroke: var(--gray-050);
   stroke-miterlimit: 10;
-  stroke-width: 0.25px;
+  stroke-width: 0.4px;
   fill: none;
 }
 
 .active {
-  fill: rgba(62, 114, 184, 1);
+  fill: var(--primary-050);
 }
 
 .inactive {
-  fill: rgba(239, 239, 239, 1);
+  fill: var(--gray-010);
 }
 
 .active:hover,
 .inactive:hover {
-  stroke: #555;
-  stroke-width: 0.5px;
+  stroke: var(--gray-070);
+  stroke-width: 0.8px;
 }

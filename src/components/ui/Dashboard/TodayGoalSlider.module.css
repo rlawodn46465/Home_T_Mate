@@ -1,10 +1,12 @@
 .wrapper {
   display: flex;
   justify-content: center;
+  align-items: center;
   height: 40px;
   overflow: hidden;
-  position: relative;
   width: 100%;
+  background-color: var(--gray-005);
+  border-radius: 10px;
 }
 
 .list {

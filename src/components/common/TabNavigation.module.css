@@ -1,25 +1,21 @@
 .container {
   display: flex;
-  justify-content: space-around;
-  margin-bottom: 10px;
-  border-bottom: 2px solid rgba(202, 202, 202, 1);
+  border-bottom: 1px solid var(--gray-010);
 }
 
 .tabItem {
-  background-color: transparent;
-  position: relative;
-  top: 3px;
-  padding: 5px 15px 14px 15px;
-  color: #777;
+  flex: 1;
+  padding: 10px 0;
+  background: none;
   border: none;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 500;
+  color: #666;
   cursor: pointer;
-  transition: all 0.2s ease;
 }
 
 .active {
-  border-bottom: 4px solid rgba(81, 85, 163, 1);
-  padding-bottom: 10px;
-  color: rgba(47, 47, 47, 1);
+  border-bottom: 3px solid var(--secondary-050);
+  font-weight: 700;
+  color: var(--secondary-050);
 }

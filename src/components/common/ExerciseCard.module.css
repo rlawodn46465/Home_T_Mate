@@ -1,73 +1,62 @@
 .card {
-  color: #2f2f2f;
-  border: 1px solid #2f2f2f;
-  border-radius: 15px;
-  padding: 10px 14px;
-  cursor: pointer;
+  color: var(--gray-000);
+  border: 1px solid var(--gray-020);
+  border-radius: 10px;
+  padding: 14px;
   transition: background-color 0.2s;
-  background-color: white;
-  margin-bottom: 12px;
+  cursor: pointer;
 }
 
 .card:hover {
-  background-color: #f9f9f9;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
 }
 
 .completed {
-  opacity: 0.8;
-  background-color: #f3f4f6;
+  opacity: 0.85;
 }
 
 .typeBox {
-  display: inline-flex;
-  align-items: center;
-  height: 20px;
-  padding: 0 6px;
-  border-radius: 5px;
   font-size: 11px;
   font-weight: 700;
-  color: white;
+  color: var(--gray-000);
+  padding: 2px 6px;
+  border-radius: 4px;
   margin-bottom: 6px;
 }
 
-.typeRoutine { background-color: #5155a3; }
-.typeChallenge { background-color: #b8b8b8; }
-.typeDefault { background-color: #add8e6; }
+.typeRoutine {
+  background-color: var(--secondary-050);
+}
+.typeChallenge {
+  background-color: var(--gray-040);
+}
+.typeDefault {
+  background-color: var(--secondary-030);
+}
 
 .header {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
   margin-bottom: 8px;
 }
 
 .name {
   font-size: 16px;
   font-weight: 600;
-  margin: 0;
 }
 
-.toggleWrapper {
+.toggleWrapper{
   position: relative;
 }
 
 .meta {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end;
-}
-
-.infoContainer {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
 }
 
 .category {
   font-size: 12px;
-  font-weight: 500;
   color: #666;
-  margin-bottom: 4px;
 }
 
 .setData {
@@ -82,13 +71,12 @@
 }
 
 .durationText {
-  font-size: 22px;
+  font-size: 18px;
   font-weight: 700;
-  color: #3e72b8;
+  color: var(--secondary-050);
 }
 
 .dateText {
   font-size: 11px;
-  color: #989898;
-  margin-top: 2px;
+  color: #999;
 }

@@ -23,22 +23,18 @@
 
 .maxBar {
   composes: bar;
-  background-color: rgba(189, 189, 237, 1);
-  margin-left: 2px;
+  background-color: var(--gray-020);
 }
 
 .currentBar {
   composes: bar;
-  background-color: rgba(69, 58, 245, 1);
-  margin-right: 2px;
+  background-color: var(--primary-050);
 }
 
 .valueLabel {
-  font-size: 14px;
-  font-weight: 500;
-  color: rgba(69, 58, 245, 1);
-  text-align: center;
-  margin-top: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--gray-080);
 }
 
 .partLabel {

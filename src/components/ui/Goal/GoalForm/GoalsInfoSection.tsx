@@ -61,7 +61,7 @@ const GoalsInfoSection = ({ info, onInfoChange }: GoalsInfoSectionProps) => {
         {isChallenge && (
           <div className={styles.goalWeeksWrapper}>
             <label htmlFor="goal-weeks" className={styles.goalWeekLabel}>
-              목표 주차 :{" "}
+              목표 주차 {" "}
             </label>
             <input
               id="goal-weeks"

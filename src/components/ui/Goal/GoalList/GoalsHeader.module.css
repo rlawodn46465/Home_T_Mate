@@ -4,3 +4,9 @@
   align-items: center;
   margin-bottom: 20px;
 }
+
+.goalHeader h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gray-090);
+}

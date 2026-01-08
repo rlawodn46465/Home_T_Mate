@@ -1,129 +1,91 @@
 .calendarContainer {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  background-color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background-color: var(--gray-000);
   border-radius: 8px;
-  overflow: hidden;
 }
 
 .calendarBody {
-  background-color: #f8f9fa;
-  padding: 12px 0;
+  padding: 12px;
 }
 
 .calendarNav {
   display: flex;
   justify-content: center;
   align-items: center;
-  gap: 10px;
-  padding: 0 20px 10px;
-  font-size: 18px;
-  color: #333;
+  gap: 12px;
+  margin-bottom: 8px;
 }
 
 .navMonthYear {
+  font-size: 16px;
   font-weight: 700;
-  min-width: 100px;
-  text-align: center;
 }
 
 .navArrow {
   background: none;
   border: none;
-  font-size: 20px;
+  font-size: 18px;
   cursor: pointer;
-  padding: 5px 10px;
-  color: #555;
 }
 
-/* --- 그리드 --- */
 .calendarGrid {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
   text-align: center;
 }
 
-.calendarWeekdays {
-  padding-bottom: 8px;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
-  margin-bottom: 4px;
-}
-
 .weekdayHeader {
-  font-size: 13px;
+  font-size: 12px;
   color: #666;
-  font-weight: 500;
+  font-weight: 600;
 }
 
 .isSunday {
-  color: #e72e28;
+  color: #e53935;
 }
 .isSaturday {
-  color: #3e72b8;
+  color: #1e88e5;
 }
 
-/* --- 날짜 셀 --- */
 .calendarDays {
   padding: 0 4px;
 }
 
-/* 참고: CalendarDay 컴포넌트 내부에서 사용될 클래스들 */
 .calendarDayCell {
   height: 48px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
   font-size: 14px;
-  position: relative;
-  border-radius: 8px;
+  border-radius: 6px;
   transition: background-color 0.2s;
 }
 
-.isNotCurrentMonth {
-  background: transparent;
-}
-
-.isNotCurrentMonth .dayNumber {
-  color: #ccc;
+.calendarDayCell:hover {
+  background-color: var(--primary-010);
 }
 
 .dayNumber {
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 2;
+  font-weight: 500;
 }
 
 .isToday {
-  border: 2px solid #6610f2;
+  border: 2px solid var(--secondary-050);
   border-radius: 50%;
-  color: #6610f2;
-  font-weight: 700;
 }
 
 .isSelected {
-  background-color: rgba(102, 16, 242, 0.1);
+  background-color: var(--primary-010);
 }
 
 .isSelected .dayNumber {
-  background-color: #6610f2;
-  color: white !important;
+  background-color: var(--secondary-050);
+  color: var(--gray-000);
   border-radius: 50%;
 }
 
 .selectedDot {
   width: 4px;
   height: 4px;
-  background-color: #6610f2;
+  background-color: var(--secondary-050);
   border-radius: 50%;
+  margin: 0 auto;
   margin-top: 2px;
-}
-
-.dayContentArea {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }

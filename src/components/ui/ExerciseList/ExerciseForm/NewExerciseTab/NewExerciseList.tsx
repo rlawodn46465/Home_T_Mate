@@ -1,4 +1,5 @@
 import DailyExerciseItem from "../../../../common/DailyExerciseItem";
+import "./NewExerciseList.css";
 
 interface NewExerciseListProps {
   exercises: any[];

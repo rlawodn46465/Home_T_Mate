@@ -1,19 +1,26 @@
 .goalInfoSection {
-  margin-bottom: 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 12px;
 }
 
 .nameInputWrapper {
-  margin-bottom: 5px;
+  margin-bottom: 4px;
 }
 
 .toggleContainer {
   display: flex;
   justify-content: space-between;
-  align-items: flex-end; /* end 대신 표준 flex-end 사용 */
+  align-items: center;
 }
 
 .goalWeeksWrapper {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   font-size: 14px;
+  color: var(--gray-080);
 }
 
 .goalWeekLabel {
@@ -21,12 +28,18 @@
 }
 
 .goalWeekInput {
-  width: 45px;
-  background-color: transparent;
+  width: 44px;
   border: none;
-  border-bottom: 1px solid rgba(79, 70, 229, 1);
+  border-bottom: 1px solid var(--primary-050);
+  background: transparent;
   text-align: center;
+  font-size: 14px;
+  color: var(--gray-090);
+}
+
+.goalWeekInput:focus {
   outline: none;
+  border-bottom-color: var(--primary-060);
 }
 
 .goalWeekUnit {

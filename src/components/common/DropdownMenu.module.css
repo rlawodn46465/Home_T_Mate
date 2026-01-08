@@ -2,13 +2,13 @@
   position: absolute;
   top: calc(100% + 8px);
   z-index: 1000;
-  animation: fadeIn 0.2s ease-out;
+  animation: fadeIn 0.15s ease-out;
 }
 
 @keyframes fadeIn {
   from {
     opacity: 0;
-    transform: translateY(-5px);
+    transform: translateY(-4px);
   }
   to {
     opacity: 1;
@@ -17,36 +17,36 @@
 }
 
 .menuList {
-  background-color: #3b5998;
-  border-radius: 8px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-  padding: 6px 0;
-  min-width: 130px;
-  overflow: hidden;
+  background-color: var(--gray-000);
+  border-radius: 12px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.12);
+  padding: 4px 0;
+  min-width: 140px;
   list-style: none;
   margin: 0;
+  border: 1px solid var(--gray-020);
 }
 
 .container::before {
   content: "";
   position: absolute;
-  top: -14px;
-  border: 7px solid transparent;
-  border-bottom-color: #3b5998;
+  top: -8px;
+  border: 6px solid transparent;
+  border-bottom-color: var(--gray-000);
 }
 
 .right {
   right: 0;
 }
 .right::before {
-  right: 8px;
+  right: 12px;
 }
 
 .left {
   left: 0;
 }
 .left::before {
-  left: 8px;
+  left: 12px;
 }
 
 .menuList :global(div),
@@ -54,20 +54,18 @@
 .menuList :global(li) {
   width: 100%;
   padding: 10px 16px;
-  color: white;
   font-size: 14px;
   font-weight: 500;
+  color: var(--gray-090);
   cursor: pointer;
-  white-space: nowrap;
-  border: none;
   background: transparent;
+  border: none;
   text-align: left;
-  transition: background-color 0.2s;
-  display: block;
+  transition: background-color 0.15s ease;
 }
 
 .menuList :global(div:hover),
 .menuList :global(button:hover),
 .menuList :global(li:hover) {
-  background-color: rgba(255, 255, 255, 0.15);
+  background-color: var(--gray-010);
 }

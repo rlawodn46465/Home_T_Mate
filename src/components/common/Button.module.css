@@ -1,12 +1,12 @@
 .button {
-  display: flex;
+  display: inline-flex;
   justify-content: center;
   align-items: center;
-  padding: 5px 20px;
-  background-color: rgba(81, 85, 163, 1);
+  padding: 8px 20px;
+  background-color: var(--primary-040);
   border: none;
-  border-radius: 8px;
-  color: white;
+  border-radius: 6px;
+  color: var(--gray-000);
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
@@ -15,4 +15,12 @@
   -webkit-user-select: none; /* 크롬, 사파리 등 Webkit 기반 브라우저 */
   -moz-user-select: none; /* 파이어폭스 */
   -ms-user-select: none; /* 인터넷 익스플로러, 엣지 */
+}
+
+.button:hover {
+  background-color: var(--primary-050);
+}
+.button:disabled {
+  background-color: var(--gray-020);
+  cursor: not-allowed;
 }

@@ -2,16 +2,16 @@ import { memo } from "react";
 import { useAuth } from "../../../hooks/useAuth";
 import Spinner from "../../common/Spinner";
 import styles from "./CommentList.module.css";
-import type { Comment } from "../../../types/comment";
+import type { CommentDTO } from "../../../types/comment";
 
 interface CommentListProps {
-  comments: Comment[];
+  comments: CommentDTO[];
   isLoading: boolean;
   onDelete: (commentId: string, authorId: string) => Promise<void>;
 }
 
 interface CommentItemProps {
-  comment: Comment;
+  comment: CommentDTO;
   isOwner: boolean;
   onDelete: (commentId: string, authorId: string) => Promise<void>;
 }

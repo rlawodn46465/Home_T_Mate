@@ -7,7 +7,7 @@
 .page {
   width: 100%;
   padding: 0 16px;
-  background-color: white;
+  background-color: var(--gray-000);
 }
 
 .header {
@@ -18,18 +18,25 @@
   margin-bottom: 10px;
 }
 
-.headerLeft { flex-grow: 1; }
-.headerRight { flex-shrink: 0; min-width: 80px; }
+.headerLeft {
+  flex-grow: 1;
+}
+.headerRight {
+  flex-shrink: 0;
+  min-width: 80px;
+}
 
 .createBox {
   display: flex;
   flex-direction: column;
+  margin-bottom: 10px;
 }
 
-.selectWrap, .featureOptionsContainer {
+.selectWrap,
+.featureOptionsContainer {
   flex-grow: 1;
   padding: 10.5px 0;
-  border-bottom: 1px solid rgba(189, 189, 189, 1);
+  border-bottom: 1px solid var(--gray-020);
 }
 
 .featureOptionsContainer {
@@ -44,15 +51,22 @@
   gap: 5px;
   cursor: pointer;
   font-size: 15px;
+  color: var(--gray-080);
 }
 
-.featureIcon { width: 18px; }
+.featureItem:hover {
+  color: var(--primary-060);
+}
+
+.featureIcon {
+  width: 18px;
+}
 
 .clearGoalBtn {
   border: none;
   background: none;
   font-weight: 600;
-  color: #e72e28;
+  color: var(--danger-060);
   cursor: pointer;
 }
 
@@ -60,10 +74,15 @@
   width: 100%;
   padding: 15px 10px;
   border: none;
-  border-bottom: 1px solid #bdbdbd;
+  border-bottom: 1px solid var(--gray-030);
   font-size: 18px;
   font-weight: 600;
+  color: var(--gray-095);
   outline: none;
+}
+
+.titleInput::placeholder {
+  color: var(--gray-040);
 }
 
 .contentTextarea {
@@ -74,6 +93,11 @@
   font-size: 16px;
   resize: none;
   outline: none;
+  color: var(--gray-090);
+}
+
+.contentTextarea::placeholder {
+  color: var(--gray-040);
 }
 
 .goalPanelWrapper {
@@ -83,6 +107,11 @@
 }
 
 @media (min-width: 1024px) {
-  .page { box-shadow: 0 0 10px rgba(0, 0, 0, 0.05); }
-  .createBox { flex-direction: row; gap: 30px; }
+  .page {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.05);
+  }
+  .createBox {
+    flex-direction: row;
+    gap: 30px;
+  }
 }

@@ -1,3 +1,4 @@
+/* CommunityPage.module.css */
 .communityContainer {
   display: flex;
   flex-direction: column;
@@ -9,8 +10,15 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+
   width: 100%;
   max-width: 1024px;
-  margin-bottom: 9px;
-  padding: 0 20px;
+  padding: 16px 24px;
+  margin-bottom: 12px;
+}
+
+.header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--gray-090);
 }

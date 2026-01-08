@@ -1,3 +1,7 @@
+.exerciseDetailPage {
+  background-color: var(--gray-000);
+}
+
 .exerciseHeader {
   display: flex;
   gap: 15px;
@@ -11,11 +15,14 @@
 
 .exerciseName {
   margin-bottom: 10px;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--gray-090);
 }
 
 .exerciseMeta {
   font-size: 14px;
-  color: #666;
+  color: var(--gray-060);
   line-height: 1.5;
 }
 
@@ -24,6 +31,6 @@
   justify-content: center;
   align-items: center;
   height: 200px;
-  color: #ff4d4f;
+  color: var(--danger-060);
   font-weight: 600;
 }

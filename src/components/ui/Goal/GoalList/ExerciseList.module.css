@@ -1,39 +1,67 @@
 .noExercises {
   text-align: center;
-  padding: 20px;
-  color: #888;
+  padding: 32px 0;
+  font-size: 14px;
+  color: var(--gray-060);
+}
+
+.exerciseList {
+  padding-bottom: 16px;
 }
 
 .exerciseItem {
-  padding: 15px 0;
-  border-bottom: 1px solid rgba(189, 189, 189, 0.5);
+  padding: 14px 0;
+  border-bottom: 1px solid var(--gray-020);
   cursor: pointer;
+}
+
+.exerciseItem:hover {
+  background-color: var(--gray-005);
 }
 
 .exerciseItem:last-child {
   border-bottom: none;
 }
 
-.exerciseItemInfo h4 {
-  margin-bottom: 5px;
-}
-
 .exerciseItemInfoTop {
   display: flex;
-  align-items: flex-start;
-  gap: 6px;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.exerciseItemInfo p {
-  font-size: 14px;
-  color: #777;
+.exerciseItemInfoTop h4 {
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--gray-090);
+}
+
+.exerciseSetSummary {
+  font-size: 12px;
+  color: var(--gray-060);
+}
+
+.exerciseItemSets {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 6px;
+}
+
+.exerciseSetDetail {
+  font-size: 12px;
+  color: var(--gray-070);
 }
 
 .exerciseItemInfoBottom {
   display: flex;
-  gap: 4px;
+  gap: 6px;
+  margin-top: 6px;
 }
 
 .exerciseItemInfoBottom > p {
-  color: rgba(67, 67, 67, 1);
+  font-size: 11px;
+  padding: 2px 6px;
+  border-radius: 10px;
+  background-color: var(--gray-010);
+  color: var(--gray-070);
 }

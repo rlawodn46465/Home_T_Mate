@@ -1,36 +1,32 @@
 .goalNameInput {
   display: flex;
-  gap: 5px;
   align-items: center;
-}
-
-.textInput {
-  min-width: 50px;
-  background-color: transparent;
-  font-size: 16px;
-  font-weight: 600;
-  border: none;
-  border-bottom: 1px solid #ddd;
-  outline: none;
-  padding: 2px 0;
-}
-
-.textInput:focus {
-  caret-color: rgba(47, 47, 47, 1);
-  background-color: transparent;
-  border-bottom: 1px solid rgba(81, 85, 163, 1);
+  gap: 6px;
 }
 
 .text {
-  font-weight: 600;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--gray-095);
   margin: 0;
 }
 
+.textInput {
+  font-size: 16px;
+  font-weight: 700;
+  border: none;
+  border-bottom: 1px solid var(--gray-030);
+  background: transparent;
+  padding: 2px 0;
+  color: var(--gray-095);
+}
+
+.textInput:focus {
+  outline: none;
+  border-bottom-color: var(--primary-050);
+}
+
 .icon {
-  width: 20px;
+  width: 18px;
   cursor: pointer;
-  display: block;
 }

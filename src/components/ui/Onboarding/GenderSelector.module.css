@@ -1,35 +1,31 @@
 .container {
-  margin-bottom: 24px;
-  color: #2f2f2f;
+  margin-bottom: 28px;
 }
 
 .buttonGroup {
   display: flex;
-  justify-content: space-between;
   gap: 12px;
 }
 
 .genderButton {
   flex: 1;
-  max-width: 150px;
   height: 44px;
-  border: 2px solid #bdbdbd;
-  border-radius: 10px;
-  background-color: #fff;
-  font-size: 16px;
+  border-radius: 6px;
+  border: 1px solid var(--gray-030);
+  background-color: var(--gray-000);
+  font-size: 15px;
   font-weight: 600;
-  color: #888;
+  color: var(--gray-070);
   cursor: pointer;
-  transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease;
+}
+
+.genderButton:hover {
+  background-color: var(--gray-010);
 }
 
 .active {
-  border-color: #5155a3;
-  color: #5155a3;
-  background-color: rgba(81, 85, 163, 0.05);
-}
-
-.genderButton:hover:not(.active) {
-  background-color: #f9f9f9;
-  border-color: #aaa;
+  border-color: var(--primary-050);
+  color: var(--primary-050);
+  background-color: rgba(0, 54, 117, 0.08);
 }

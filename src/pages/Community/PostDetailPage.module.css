@@ -2,35 +2,37 @@
   max-width: 1024px;
   width: 100%;
   min-height: 100vh;
-  background-color: #fff;
+  margin: 0 auto;
+  background-color: var(--gray-000);
   display: flex;
   flex-direction: column;
 }
 
-.loading, .error {
+.loading,
+.error {
   padding: 40px;
   text-align: center;
-  color: #666;
+  color: var(--gray-070);
 }
 
 .contentArea {
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 24px;
   flex: 1;
 }
 
+/* 헤더 */
 .category {
+  margin-top: 12px;
   font-size: 12px;
-  color: #3b82f6;
-  margin-top: 10px;
-  margin-bottom: 5px;
-  font-weight: 500;
+  font-weight: 600;
+  color: var(--primary-060);
 }
 
 .title {
-  font-size: 20px;
-  font-weight: bold;
-  color: #333;
-  margin: 0 0 10px 0;
+  margin: 6px 0 10px;
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--gray-095);
 }
 
 .metaInfo {
@@ -38,11 +40,12 @@
   justify-content: space-between;
   align-items: center;
   font-size: 12px;
-  color: #666;
-  margin-bottom: 10px;
+  color: var(--gray-060);
+  margin-bottom: 12px;
 }
 
-.metaLeft, .metaRight {
+.metaLeft,
+.metaRight {
   display: flex;
   align-items: center;
   gap: 8px;
@@ -50,85 +53,137 @@
 
 .divider {
   border: none;
-  border-top: 1px solid #eee;
-  margin: 15px 0;
+  border-top: 1px solid var(--gray-020);
+  margin: 20px 0;
 }
 
+/* 본문 */
 .postBody {
-  min-height: 150px;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--gray-090);
   white-space: pre-wrap;
-  font-size: 14px;
-  line-height: 1.6;
-  color: #222;
 }
 
 .postImages img {
   max-width: 100%;
   border-radius: 8px;
-  margin-bottom: 15px;
+  margin-bottom: 16px;
 }
 
-/* 공유 목표 카드 스타일 */
+/* 공유 목표 카드 */
 .linkedGoalCard {
-  max-width: 320px;
-  margin: 24px 0;
+  max-width: 340px;
+  margin: 28px 0;
   padding: 16px;
-  background-color: #f8f9fa;
-  border-radius: 12px;
-  border: 1px solid #d7d8d8;
+  border-radius: 8px;
+  background-color: var(--gray-005);
+  border: 1px solid var(--gray-020);
 }
 
 .goalBadge {
-  font-size: 0.75rem;
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
   padding: 2px 8px;
   border-radius: 4px;
-  font-weight: bold;
   margin-bottom: 8px;
-  display: inline-block;
 }
 
-.routine { background-color: #e7f5ff; color: #1971c2; }
-.challenge { background-color: #fff0f6; color: #d01b5f; }
+.routine {
+  background-color: var(--information-005);
+  color: var(--information-060);
+}
+
+.challenge {
+  background-color: var(--danger-005);
+  color: var(--danger-060);
+}
 
 .downloadBtn {
   width: 100%;
+  margin-top: 12px;
   padding: 12px;
-  background-color: #007bff;
-  color: white;
+  border-radius: 6px;
   border: none;
-  border-radius: 8px;
+  background-color: var(--primary-050);
+  color: var(--gray-000);
   font-weight: 600;
   cursor: pointer;
-  margin-top: 12px;
 }
 
-/* 하단 섹션 */
+.downloadBtn:hover {
+  background-color: var(--primary-060);
+}
+
+/* 하단 */
 .actionButtons {
   display: flex;
   justify-content: flex-end;
   gap: 10px;
-  margin-bottom: 20px;
+  margin: 24px 0;
 }
 
+.likeSection {
+  display: flex;
+  justify-content: center;
+  margin: 20px 0;
+}
+
+.likeButton {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+.likeCount {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* 댓글 */
 .commentSection {
-  background-color: #f5f5f5;
+  background-color: var(--gray-005);
   margin: 0 -20px;
   padding: 20px;
 }
 
 .commentInputBox {
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  padding: 10px;
+  background-color: var(--gray-000);
+  border: 1px solid var(--gray-020);
+  border-radius: 6px;
+  padding: 12px;
   margin-bottom: 20px;
 }
 
 .commentInputBox textarea {
   width: 100%;
+  height: 70px;
   border: none;
   resize: none;
-  height: 60px;
-  font-size: 13px;
   outline: none;
+  font-size: 14px;
+}
+
+.submitWrapper {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.submitBtn {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+ background-color: var(--primary-050);
+  color: var(--gray-000);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.submitBtn:disabled {
+  background-color: var(--gray-030);
+  color: var(--gray-050);
 }

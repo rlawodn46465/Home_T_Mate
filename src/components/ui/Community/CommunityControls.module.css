@@ -1,29 +1,26 @@
+/* 검색 영역 */
 .inputContainer {
   display: flex;
-  max-width: 610px;
+  align-items: center;
+
+  max-width: 640px;
   width: 100%;
-  justify-content: center;
-  margin: 0 auto 9px auto;
-  background-color: rgba(220, 220, 220, 1);
-  border-radius: 22px;
-  overflow: hidden;
+  margin: 0 auto 12px;
+
+  background-color: var(--gray-005);
+  border: 1px solid var(--gray-030);
+  border-radius: 8px;
+}
+
+.inputContainer.focused {
+  border-color: var(--primary-050);
 }
 
 .inputIcon {
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
   width: 40px;
-  height: 44px;
-  background-color: rgba(202, 202, 202, 1);
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.2s;
-}
-
-.inputContainer.focused .inputIcon {
-  opacity: 1;
-  visibility: visible;
 }
 
 .inputIcon img {
@@ -33,46 +30,52 @@
 
 .inputField {
   flex: 1;
+  height: 44px;
+  padding: 0 8px;
+
   border: none;
-  background: transparent;
-  padding: 0 15px;
-  font-size: 16px;
-  font-weight: 500;
   outline: none;
+  background: transparent;
+
+  font-size: 15px;
+  color: var(--gray-090);
 }
 
 .searchSubmitBtn {
-  width: 80px;
   height: 44px;
+  padding: 0 16px;
+
   border: none;
-  background-color: rgba(81, 85, 163, 1);
+  border-radius: 0 8px 8px 0;
+  background-color: var(--primary-050);
   color: white;
+
+  font-size: 14px;
+  font-weight: 500;
   cursor: pointer;
-  flex-shrink: 0;
 }
 
+/* 태그 = 탭 */
 .tagContainer {
   display: flex;
   justify-content: center;
-  gap: 7px;
-  width: 100%;
-  margin-bottom: 9px;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .tag {
-  padding: 0 15px;
-  height: 26px;
-  border-radius: 13px;
-  background-color: rgba(124, 124, 124, 1);
-  font-size: 12px;
+  padding: 6px 14px;
+  border-radius: 8px;
+
+  background-color: var(--gray-010);
+  color: var(--gray-080);
+
+  font-size: 13px;
   font-weight: 500;
-  color: white;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  user-select: none;
 }
 
 .tagActive {
-  background-color: rgba(81, 85, 163, 1);
+  background-color: var(--primary-050);
+  color: white;
 }
