@@ -14,9 +14,9 @@ const sendAuthResponse = (res, result) => {
   // HTTP-Only Cookie 설정
   res.cookie("refreshToken", result.refreshToken, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // 배포시 변경
+    secure: true, // 배포시 변경
     maxAge: 3600000 * 24 * 7, // 7일 유효(ms)
-    sameSite: "Lax",
+    sameSite: "None",
   });
 
   // 신규 가입 여부에 따라 리다이렉트 경로 분리 / 신규 : 기존
