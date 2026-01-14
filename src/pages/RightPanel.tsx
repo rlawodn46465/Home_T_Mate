@@ -1,5 +1,6 @@
 import { useLocation } from "react-router-dom";
 import type { ReactNode } from "react";
+import { useAuth } from "../hooks/useAuth";
 import LoginPage from "./Login/LoginPage";
 import OnboardingPage from "./Onboarding/OnboardingPage";
 import DashboardPage from "./Dashboard/DashboardPage";
@@ -11,6 +12,7 @@ import ExerciseDetail from "./Exercise/ExerciseDetail";
 import ExerciseFormPage from "./Exercise/ExerciseFormPage";
 
 const RightPanel = () => {
+  const { user } = useAuth();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
 
@@ -19,9 +21,28 @@ const RightPanel = () => {
   const exerciseId = searchParams.get("exerciseId");
   const recordId = searchParams.get("recordId");
 
+  const privatePanels = [
+    "dashboard",
+    "goal",
+    "record",
+    "record-detail",
+    "goals-detail",
+    "goals-form",
+    "exercise-detail",
+    "exercise-form",
+    "exercise-edit",
+  ];
+
+  if (!user && privatePanels.includes(panelType)) {
+    return <LoginPage />;
+  }
+
   let content: ReactNode;
 
   switch (panelType) {
+    case "community":
+      content = user ? <DashboardPage /> : <LoginPage />;
+      break;
     case "login":
       content = <LoginPage />;
       break;

@@ -1,4 +1,5 @@
 // Header.tsx
+import { useLocation } from "react-router-dom";
 import list_icon from "../assets/images/list_icon.svg";
 import training_icon from "../assets/images/training_icon.svg";
 import goal_icon from "../assets/images/goal_icon.svg";
@@ -10,11 +11,20 @@ import styles from "./Header.module.css";
 
 const Header = () => {
   const { user, handleLogout } = useAuth();
-  const { navigateToPanel, navigateWithPanel } = usePersistentPanel();
+  const { navigateToPanel } = usePersistentPanel();
+  const location = useLocation();
 
-  const handleCommunityClick = (e: React.MouseEvent<HTMLElement>) => {
-    e.preventDefault();
-    navigateWithPanel("/community");
+  const searchParams = new URLSearchParams(location.search);
+  const currentPanel = searchParams.get("panel");
+
+  const isViewingCommunity = !currentPanel || currentPanel === "community";
+
+  const handleMobileToggle = () => {
+    if (isViewingCommunity) {
+      navigateToPanel("?panel=dashboard");
+    } else {
+      navigateToPanel("?panel=community");
+    }
   };
 
   return (
@@ -23,15 +33,23 @@ const Header = () => {
 
       <nav className={styles.nav}>
         <button
-          onClick={handleCommunityClick}
+          onClick={handleMobileToggle}
           className={`${styles.navItem} ${styles.mobileOnly}`}
         >
-          <img src={list_icon} alt="" />
-          <span>게시판</span>
+          <img src={isViewingCommunity ? dashboard_icon : list_icon} alt="" />
+          <span>{isViewingCommunity ? "대시보드" : "게시판"}</span>
         </button>
 
         {user && (
           <>
+            <button
+              onClick={() => navigateToPanel("?panel=dashboard")}
+              className={`${styles.navItem} ${styles.desktopOnly}`}
+            >
+              <img src={dashboard_icon} alt="" />
+              <span>대시보드</span>
+            </button>
+            
             <button
               onClick={() => navigateToPanel("?panel=record")}
               className={styles.navItem}

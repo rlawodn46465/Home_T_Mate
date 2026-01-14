@@ -20,13 +20,21 @@
 
 /* 반응형 처리 */
 @media (max-width: 720px) {
-  .leftContent {
-    display: none;
-  }
+  .leftContent,
   .rightContent {
+    display: none;
+    max-width: 100%;
+    width: 100%;
+  }
+
+  .mainContent.showLeft .leftContent {
+    display: flex;
+    justify-content: center;
+  }
+
+  .mainContent.showRight .rightContent {
     display: flex;
     flex-direction: column;
     align-items: center;
-    max-width: 100%;
   }
 }

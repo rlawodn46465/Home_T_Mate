@@ -60,10 +60,18 @@
   display: none;
 }
 
+.desktopOnly {
+  display: flex;
+}
+
 /* 반응형 : 720px 이하 */
 @media (max-width: 720px) {
   .mobileOnly {
     display: flex;
+  }
+
+  .desktopOnly {
+    display: none;
   }
 
   .nav {
