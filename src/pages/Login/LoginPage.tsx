@@ -3,11 +3,12 @@ import { initiateSocialLogin } from "../../services/api/authService";
 import google from "../../assets/images/google_icon.svg";
 import naver from "../../assets/images/naver_icon.svg";
 import kakao from "../../assets/images/kakao_icon.svg";
+import tester from "../../assets/images/tester_icon.svg";
 import SocialLoginItem from "../../components/ui/Login/SocialLoginItem";
 
 import styles from "./LoginPage.module.css";
 
-type SocialProvider = "google" | "naver" | "kakao";
+type SocialProvider = "google" | "naver" | "kakao" | "tester";
 
 interface SocialLoginOption {
   id: string;
@@ -36,6 +37,12 @@ const LoginPage = () => {
     },
     { id: "naver", iconSrc: naver, text: "네이버 로그인", provider: "naver" },
     { id: "kakao", iconSrc: kakao, text: "카카오 로그인", provider: "kakao" },
+    {
+      id: "tester",
+      iconSrc: tester,
+      text: "테스터 로그인",
+      provider: "tester",
+    },
   ];
 
   return (

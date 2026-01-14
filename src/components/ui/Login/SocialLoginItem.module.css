@@ -37,6 +37,10 @@
   color: #391f1e;
 }
 
+.tester {
+  background-color: var(--primary-050);
+}
+
 .icon {
   width: 22px;
   height: 22px;
