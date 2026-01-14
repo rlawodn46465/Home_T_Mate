@@ -29,6 +29,15 @@ const sendAuthResponse = (res, result) => {
   );
 };
 
+// 테스터 로그인 라우트 (GET /api/v1/auth/tester)
+router.get(
+  "/tester",
+  asyncHandler(async (req, res) => {
+    const result = await authService.testerLogin();
+    sendAuthResponse(res, result);
+  })
+);
+
 // 구글 로그인 라우트 (GET /api/v1/auth/google)
 router.get(
   "/google",

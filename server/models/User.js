@@ -31,6 +31,7 @@ const UserSchema = new mongoose.Schema(
       naverId: { type: String, unique: true, sparse: true, required: false },
       kakaoId: { type: String, unique: true, sparse: true, required: false },
       googleId: { type: String, unique: true, sparse: true, required: false },
+      testerId: {type: String, unique: true, sparse: true, required: false}
     },
     // 상세 정보 (선택 입력)
     details: {

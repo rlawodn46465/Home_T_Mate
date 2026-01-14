@@ -250,10 +250,29 @@ const kakaoLogin = async (code) => {
   }
 };
 
+// 테스터
+const testerLogin = async (testerId) => {
+  const TESTER_ID = "hometmate_tester";
+  const TESTER_PROFILE = {
+    email: "tester@hometmate.com",
+    name: "테스터",
+    nickname: "홈트메이트테스터",
+    age: "20-29",
+    birthyear: "1995",
+    height: 175,
+    weight: 70,
+    isDetailed: true,
+    themMode: "light",
+  };
+
+  return await handleSocialLogin("testerId", TESTER_ID, TESTER_PROFILE);
+};
+
 module.exports = {
   naverLogin,
   googleLogin,
   kakaoLogin,
+  testerLogin,
   refreshToken,
   clearAuthCookies,
 };
