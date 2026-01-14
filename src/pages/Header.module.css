@@ -55,3 +55,23 @@
 .logout {
   color: var(--danger-060);
 }
+
+.mobileOnly {
+  display: none;
+}
+
+/* 반응형 : 720px 이하 */
+@media (max-width: 720px) {
+  .mobileOnly {
+    display: flex;
+  }
+
+  .nav {
+    gap: 0;
+  }
+
+  .navItem {
+    min-width: 48px;
+    padding: 4px 6px;
+  }
+}
