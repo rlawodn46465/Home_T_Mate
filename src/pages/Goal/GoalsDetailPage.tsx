@@ -11,6 +11,8 @@ import {
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 import styles from "./GoalsDetailPage.module.css";
+import { startWorkoutSession } from "../../store/slices/workoutSlice";
+import { useAppDispatch } from "../../store/hooks";
 
 interface GoalsDetailPageProps {
   goalId: string | number;
@@ -21,6 +23,7 @@ type TabType = (typeof TABS)[number];
 const TABS = ["오늘 운동", "리스트"] as const;
 
 const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
+  const dispatch = useAppDispatch();
   const { navigateToPanel, currentPath } = usePersistentPanel();
   const { finishGoalHandler, isFinishing } = useGoalFinish();
   const [activeTab, setActiveTab] = useState<TabType>(TABS[0]);
@@ -99,8 +102,27 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
     );
   }
 
-  // 목표 시작 및 종료(테스트용)
-  const handleStartGoal = () => alert(`목표 시작: ${goal.name}!`);
+  // 목표 시작 및 종료
+  const handleStartGoal = () => {
+    if (!goal) return;
+
+    // 오늘 요일
+    const currentDay = new Date().toLocaleDateString("ko-KR", {
+      weekday: "short",
+    });
+
+    // 오늘 해당되는 운동 필터링
+    const todayExercises = goal.exercises.filter((ex) =>
+      ex.days.includes(currentDay)
+    );
+    if (todayExercises.length === 0) {
+      alert("오늘은 이 루틴에 예정된 운동이 없습니다.");
+      return;
+    }
+
+    dispatch(startWorkoutSession({ goal, todayExercises }));
+    navigateToPanel("?panel=workout-active", currentPath);
+  };
   const handleEndGoal = async () => {
     if (!goal) return;
 

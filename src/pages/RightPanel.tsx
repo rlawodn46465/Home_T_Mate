@@ -10,6 +10,7 @@ import GoalsDetailPage from "./Goal/GoalsDetailPage";
 import ExerciseListPage from "./Exercise/ExerciseListPage";
 import ExerciseDetail from "./Exercise/ExerciseDetail";
 import ExerciseFormPage from "./Exercise/ExerciseFormPage";
+import WorkoutActivePage from "./Goal/WorkoutActivePage";
 
 const RightPanel = () => {
   const { user } = useAuth();
@@ -31,6 +32,7 @@ const RightPanel = () => {
     "exercise-detail",
     "exercise-form",
     "exercise-edit",
+    "workout-active",
   ];
 
   if (!user && privatePanels.includes(panelType)) {
@@ -83,6 +85,9 @@ const RightPanel = () => {
       break;
     case "exercise-edit":
       content = <ExerciseFormPage recordId={recordId || ""} />;
+      break;
+    case "workout-active":
+      content = <WorkoutActivePage />;
       break;
     default:
       content = <div>요청하신 페이지를 찾을 수 없습니다.</div>;
