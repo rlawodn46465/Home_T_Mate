@@ -7,6 +7,7 @@ import {
   fetchGoalDetailThunk,
   fetchGoalsThunk,
   fetchTodayGoalsThunk,
+  finishGoalThunk,
   updateGoalThunk,
 } from "../store/slices/goalsSlice";
 
@@ -134,6 +135,25 @@ export const useGoalSave = () => {
     isSaving: save.status === "loading",
     error: save.error,
     saveGoalHandler,
+  };
+};
+
+// 목표 종료
+export const useGoalFinish = () => {
+  const dispatch = useAppDispatch();
+  const { status, error } = useAppSelector((state) => state.goals.save);
+
+  const finishGoalHandler = useCallback(
+    async (goalId: string) => {
+      return await dispatch(finishGoalThunk(goalId)).unwrap();
+    },
+    [dispatch]
+  );
+
+  return {
+    finishGoalHandler,
+    isFinishing: status === "loading",
+    error,
   };
 };
 

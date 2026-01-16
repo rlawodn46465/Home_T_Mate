@@ -3,7 +3,11 @@ import GoalsDetailHeader from "../../components/ui/Goal/GoalList/GoalsDetailHead
 import ExerciseList from "../../components/ui/Goal/GoalList/ExerciseList";
 import GoalsSummary from "../../components/ui/Goal/GoalList/GoalsSummary";
 import TabNavigation from "../../components/common/TabNavigation";
-import { useGoalDetail, useGoalDelete } from "../../hooks/useGoals";
+import {
+  useGoalDetail,
+  useGoalDelete,
+  useGoalFinish,
+} from "../../hooks/useGoals";
 import { usePersistentPanel } from "../../hooks/usePersistentPanel";
 
 import styles from "./GoalsDetailPage.module.css";
@@ -18,6 +22,7 @@ const TABS = ["오늘 운동", "리스트"] as const;
 
 const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
   const { navigateToPanel, currentPath } = usePersistentPanel();
+  const { finishGoalHandler, isFinishing } = useGoalFinish();
   const [activeTab, setActiveTab] = useState<TabType>(TABS[0]);
 
   const {
@@ -96,7 +101,19 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
 
   // 목표 시작 및 종료(테스트용)
   const handleStartGoal = () => alert(`목표 시작: ${goal.name}!`);
-  const handleEndGoal = () => alert(`목표 종료: ${goal.name}!`);
+  const handleEndGoal = async () => {
+    if (!goal) return;
+
+    if (window.confirm(`'${goal.name}' 목표를 완료 상태로 종료하시겠습니까?`)) {
+      try {
+        await finishGoalHandler(String(goalId));
+        alert("목표가 성공적으로 종료되었습니다.");
+        navigateToPanel("?panel=goal", currentPath);
+      } catch (err: any) {
+        alert(err || "종료 처리 중 오류가 발생했습니다.");
+      }
+    }
+  };
 
   // 생성일 포맷팅 함수
   const formatCreationDate = (isoString: string) => {
@@ -169,8 +186,16 @@ const GoalsDetailPage = ({ goalId }: GoalsDetailPageProps) => {
         <button className={styles.startButton} onClick={handleStartGoal}>
           시작
         </button>
-        <button className={styles.endButton} onClick={handleEndGoal}>
-          목표 끝내기
+        <button
+          className={styles.endButton}
+          onClick={handleEndGoal}
+          disabled={isFinishing || goal.status === "완료"}
+        >
+          {isFinishing
+            ? "처리 중..."
+            : goal.status === "완료"
+            ? "완료된 목표"
+            : "목표 끝내기"}
         </button>
       </div>
     </div>

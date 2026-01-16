@@ -5,6 +5,7 @@ import type {
   TodayGoal,
   CreateGoalRequest,
   UpdateGoalRequest,
+  GoalStatus,
 } from "../../types/goal";
 
 const API_GOALS_PATH = "/api/v1/goals";
@@ -55,6 +56,14 @@ export const createGoal = async (data: CreateGoalRequest): Promise<string> => {
     data
   );
   return response.data.data.id;
+};
+
+// 목표 종료
+export const finishGoal = async (id: string): Promise<{ id: string; status: GoalStatus }> => {
+  const response = await api.patch<{ data: { id: string; status: GoalStatus } }>(
+    `${API_GOALS_PATH}/${id}/finish`
+  );
+  return response.data.data;
 };
 
 // 기존 루틴/챌린지 수정

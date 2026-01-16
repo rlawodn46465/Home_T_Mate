@@ -1,5 +1,5 @@
 export type GoalType = "ROUTINE" | "CHALLENGE" | "PERSONAL";
-export type GoalStatus = "진행중" | "완료" | "중단";
+export type GoalStatus = "진행중" | "부분완료" | "완료" | "실패";
 
 export interface SetInfo {
   setNumber: number;

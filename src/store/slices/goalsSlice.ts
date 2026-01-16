@@ -12,6 +12,7 @@ import type {
 } from "../../types/goal";
 import {
   createGoal,
+  finishGoal,
   deleteGoal,
   fetchGoalDetail,
   fetchGoals,
@@ -90,6 +91,18 @@ export const createGoalThunk = createAsyncThunk(
       return { id };
     } catch {
       return rejectWithValue("목표 생성에 실패했습니다.");
+    }
+  }
+);
+// 목표 종료
+export const finishGoalThunk = createAsyncThunk(
+  "goals/finish",
+  async (goalId: string, { rejectWithValue }) => {
+    try {
+      const result = await finishGoal(goalId);
+      return result;
+    } catch {
+      return rejectWithValue("목표를 종료하는 데 실패했습니다.");
     }
   }
 );
@@ -181,6 +194,28 @@ const goalsSlice = createSlice({
         state.save.status = "succeeded";
       })
       .addCase(createGoalThunk.rejected, (state, action) => {
+        state.save.status = "failed";
+        state.save.error = action.payload as string;
+      })
+      // 종료
+      .addCase(finishGoalThunk.pending, (state) => {
+        state.save.status = "loading";
+        state.save.error = null;
+      })
+      .addCase(finishGoalThunk.fulfilled, (state, action) => {
+        state.save.status = "succeeded";
+        const { id, status } = action.payload;
+
+        const idx = state.list.findIndex((g) => g.id === id);
+        if (idx !== -1) {
+          state.list[idx].status = status;
+        }
+
+        if (state.detailMap[id]) {
+          state.detailMap[id].status = status;
+        }
+      })
+      .addCase(finishGoalThunk.rejected, (state, action) => {
         state.save.status = "failed";
         state.save.error = action.payload as string;
       })
