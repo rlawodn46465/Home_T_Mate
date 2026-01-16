@@ -47,6 +47,20 @@ const createGoal = asyncHandler(async (req, res) => {
   );
 });
 
+// PATCH /api/v1/goals/:routineId/finish (목표 종료)
+const finishGoal = asyncHandler(async (req, res) => {
+  const { routineId } = req.params;
+  const userId = req.user._id;
+
+  const result = await goalService.finishGoal(routineId, userId);
+
+  return successResponse(
+    res,
+    { id: result._id, status: result.status },
+    { message: "목표가 성공적으로 종료되었습니다." }
+  );
+});
+
 // PUT /api/v1/goals/:id (수정)
 const updateGoal = asyncHandler(async (req, res) => {
   const updated = await goalService.updateGoal(
@@ -81,6 +95,7 @@ module.exports = {
   getGoals,
   getGoalDetail,
   createGoal,
+  finishGoal,
   updateGoal,
   deleteGoal,
   getExerciseRecords,

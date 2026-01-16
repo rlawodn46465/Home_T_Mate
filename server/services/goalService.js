@@ -21,7 +21,6 @@ const { default: mongoose } = require("mongoose");
 
 // 사용자 목표 목록 조회
 const getUserGoals = async (userId) => {
-
   // 데이터 조회 전 상태 갱신
   await refreshUserGoalsStatus(userId);
 
@@ -250,6 +249,25 @@ const createGoal = async (userId, goalData) => {
   return newGoal;
 };
 
+// 목표 종료
+const finishGoal = async (userGoalId, userId) => {
+  const userGoal = await UserGoal.findOne({ _id: userGoalId, userId });
+
+  if (!userGoal) {
+    throw new NotFoundError("해당 목표를 찾을 수 없거나 권한이 없습니다.");
+  }
+
+  // 이미 종료된 상태인지 확인
+  if (userGoal.status === "완료") {
+    throw new BadRequestError("이미 완료된 목표입니다.");
+  }
+
+  userGoal.status = "완료";
+
+  await userGoal.save();
+  return userGoal;
+};
+
 // 목표 수정 (추가 수정 필요)
 const updateGoal = async (goalId, userId, updateData) => {
   const userGoal = await UserGoal.findById(goalId);
@@ -436,6 +454,7 @@ module.exports = {
   getUserGoals,
   getGoalDetail,
   createGoal,
+  finishGoal,
   updateGoal,
   deleteGoal,
   getDailyExerciseRecords,

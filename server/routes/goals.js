@@ -4,6 +4,7 @@ const router = express.Router();
 const { protect } = require("../middlewares/authMiddleware");
 const {
   getGoals,
+  finishGoal,
   createGoal,
   getGoalDetail,
   updateGoal,
@@ -24,6 +25,9 @@ router.get("/today", protect, getTodayGoals);
 
 // 루틴/챌린지 생성 (POST /api/v1/goals)
 router.post("/", protect, createGoal);
+
+// 목표 종료 (PATCH /api/v1/goals/:routineId/finish)
+router.patch("/:routineId/finish", protect, finishGoal);
 
 // 특정 루틴/챌린지 상세 조회 (GET /api/v1/goals/:routineId)
 router.get("/:routineId", protect, getGoalDetail);
