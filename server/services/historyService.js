@@ -14,11 +14,20 @@ const { mapRecordTypeToKorean } = require("../utils/constants");
 const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
   const { date, userGoalId, type, title, totalTime } = workoutMeta;
 
+  const mappedSets = exerciseLog.sets.map((set) => ({
+    setNumber: set.setNumber,
+    weight: set.weight,
+    reps: set.reps,
+    isCompleted: true, 
+  }));
+
   const koreanRecordType = mapRecordTypeToKorean(type);
 
   const updateDoc = {
     $inc: { totalExerciseCount: 1 },
-
+    $set: {
+      personalBestWeight: Math.max(0, ...exerciseLog.sets.map((s) => s.weight)),
+    },
     $push: {
       records: {
         date: new Date(date),
@@ -26,7 +35,7 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
         goalName: title,
         recordType: koreanRecordType,
         totalTime: totalTime,
-        sets: exerciseLog.sets,
+        sets: mappedSets,
         maxWeight: exerciseLog.maxWeight,
         totalVolume: exerciseLog.totalVolume,
         totalReps: exerciseLog.totalReps,
@@ -37,7 +46,7 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
   await ExerciseHistory.findOneAndUpdate(
     { userId, exerciseId: exerciseLog.exerciseId },
     updateDoc,
-    { upsert: true, new: true, setDefaultsOnInsert: true } // setDefaultsOnInsert 추가
+    { upsert: true, new: true, setDefaultsOnInsert: true }
   );
 };
 
@@ -45,55 +54,32 @@ const createExerciseHistory = async (userId, exerciseLog, workoutMeta) => {
 const saveWorkoutSession = async (userId, workoutData) => {
   // 기록 저장 전 유저의 목표 상태 갱신
   await goalService.refreshUserGoalsStatus(userId);
+  const { date, userGoalId, exercises, totalTime, title, type } = workoutData;
 
-  const { date, userGoalId, exercises, ...workoutMeta } = workoutData;
-  const workoutInfo = { date, userGoalId, ...workoutMeta };
-
-  // 입력 유효성 검사
   if (!exercises || !Array.isArray(exercises) || exercises.length === 0) {
     throw new Error("저장할 운동 기록이 누락되었습니다.");
   }
 
-  let goal;
-
-  // 세션 카운트 증가 여부 결정 (하루 1회 제한)
-  let shouldIncrementSession = false;
-  if (userGoalId) {
-    const sessionCompletedToday = await checkDailySessionCompleted(
-      userId,
-      userGoalId,
-      date
-    );
-    if (!sessionCompletedToday) {
-      shouldIncrementSession = true;
-    }
-  }
-
-  // ExerciseHistory 업데이트
+  // 각 운동별 히스토리 생성
+  const workoutInfo = { date, userGoalId, title, type, totalTime };
   await Promise.all(
     exercises.map((ex) => createExerciseHistory(userId, ex, workoutInfo))
   );
 
   // UserGoal 진행도 업데이트
-  if (userGoalId) {
-    if (shouldIncrementSession) {
-      // 하루 운동 제한
-      goal = await UserGoal.findByIdAndUpdate(
-        userGoalId,
-        { $inc: { completedSessions: 1 } },
-        { new: true } // 업데이트된 문서를 반환받기 위해
-      );
-    } else {
-      goal = await UserGoal.findById(userGoalId);
-    }
+  if (userGoalId && (type === "ROUTINE" || type === "CHALLENGE")) {
+    const goal = await UserGoal.findById(userGoalId);
+    if (goal) {
+      await UserGoal.findByIdAndUpdate(userGoalId, {
+        $inc: { completedSessions: 1 },
+      });
 
-    // 목표 완료 처리
-    if (goal && goal.goalType === "CHALLENGE") {
-      if (
-        goal.completedSessions >=
-        goal.activeDays.length * goal.durationWeek
-      ) {
-        await UserGoal.findByIdAndUpdate(userGoalId, { status: "완료" });
+      // 챌린지 성공 조건 체크
+      if (goal.status === "진행중" && goal.durationWeek) {
+        const totalNeeded = goal.activeDays.length * goal.durationWeek;
+        if (goal.completedSessions + 1 >= totalNeeded) {
+          await UserGoal.findByIdAndUpdate(userGoalId, { status: "완료" });
+        }
       }
     }
   }
@@ -165,11 +151,6 @@ const deleteWorkoutRecord = async (userId, recordId) => {
   );
 
   if (sessionGoalId) {
-    // 이 세션이 하루의 첫 세션이었는지 다시 확인해야 합니다. (복잡하지만 가장 안전함)
-    // 여기서는 간소화를 위해, 해당 기록이 속했던 날짜에 UserGoalID로 기록된 다른 레코드가 없으면
-    // completedSessions를 감소시킨다고 가정합니다.
-    // **주의:** 현재 로직은 '오늘' 처음 완료했을 때만 카운트를 증가시켰으므로,
-    // 해당 세션을 삭제했을 때, 그날의 다른 세션이 남아있는지 확인해야 합니다.
     const dayHasOtherSessions = await checkDailySessionCompleted(
       userId,
       sessionGoalId,
@@ -274,7 +255,6 @@ const getMonthlyHistory = async (userId, year, month) => {
     { $unwind: "$records" },
     { $match: { "records.date": { $gte: startDate, $lte: endDate } } },
 
-    // 운동 정보 Join
     {
       $lookup: {
         from: "exercises",
@@ -285,12 +265,15 @@ const getMonthlyHistory = async (userId, year, month) => {
     },
     { $unwind: "$exerciseInfo" },
 
-    // 날짜별 + 세션별 그룹화 (재조립)
     {
       $group: {
         _id: {
           date: {
-            $dateToString: { format: "%Y-%m-%d", date: "$records.date" },
+            $dateToString: {
+              format: "%Y-%m-%d",
+              date: "$records.date",
+              timezone: "Asia/Seoul",
+            },
           },
           type: "$records.recordType",
           goalId: "$records.relatedUserGoalId",
@@ -315,15 +298,14 @@ const getMonthlyHistory = async (userId, year, month) => {
     },
     {
       $project: {
-        _id: 0, // 기본 _id 제거
-        date: "$_id.date", // 그룹핑 기준이었던 날짜
-        recordType: "$recordType", // 운동 타입
-        goalId: "$_id.goalId", // 목표 ID
-        title: "$title", // 목표 이름
-        totalSessionTime: "$totalSessionTime", // 세션 총 시간
-        exercises: "$exercises", // 운동 상세 목록
+        _id: 0, 
+        date: "$_id.date", 
+        recordType: "$recordType", 
+        goalId: "$_id.goalId",
+        title: "$title",
+        totalSessionTime: "$totalSessionTime", 
+        exercises: "$exercises", 
 
-        // 6개 그룹 카테고리 생성 로직: rawMuscles 배열을 순회하며 매핑
         categoryGroup: {
           $reduce: {
             input: {
@@ -357,7 +339,7 @@ const getMonthlyHistory = async (userId, year, month) => {
                     },
                   },
                 },
-                // 이미 배열에 있는 카테고리라면 추가하지 않음 ($in)
+
                 in: {
                   $cond: {
                     if: { $in: ["$$mappedCategory", "$$value"] },

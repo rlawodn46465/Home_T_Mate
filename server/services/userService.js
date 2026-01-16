@@ -5,7 +5,7 @@ const { ConflictError } = require("../utils/errorHandler");
 
 // 모든 사용자 목록 조회
 const getAllUsers = async () => {
-  const users = await User.find({}).select("-__v"); //'__v' 필드는 제외하고 조회
+  const users = await User.find({}).select("-__v"); 
   return users;
 };
 

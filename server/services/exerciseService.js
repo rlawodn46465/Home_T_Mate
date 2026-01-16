@@ -45,14 +45,14 @@ const getExerciseDetail = async (exerciseId, userId) => {
 
   // 통계 데이터 계산
   let totalStats = {
-    weight: 0, // 누적 중량 (Volume과 동일하게 취급하거나, 별도 로직 적용)
+    weight: 0, 
     reps: 0,
     volume: 0,
     time: 0,
   };
 
   let bestStats = {
-    weight: history.personalBestWeight || 0, // 모델에 있는 필드 활용
+    weight: history.personalBestWeight || 0,
     volume: 0,
     reps: 0,
     time: 0,
